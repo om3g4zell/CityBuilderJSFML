@@ -13,7 +13,6 @@ import maths.Distance;
  * Represent a building
  */
 public class Building {
-	
 	// Building Type
 	public static enum BuildingType {
 		HOUSE,
@@ -69,13 +68,16 @@ public class Building {
 	
 	// Generates resources.
 	public void generateResources(ResourceMap resourcesMap) {
+		// We use squared range and squared euclidean distance for performance.
+		double squaredRange = Math.pow(range, 2);
+		
 		// Check all resource map in square range.
 		for(int x = this.hitbox.left - this.range ; x <= this.hitbox.left + this.range ; ++x)
 		{
 			for(int y = this.hitbox.top - this.range ; y <= this.hitbox.top + this.range ; ++y)
 			{
 				// Check only in range.
-				if(Distance.manhattan(new Vector2i(this.hitbox.left, this.hitbox.top), new Vector2i(x, y)) <= this.range)
+				if(Distance.squaredEuclidean(new Vector2i(this.hitbox.left, this.hitbox.top), new Vector2i(x, y)) <= squaredRange)
 				{
 					// Generate resources depending on the building type.
 					switch(this.type) {
