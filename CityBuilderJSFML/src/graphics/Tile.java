@@ -14,11 +14,24 @@ public class Tile {
 		BUILDING_ROAD,
 		BUILDING_GENERATOR
 	}
+
+	// Track the last id.
+	protected static int lastId = 0;
 	
 	// Attributes.
 	protected TileType tileType;
 	protected int id;
 	protected Vector2i position;
+	
+	// Constructor.
+	public Tile(TileType tileType, Vector2i position) {
+		this.tileType = tileType;
+		this.id = Tile.lastId;
+		this.position = position;
+		
+		// Increment the last id.
+		Tile.lastId++;
+	}
 	
 	// Set the tileType
 	public void setTileType(TileType tileType) {
