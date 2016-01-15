@@ -95,12 +95,25 @@ public class Sim {
 	
 	// Updates all the simulation.
 	public void update(Time dt) {
+		// Reset the resources.
 		this.resourcesMap.reset();
 		
+		// Generate resources.
 		for(Building b : this.buildings) {
-			
 			// Generate resources.
 			b.generateResources(this.resourcesMap);
+		}
+		
+		// Consume resources.
+		for(Building b : this.buildings) {
+			// b.consumeResources(this.resourcesMap);
+			
+			// Check if enough for minimal.
+			// If yes :
+				// Check if enough for 100%.
+				// If yes, perfect.
+				// If no, require new building(s) to satisfy needs.
+			// If no, halt the building.
 		}
 		
 		// Project buildings on the tilemap.
