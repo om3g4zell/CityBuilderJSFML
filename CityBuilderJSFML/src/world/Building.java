@@ -32,7 +32,7 @@ public class Building {
 	}
 	
 	// Generates resources.
-	public void generateResources() {
+	public void generateResources(ResourceMap resourcesMap) {
 		
 	}
 }
