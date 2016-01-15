@@ -6,45 +6,42 @@ import org.jsfml.system.Time;
 import org.jsfml.window.VideoMode;
 
 /*
- * Main class contain init, update and render
+ * Simulation class.
+ * Contains init, update and render.
  */
-
 public class Sim {
-	public int WIDTH;
-	public int HEIGHT;
-	public String TITLE;
-	
-	public static RenderWindow window = new RenderWindow();
+	// Attributes.
+	protected RenderWindow window;
 	
 	// Constructor
-	public Sim(int width, int height,String title) {
-		this.WIDTH = width;
-		this.HEIGHT = height;
-		this.TITLE = title;
-		window.create(new VideoMode(this.WIDTH,this.HEIGHT), TITLE);
-		Init();
+	public Sim(int width, int height, String title) {
+		this.window = new RenderWindow(new VideoMode(width, height), title);
+	}
+	
+	// Initialization
+	public void init() {
 		
 	}
 	
-	// Initialisation
-	public void Init() {
+	// Updates all the simulation.
+	public void update(Time dt) {
 		
 	}
 	
-	//UPDATE
-	public void Update(Time dt) {
-		
-	}
-	//RENDER
-	public void Render() {
-		
-		window.clear(Color.WHITE);
+	// Renders all the simulation.
+	public void render() {
+		this.window.clear(Color.WHITE);
 		/////////////
 		
 		// Draw HERE
 		
 		/////////////
-		window.display();
+		this.window.display();
 		
+	}
+	
+	// Returns the window.
+	public RenderWindow getWindow() {
+		return this.window;
 	}
 }

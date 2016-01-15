@@ -5,58 +5,75 @@ import org.jsfml.system.Time;
 import org.jsfml.window.Keyboard;
 import org.jsfml.window.event.Event;
 
-
-
+/*
+ * Main program/loop.
+ */
 public class Main {
-	public static int HEIGHT = 720;
-	public static int WIDTH = 1280;
+	// Window constants.
+	public static final int HEIGHT = 720;
+	public static final int WIDTH = 1280;
+	public static final String TITLE = "City Builder";
 	
-	public static boolean tick = false;
-	public static boolean render = false;
-	protected static final int TILE_SCALE = 32;
-	public static String Title = "City Builder";
+	// Number of frames we can skip to compute simulation logic.
+	protected static final int MAX_SKIPPED_FRAMES = 9;
+	
+	// Tickrate and time per tick.
+	protected static final int TICKRATE = 60;
+	protected static final Time TIME_PER_TICK = Time.getSeconds(1.f / TICKRATE);
+
 	public static void main(String[] args) {
-		Sim simulation = new Sim(1280,720,Title);
+		// Create a simulation.
+		Sim simulation = new Sim(WIDTH, HEIGHT, TITLE);
+		simulation.init();
 		
-		
+		// FPS/ticks count.
 		int ticks = 0;
 		int frames = 0;
-		Time elapsed = Time.ZERO;
-		Time dt = Time.ZERO;
-		Time time = Time.ZERO;
+		Time fpsTime = Time.ZERO;
+		
 		//Main loop
 		Clock clock = new Clock();
-		while(Sim.window.isOpen()) {
+		Time elapsed = Time.ZERO;
+		Time frameTime = Time.ZERO;
+		int skippedFrames = 0;
+		
+		while(simulation.getWindow().isOpen()) {
 			
-		    dt = clock.restart();
-		    elapsed = Time.add(dt, elapsed);
-		    tick = false;
+			frameTime = clock.restart();
+		    elapsed = Time.add(frameTime, elapsed);
 			
 		    // Update 60 times per seconds
-		    if(elapsed.asSeconds() > 1/60f) {
-		    	
-		    	//Handle events
-			    for(Event event : Sim.window.pollEvents()) {
+		    while(Time.ratio(elapsed, TIME_PER_TICK) >= 1.f && skippedFrames < MAX_SKIPPED_FRAMES) {
+				elapsed = Time.sub(elapsed, TIME_PER_TICK);
+				skippedFrames++;
+
+		    	// Handle events
+			    for(Event event : simulation.getWindow().pollEvents()) {
 			        if(event.type == Event.Type.CLOSED)
-			        	Sim.window.close();
+			        	simulation.getWindow().close();
 			        else if(event.type == Event.Type.KEY_PRESSED && event.asKeyEvent().key == Keyboard.Key.ESCAPE)
-			        	Sim.window.close();
+			        	simulation.getWindow().close();
 			    }
 			    
-		    	elapsed = Time.sub(elapsed,Time.getSeconds(1/60f));
-		    	simulation.Update(Time.getSeconds(1/60f));
+			    // Update
+		    	simulation.update(TIME_PER_TICK);
+		    	
+		    	// Tick count.
 				ticks++;
 		    }
 		    
-		    simulation.Render();
+		    simulation.render();
 		    frames++;
+		    skippedFrames = 0;
 		    
-		    time = Time.add(dt, time);
-		    
-		    if(time.asSeconds() > 1f) {
-		    	time = Time.sub(time, Time.getSeconds(1.0f));
-		    	Sim.window.setTitle(Title  +" ticks : " + ticks + " , FPS : " + frames);
-				ticks = 0;
+		    // Compute average FPS and display it in the window's title.
+		    fpsTime = Time.add(frameTime, fpsTime);
+		    if(fpsTime.asSeconds() > 1f) {
+		    	fpsTime = Time.sub(fpsTime, Time.getSeconds(1.0f));
+		    	simulation.getWindow().setTitle(TITLE  + " | Ticks : " + ticks + ", FPS : " + frames);
+				
+		    	// Reset counters.
+		    	ticks = 0;
 				frames = 0;
 			}
 		}
