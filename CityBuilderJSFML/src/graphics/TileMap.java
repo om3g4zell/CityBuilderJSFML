@@ -1,6 +1,7 @@
 package graphics;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.jsfml.graphics.BasicTransformable;
@@ -40,6 +41,7 @@ public class TileMap extends BasicTransformable implements Drawable {
 		this.size = size;
 		this.sizeOfTile = sizeOfTile;
 		
+		this.typeColorMap = new HashMap<>();
 		this.vertexArray = new VertexArray(PrimitiveType.QUADS);
 	}
 	
