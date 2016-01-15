@@ -8,6 +8,7 @@ import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
+import org.jsfml.graphics.Transform;
 import org.jsfml.graphics.VertexArray;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
@@ -47,10 +48,12 @@ public class TileMap extends BasicTransformable implements Drawable {
 		
 	}
 
+	// Draws the tilemap.
 	@Override
 	public void draw(RenderTarget target, RenderStates states) {
-		states.transform *= this.getTransform();
-		target.draw(this.vertexArray, states);
+		RenderStates newStates = new RenderStates(Transform.combine(states.transform, this.getTransform()));
+
+		target.draw(this.vertexArray, newStates);
 	}
 	
 	
