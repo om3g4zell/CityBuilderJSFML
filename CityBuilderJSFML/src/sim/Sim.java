@@ -56,14 +56,12 @@ public class Sim {
 	
 	// Updates all the simulation.
 	public void update(Time dt) {
-		System.out.println("Update");
 		// Update the tilemap.
 		tilemap.update();
 	}
 	
 	// Renders all the simulation.
 	public void render() {
-		System.out.println("Render");
 		this.window.clear(Color.WHITE);
 		/////////////
 
