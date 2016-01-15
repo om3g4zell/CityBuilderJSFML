@@ -108,16 +108,19 @@ public class Building {
 							resourcesMap.setResources(new Vector2i(x,y), rStack);
 							break;
 						case HOUSE:
+							// Generate people
 							rStack = resourcesMap.getResources(new Vector2i(x,y));
 							rStack.set(ResourceType.PEOPLE, rStack.get(ResourceType.PEOPLE) + 4);
 							resourcesMap.setResources(new Vector2i(x,y), rStack);
 							break;
 						case ROAD:
+							// Generate road proximity
 							rStack = resourcesMap.getResources(new Vector2i(x,y));
 							rStack.set(ResourceType.ROAD_PROXIMITY, rStack.get(ResourceType.ROAD_PROXIMITY) + 1);
 							resourcesMap.setResources(new Vector2i(x,y), rStack);
 							break;
 						case HYDROLIC_STATION:
+							// Generate water
 							rStack = resourcesMap.getResources(new Vector2i(x,y));
 							rStack.set(ResourceType.WATER, rStack.get(ResourceType.WATER) + 100);
 							resourcesMap.setResources(new Vector2i(x,y), rStack);
