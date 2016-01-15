@@ -5,10 +5,10 @@ import java.util.*;
 /*
  * List of resources available on one tile.
  */
-public class ResourceStack {
+public class ResourcesStack {
 	protected Map<Resource.ResourceType, Resource> resources;
 	
-	public ResourceStack() {
+	public ResourcesStack() {
 		this.resources = new HashMap<Resource.ResourceType, Resource>();
 
 		// Add all the resources types.
