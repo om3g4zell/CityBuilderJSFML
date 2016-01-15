@@ -11,10 +11,13 @@ import org.jsfml.system.Vector2i;
 public class ResourcesMap {
 	
 	protected ArrayList<ArrayList<ResourcesStack>> resources;
+	protected Vector2i size;
 	
 	// Constructs the map.
 	public ResourcesMap(Vector2i size) {
-		// Instanciate resources
+		this.size = size;
+
+		// Instantiates the resources
 		this.resources = new  ArrayList<ArrayList<ResourcesStack>>();
 		
 		// Create a large enough two-dimensional array.
@@ -29,18 +32,27 @@ public class ResourcesMap {
 		}
 	}
 	
+	// Resets all the resources to 0.
+	public void reset() {
+		for(int i = 0 ; i < this.size.y ; ++i) {
+			for(int j = 0 ; j < this.size.x ; ++j) {
+				getResources(new Vector2i(j, i)).reset();
+			}
+		}
+	}
+	
 	// Returns the resources on the tile.
-	public ResourcesStack getResources(Vector2i index) {
-		return this.resources.get(index.y).get(index.x);
+	public ResourcesStack getResources(Vector2i position) {
+		return this.resources.get(position.y).get(position.x);
 	}
 	
 	// Sets the resources on the tile.
-	public void setResources(Vector2i index, ResourcesStack resources) {
+	public void setResources(Vector2i position, ResourcesStack resources) {
 		// Get the row and modify the row.
-		ArrayList<ResourcesStack> row = this.resources.get(index.y);
-		row.set(index.x, resources);
+		ArrayList<ResourcesStack> row = this.resources.get(position.y);
+		row.set(position.x, resources);
 		
 		// Set the row back in the two-dimensional array.
-		this.resources.set(index.y, row);
+		this.resources.set(position.y, row);
 	}
 }

@@ -10,8 +10,12 @@ import org.jsfml.system.Vector2i;
 import org.jsfml.window.VideoMode;
 
 import graphics.Tile.TileType;
+import graphics.BuildingProjector;
 import graphics.Tile;
 import graphics.TileMap;
+import world.Building;
+import world.Building.BuildingType;
+import world.ResourcesMap;
 
 /*
  * Simulation class.
@@ -26,6 +30,8 @@ public class Sim {
 	protected RenderWindow window;
 	protected TileMap tilemap;
 	protected ArrayList<ArrayList<Tile>> tiles;
+	protected ResourcesMap resourcesMap;
+	protected ArrayList<Building> buildings;
 	
 	// Constructor
 	public Sim(int width, int height, String title) {
@@ -34,7 +40,7 @@ public class Sim {
 	
 	// Initialization
 	public void init() {
-		// Init tiles array.
+		// Inits the tiles array.
 		this.tiles = new ArrayList<ArrayList<Tile>>();
 		
 		for(int i = 0 ; i < TILEMAP_SIZE.y ; ++i) {
@@ -47,17 +53,56 @@ public class Sim {
 			this.tiles.add(row);
 		}
 		
-		// Init tilemap.
-		// Only support TERRAIN_GRASS for now.
+		// Create the resources map.
+		this.resourcesMap = new ResourcesMap(TILEMAP_SIZE);
+		
+		// Create the buildings list.
+		this.buildings = new ArrayList<Building>();
+		
+		// Houses.
+		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(1, 1)));
+		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(3, 1)));
+		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(5, 1)));
+		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(7, 1)));
+		
+		// Road.
+		this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(9, 2)));
+		
+		// Generator.
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(1, 3)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(2, 3)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(3, 3)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(4, 3)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(5, 3)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(6, 3)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(7, 3)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(8, 3)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(9, 3)));
+		
+		// Inits the tilemap.
 		this.tilemap = new TileMap(TILEMAP_SIZE, TILE_SIZE);
 		this.tilemap.addTypeColor(TileType.TERRAIN_GRASS, new Color(0, 70, 0));
+		this.tilemap.addTypeColor(TileType.BUILDING_HOUSE, new Color(70, 0, 0));
+		this.tilemap.addTypeColor(TileType.BUILDING_ROAD, new Color(190, 190, 190));
+		this.tilemap.addTypeColor(TileType.BUILDING_GENERATOR, new Color(227, 168, 87));
 		this.tilemap.setTiles(this.tiles);
 	}
 	
 	// Updates all the simulation.
 	public void update(Time dt) {
+		this.resourcesMap.reset();
+		
+		for(Building b : this.buildings) {
+			
+			// Generate resources.
+			b.generateResources(this.resourcesMap);
+		}
+		
+		// Project buildings on the tilemap.
+		BuildingProjector.project(this.buildings, this.tilemap);
+
 		// Update the tilemap.
-		tilemap.update();
+		this.tilemap.update();
 	}
 	
 	// Renders all the simulation.

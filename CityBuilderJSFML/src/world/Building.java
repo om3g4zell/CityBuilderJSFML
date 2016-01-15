@@ -29,6 +29,7 @@ public class Building {
 	// Constructor
 	public Building(BuildingType type, Vector2i position) {
 		this.type = type;
+		this.needs = new ArrayList<Need>();
 		
 		switch(this.type) {
 			case GENERATOR:
@@ -61,11 +62,18 @@ public class Building {
 				this.hitbox = new IntRect(position.x,position.y, 1, 1);
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				break;
+			default:
+				break;
 		}
 	}
 	
+	// Returns the hitbox.
+	public IntRect getHitbox() {
+		return this.hitbox;
+	}
+	
 	// Generates resources.
-	public void generateResources(ResourceMap resourcesMap) {
+	public void generateResources(ResourcesMap resourcesMap) {
 		// We use squared range and squared euclidean distance for performance.
 		double squaredRange = Math.pow(range, 2);
 		
@@ -93,6 +101,8 @@ public class Building {
 							break;
 						case HYDROLIC_STATION:
 
+							break;
+						default:
 							break;
 					}
 				}
