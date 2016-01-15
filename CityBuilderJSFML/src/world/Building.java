@@ -21,14 +21,27 @@ public class Building {
 	// Attributs
 	protected ArrayList<Need> needs;
 	protected int range;
-	protected Vector2i position;
 	protected IntRect hitbox;
 	protected BuildingType type;
 	
 	// Constructor
 	public Building(BuildingType type, Vector2i position) {
 		this.type = type;
-		this.position = position;
+		
+		switch(this.type) {
+			case GENERATOR:this.range = 18;
+				this.hitbox = new IntRect(position.x,position.y,1,1);
+				break;
+			case GROCERY_STORE:this.range = 28;
+			this.hitbox = new IntRect(position.x,position.y,8,4);
+				break;
+			case HOUSE:this.range = 99;
+			this.hitbox = new IntRect(position.x,position.y,2,2);
+				break;
+			case ROAD:this.range = 1;
+			this.hitbox = new IntRect(position.x,position.y,1,1);
+				break;
+		}
 	}
 	
 	// Generates resources.
