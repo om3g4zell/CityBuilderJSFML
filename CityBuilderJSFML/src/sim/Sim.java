@@ -23,8 +23,8 @@ import world.ResourcesMap;
  */
 public class Sim {
 	// Constants.
-	protected static final Vector2i TILEMAP_SIZE = new Vector2i(12, 8);
-	protected static final Vector2f TILE_SIZE = new Vector2f(32.f, 32.f);
+	protected static final Vector2i TILEMAP_SIZE = new Vector2i(80, 45);
+	protected static final Vector2f TILE_SIZE = new Vector2f(16.f, 16.f);
 	
 	// Attributes.
 	protected RenderWindow window;
@@ -60,24 +60,29 @@ public class Sim {
 		this.buildings = new ArrayList<Building>();
 		
 		// Houses.
-		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(1, 1)));
-		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(3, 1)));
-		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(5, 1)));
-		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(7, 1)));
+		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(31, 20)));
+		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(33, 20)));
+		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(35, 20)));
+		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(37, 20)));
+		
+		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(31, 23)));
+		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(33, 23)));
+		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(35, 23)));
+		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(37, 23)));
 		
 		// Road.
-		this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(9, 2)));
+		this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(39, 21)));
 		
 		// Generator.
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(1, 3)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(2, 3)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(3, 3)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(4, 3)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(5, 3)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(6, 3)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(7, 3)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(8, 3)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(9, 3)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(31, 22)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(32, 22)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(33, 22)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(34, 22)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(35, 22)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(36, 22)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(37, 22)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(38, 22)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(39, 22)));
 		
 		// Inits the tilemap.
 		this.tilemap = new TileMap(TILEMAP_SIZE, TILE_SIZE);
