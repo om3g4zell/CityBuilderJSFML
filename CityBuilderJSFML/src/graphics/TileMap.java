@@ -16,6 +16,8 @@ import org.jsfml.graphics.VertexArray;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
+import graphics.Tile.TileType;
+
 /*
  * TileMap class.
  * Draws a tilemap.
@@ -48,6 +50,11 @@ public class TileMap extends BasicTransformable implements Drawable {
 	// Adds type <-> color.
 	public void addTypeColor(Tile.TileType type, Color color) {
 		this.typeColorMap.put(type, color);
+	}
+	
+	// Sets only one tile type.
+	public void setTile(Vector2i position, TileType type) {
+		this.tiles.get(position.y).get(position.x).tileType = type;
 	}
 	
 	// Sets the tiles.
