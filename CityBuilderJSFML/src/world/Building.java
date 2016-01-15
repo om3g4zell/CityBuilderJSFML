@@ -6,6 +6,7 @@ import org.jsfml.graphics.IntRect;
 import org.jsfml.system.Vector2i;
 
 import maths.Distance;
+import world.Resource.ResourceType;
 
 /*
  * Represent a building
@@ -51,6 +52,7 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
+				this.needs.add(new Need(Resource.ResourceType.FOOD, 10, 0.9f));
 				break;
 			case ROAD:
 				this.range = 1;
@@ -93,19 +95,35 @@ public class Building {
 					// Generate resources depending on the building type.
 					switch(this.type) {
 						case GENERATOR:
-
+							// Generate 220 v of electricity
+							ResourcesStack rStack = resourcesMap.getResources(new Vector2i(x,y));
+							rStack.set(ResourceType.ELECTRICITY, rStack.get(ResourceType.ELECTRICITY) + 220);
+							resourcesMap.setResources(new Vector2i(x,y), rStack);
 							break;
 						case GROCERY_STORE:
-
+							// Generate Water and food
+							rStack = resourcesMap.getResources(new Vector2i(x,y));
+							rStack.set(ResourceType.FOOD, rStack.get(ResourceType.FOOD) + 10);
+							rStack.set(ResourceType.WATER, rStack.get(ResourceType.WATER) + 75);
+							resourcesMap.setResources(new Vector2i(x,y), rStack);
 							break;
 						case HOUSE:
-
+							// Generate people
+							rStack = resourcesMap.getResources(new Vector2i(x,y));
+							rStack.set(ResourceType.PEOPLE, rStack.get(ResourceType.PEOPLE) + 4);
+							resourcesMap.setResources(new Vector2i(x,y), rStack);
 							break;
 						case ROAD:
-
+							// Generate road proximity
+							rStack = resourcesMap.getResources(new Vector2i(x,y));
+							rStack.set(ResourceType.ROAD_PROXIMITY, rStack.get(ResourceType.ROAD_PROXIMITY) + 1);
+							resourcesMap.setResources(new Vector2i(x,y), rStack);
 							break;
 						case HYDROLIC_STATION:
-
+							// Generate water
+							rStack = resourcesMap.getResources(new Vector2i(x,y));
+							rStack.set(ResourceType.WATER, rStack.get(ResourceType.WATER) + 100);
+							resourcesMap.setResources(new Vector2i(x,y), rStack);
 							break;
 						default:
 							break;
