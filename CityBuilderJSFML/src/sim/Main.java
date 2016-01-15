@@ -38,7 +38,6 @@ public class Main {
 		int skippedFrames = 0;
 		
 		while(simulation.getWindow().isOpen()) {
-			
 			frameTime = clock.restart();
 		    elapsed = Time.add(frameTime, elapsed);
 			
