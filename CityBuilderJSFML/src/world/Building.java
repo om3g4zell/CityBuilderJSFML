@@ -7,6 +7,7 @@ import org.jsfml.system.Vector2i;
 
 import graphics.Tile;
 import graphics.Tile.TileType;
+import maths.Distance;
 
 /*
  * Represent a building
@@ -68,23 +69,32 @@ public class Building {
 	
 	// Generates resources.
 	public void generateResources(ResourceMap resourcesMap) {
-		
-		for(ArrayList<ResourceStack> a : resourcesMap.resources) {
-			
-			for(ResourceStack r : a) {
-				
-				switch(this.type) {
-					case GENERATOR:
-						break;
-					case GROCERY_STORE:
-						break;
-					case HOUSE:
-						break;
-					case HYDROLIC_STATION:
-						break;
-					case ROAD:
-						break;
-					
+		// Check all resource map in square range.
+		for(int x = this.hitbox.left - this.range ; x <= this.hitbox.left + this.range ; ++x)
+		{
+			for(int y = this.hitbox.top - this.range ; y <= this.hitbox.top + this.range ; ++y)
+			{
+				// Check only in range.
+				if(Distance.manhattan(new Vector2i(this.hitbox.left, this.hitbox.top), new Vector2i(x, y)) <= this.range)
+				{
+					// Generate resources depending on the building type.
+					switch(this.type) {
+						case GENERATOR:
+
+							break;
+						case GROCERY_STORE:
+
+							break;
+						case HOUSE:
+
+							break;
+						case ROAD:
+
+							break;
+						case HYDROLIC_STATION:
+
+							break;
+					}
 				}
 			}
 		}

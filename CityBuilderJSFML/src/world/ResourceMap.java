@@ -14,9 +14,9 @@ public class ResourceMap {
 	
 	// Constructs the map.
 	public ResourceMap(Vector2i size) {
-		
 		// Instanciate resources
 		this.resources = new  ArrayList<ArrayList<ResourceStack>>();
+		
 		// Create a large enough two-dimensional array.
 		for(int i = 0 ; i < size.y ; ++i) {
 			ArrayList<ResourceStack> row = new ArrayList<ResourceStack>();
