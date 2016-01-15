@@ -26,4 +26,14 @@ public class Distance {
 	public static double euclidean(Vector2f a, Vector2f b) {
 		return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 	}
+	
+	// Returns the squared euclidean distance between the two points.
+	public static double squaredEuclidean(Vector2i a, Vector2i b) {
+		return Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2);
+	}
+	
+	// Returns the squared euclidean distance between the two points.
+	public static double squaredEuclidean(Vector2f a, Vector2f b) {
+		return Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2);
+	}
 }
