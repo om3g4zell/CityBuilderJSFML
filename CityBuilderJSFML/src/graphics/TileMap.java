@@ -39,6 +39,9 @@ public class TileMap extends BasicTransformable implements Drawable {
 	protected VertexArray vertexArray;
 	protected VertexArray borderVertexArray;
 	
+	// Boolean flag to indicate if tiles data has changed.
+	protected boolean hasChanged;
+	
 	// Constructor.
 	public TileMap(Vector2i size, Vector2f sizeOfTile) {
 		this.size = size;
@@ -52,20 +55,33 @@ public class TileMap extends BasicTransformable implements Drawable {
 	// Adds type <-> color.
 	public void addTypeColor(Tile.TileType type, Color color) {
 		this.typeColorMap.put(type, color);
+		
+		this.hasChanged = true;
 	}
 	
 	// Sets only one tile type.
 	public void setTile(Vector2i position, TileType type) {
-		this.tiles.get(position.y).get(position.x).tileType = type;
+		// Only change if modifications.
+		if(this.tiles.get(position.y).get(position.x).tileType != type) {
+			this.tiles.get(position.y).get(position.x).tileType = type;
+			this.hasChanged = true;
+		}
 	}
 	
 	// Sets the tiles.
 	public void setTiles(ArrayList<ArrayList<Tile>> tiles) {
+		// Only change if modifications.
 		this.tiles = tiles;
+		
+		this.hasChanged = true;
 	}
 	
 	// Updates the tilemap data (not time dependent).
 	public void update() {
+		// No need to update if nothing changed.
+		if(!this.hasChanged)
+			return;
+		
 		// Clear the old vertex array.
 		this.vertexArray.clear();
 		this.borderVertexArray.clear();
@@ -116,6 +132,9 @@ public class TileMap extends BasicTransformable implements Drawable {
 			this.borderVertexArray.add(rightTop);
 			this.borderVertexArray.add(rightBottom);
 		}
+		
+		// We took care of the changements, we are now up to date.
+		this.hasChanged = false;
 	}
 
 	// Draws the tilemap.
