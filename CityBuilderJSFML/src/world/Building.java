@@ -15,7 +15,8 @@ public class Building {
 		HOUSE,
 		GROCERY_STORE,
 		ROAD,
-		GENERATOR
+		GENERATOR,
+		HYDROLIC_STATION
 	}
 	
 	// Attributs
@@ -29,17 +30,35 @@ public class Building {
 		this.type = type;
 		
 		switch(this.type) {
-			case GENERATOR:this.range = 18;
-				this.hitbox = new IntRect(position.x,position.y,1,1);
+			case GENERATOR:
+				this.range = 18;
+				this.hitbox = new IntRect(position.x,position.y, 1, 1);
+				this.needs.add(new Need(Resource.ResourceType.PEOPLE, 10, 1f));
 				break;
-			case GROCERY_STORE:this.range = 28;
-			this.hitbox = new IntRect(position.x,position.y,8,4);
+			case GROCERY_STORE:
+				this.range = 28;
+				this.hitbox = new IntRect(position.x,position.y, 8, 4);
+				this.needs.add(new Need(Resource.ResourceType.PEOPLE, 40, 0.5f));
+				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
+				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
+				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
 				break;
-			case HOUSE:this.range = 99;
-			this.hitbox = new IntRect(position.x,position.y,2,2);
+			case HOUSE:
+				this.range = 99;
+				this.hitbox = new IntRect(position.x,position.y, 2, 2);
+				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
+				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
+				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
 				break;
-			case ROAD:this.range = 1;
-			this.hitbox = new IntRect(position.x,position.y,1,1);
+			case ROAD:
+				this.range = 1;
+				this.hitbox = new IntRect(position.x,position.y, 1, 1);
+				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
+				break;
+			case HYDROLIC_STATION:
+				this.range = 18;
+				this.hitbox = new IntRect(position.x,position.y, 1, 1);
+				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				break;
 		}
 	}
