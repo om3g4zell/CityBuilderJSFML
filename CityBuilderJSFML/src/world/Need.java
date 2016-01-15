@@ -10,7 +10,7 @@ public class Need {
 	public float fillFactor;
 	
 	// Constructor
-	public Need(Resource.ResourceType type,int amount, float fillFactor) {
+	public Need(Resource.ResourceType type, int amount, float fillFactor) {
 		this.type = type;
 		this.amount = amount;
 		this.fillFactor = fillFactor;
