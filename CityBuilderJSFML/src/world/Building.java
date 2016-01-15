@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import org.jsfml.graphics.IntRect;
 import org.jsfml.system.Vector2i;
 
-import graphics.Tile;
-import graphics.Tile.TileType;
 import maths.Distance;
 
 /*
