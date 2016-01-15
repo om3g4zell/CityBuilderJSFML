@@ -106,14 +106,15 @@ public class Sim {
 		
 		// Consume resources.
 		for(Building b : this.buildings) {
-			// b.consumeResources(this.resourcesMap);
-			
-			// Check if enough for minimal.
+			// Check if enough resources for minimal (minimal = need * fill factor).
 			// If yes :
-				// Check if enough for 100%.
+				// Check if enough resources for 100%.
 				// If yes, perfect.
-				// If no, require new building(s) to satisfy needs.
-			// If no, halt the building.
+					// Consume all needed resources.
+				// If no :
+					// Consume all resources available and needed.
+					// require new building(s) to satisfy needs.
+			// If no, halt the building and don't consume anything.
 		}
 		
 		// Project buildings on the tilemap.
