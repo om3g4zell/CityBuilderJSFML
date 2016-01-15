@@ -37,6 +37,7 @@ public class TileMap extends BasicTransformable implements Drawable {
 	
 	// Vertex array to draw.
 	protected VertexArray vertexArray;
+	protected VertexArray borderVertexArray;
 	
 	// Constructor.
 	public TileMap(Vector2i size, Vector2f sizeOfTile) {
@@ -45,6 +46,7 @@ public class TileMap extends BasicTransformable implements Drawable {
 		
 		this.typeColorMap = new HashMap<Tile.TileType, Color>();
 		this.vertexArray = new VertexArray(PrimitiveType.QUADS);
+		this.borderVertexArray = new VertexArray(PrimitiveType.LINES);
 	}
 	
 	// Adds type <-> color.
@@ -86,6 +88,33 @@ public class TileMap extends BasicTransformable implements Drawable {
 				this.vertexArray.add(leftBottom);
 			}
 		}
+		
+		// Generates the borders.
+		for(int i = 0 ; i < this.size.y ; ++i) {
+			Vertex leftTop = new Vertex(new Vector2f(0, i * this.sizeOfTile.y), Color.BLACK);
+			Vertex rightTop = new Vertex(new Vector2f(this.size.x * this.sizeOfTile.x, i * this.sizeOfTile.y), Color.BLACK);
+			
+			Vertex rightBottom = new Vertex(new Vector2f(0, (i + 1) * this.sizeOfTile.y - 1), Color.BLACK);
+			Vertex leftBottom = new Vertex(new Vector2f(this.size.x * this.sizeOfTile.x, (i + 1) * this.sizeOfTile.y - 1), Color.BLACK);
+			
+			this.borderVertexArray.add(leftTop);
+			this.borderVertexArray.add(rightTop);
+			this.borderVertexArray.add(rightBottom);
+			this.borderVertexArray.add(leftBottom);
+		}
+		
+		for(int j = 0 ; j < this.size.x ; ++j) {
+			Vertex leftTop = new Vertex(new Vector2f(j * this.sizeOfTile.x, 0), Color.BLACK);
+			Vertex leftBottom = new Vertex(new Vector2f(j * this.sizeOfTile.x, this.size.y * this.sizeOfTile.y), Color.BLACK);
+			
+			Vertex rightTop = new Vertex(new Vector2f((j + 1) * this.sizeOfTile.x - 1, 0), Color.BLACK);
+			Vertex rightBottom = new Vertex(new Vector2f((j + 1) * this.sizeOfTile.x - 1, this.size.y * this.sizeOfTile.y), Color.BLACK);
+			
+			this.borderVertexArray.add(leftTop);
+			this.borderVertexArray.add(leftBottom);
+			this.borderVertexArray.add(rightTop);
+			this.borderVertexArray.add(rightBottom);
+		}
 	}
 
 	// Draws the tilemap.
@@ -94,5 +123,6 @@ public class TileMap extends BasicTransformable implements Drawable {
 		RenderStates newStates = new RenderStates(Transform.combine(states.transform, this.getTransform()));
 
 		target.draw(this.vertexArray, newStates);
+		target.draw(this.borderVertexArray, newStates);
 	}
 }
