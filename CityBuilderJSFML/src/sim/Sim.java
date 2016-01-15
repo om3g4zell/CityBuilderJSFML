@@ -114,7 +114,9 @@ public class Sim {
 				// If no :
 					// Consume all resources available and needed.
 					// require new building(s) to satisfy needs.
-			// If no, halt the building and don't consume anything.
+			// If no :
+				// halt the building and don't consume anything.
+				// require new building(s) to satisfy needs.
 		}
 		
 		// Project buildings on the tilemap.

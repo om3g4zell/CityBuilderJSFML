@@ -18,7 +18,9 @@ public class Building {
 		GROCERY_STORE,
 		ROAD,
 		GENERATOR,
-		HYDROLIC_STATION
+		HYDROLIC_STATION,
+		
+		NONE
 	}
 	
 	// Attributs
