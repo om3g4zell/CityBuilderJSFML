@@ -55,4 +55,7 @@ public class ResourcesMap {
 		// Set the row back in the two-dimensional array.
 		this.resources.set(position.y, row);
 	}
+	public Vector2i getSize() {
+		return this.size;
+	}
 }

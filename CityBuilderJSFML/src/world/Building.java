@@ -85,9 +85,9 @@ public class Building {
 		double squaredRange = Math.pow(range, 2);
 		
 		// Check all resource map in square range.
-		for(int x = this.hitbox.left - this.range ; x <= this.hitbox.left + this.range ; ++x)
+		for(int x = Math.max(0,this.hitbox.left - this.range) ; x < Math.min(resourcesMap.getSize().x,this.hitbox.left + this.range) ; ++x)
 		{
-			for(int y = this.hitbox.top - this.range ; y <= this.hitbox.top + this.range ; ++y)
+			for(int y = Math.max(0,this.hitbox.top - this.range) ; y < Math.min(resourcesMap.getSize().y,this.hitbox.top + this.range) ; ++y)
 			{
 				// Check only in range.
 				if(Distance.squaredEuclidean(new Vector2i(this.hitbox.left, this.hitbox.top), new Vector2i(x, y)) <= squaredRange)
@@ -96,34 +96,34 @@ public class Building {
 					switch(this.type) {
 						case GENERATOR:
 							// Generate 220 v of electricity
-							ResourcesStack rStack = resourcesMap.getResources(new Vector2i(x,y));
+							ResourcesStack rStack = resourcesMap.getResources(new Vector2i(x, y));
 							rStack.set(ResourceType.ELECTRICITY, rStack.get(ResourceType.ELECTRICITY) + 220);
-							resourcesMap.setResources(new Vector2i(x,y), rStack);
+							resourcesMap.setResources(new Vector2i(x, y), rStack);
 							break;
 						case GROCERY_STORE:
 							// Generate Water and food
-							rStack = resourcesMap.getResources(new Vector2i(x,y));
+							rStack = resourcesMap.getResources(new Vector2i(x, y));
 							rStack.set(ResourceType.FOOD, rStack.get(ResourceType.FOOD) + 10);
 							rStack.set(ResourceType.WATER, rStack.get(ResourceType.WATER) + 75);
-							resourcesMap.setResources(new Vector2i(x,y), rStack);
+							resourcesMap.setResources(new Vector2i(x, y), rStack);
 							break;
 						case HOUSE:
 							// Generate people
-							rStack = resourcesMap.getResources(new Vector2i(x,y));
+							rStack = resourcesMap.getResources(new Vector2i(x, y));
 							rStack.set(ResourceType.PEOPLE, rStack.get(ResourceType.PEOPLE) + 4);
-							resourcesMap.setResources(new Vector2i(x,y), rStack);
+							resourcesMap.setResources(new Vector2i(x, y), rStack);
 							break;
 						case ROAD:
 							// Generate road proximity
-							rStack = resourcesMap.getResources(new Vector2i(x,y));
+							rStack = resourcesMap.getResources(new Vector2i(x, y));
 							rStack.set(ResourceType.ROAD_PROXIMITY, rStack.get(ResourceType.ROAD_PROXIMITY) + 1);
-							resourcesMap.setResources(new Vector2i(x,y), rStack);
+							resourcesMap.setResources(new Vector2i(x ,y), rStack);
 							break;
 						case HYDROLIC_STATION:
 							// Generate water
-							rStack = resourcesMap.getResources(new Vector2i(x,y));
+							rStack = resourcesMap.getResources(new Vector2i(x, y));
 							rStack.set(ResourceType.WATER, rStack.get(ResourceType.WATER) + 100);
-							resourcesMap.setResources(new Vector2i(x,y), rStack);
+							resourcesMap.setResources(new Vector2i(x, y), rStack);
 							break;
 						default:
 							break;
