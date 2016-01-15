@@ -68,6 +68,7 @@ public class TileMap extends BasicTransformable implements Drawable {
 	public void update() {
 		// Clear the old vertex array.
 		this.vertexArray.clear();
+		this.borderVertexArray.clear();
 		
 		// Generate new vertex array.
 		for(int i = 0 ; i < this.size.y ; ++i) {
