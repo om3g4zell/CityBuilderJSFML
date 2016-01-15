@@ -72,6 +72,11 @@ public class Building {
 		return this.hitbox;
 	}
 	
+	// Returns the type.
+	public BuildingType getType() {
+		return this.type;
+	}
+	
 	// Generates resources.
 	public void generateResources(ResourcesMap resourcesMap) {
 		// We use squared range and squared euclidean distance for performance.
