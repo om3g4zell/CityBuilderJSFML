@@ -41,7 +41,7 @@ public class TileMap extends BasicTransformable implements Drawable {
 		this.size = size;
 		this.sizeOfTile = sizeOfTile;
 		
-		this.typeColorMap = new HashMap<>();
+		this.typeColorMap = new HashMap<Tile.TileType, Color>();
 		this.vertexArray = new VertexArray(PrimitiveType.QUADS);
 	}
 	

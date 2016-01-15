@@ -6,6 +6,7 @@ import org.jsfml.graphics.IntRect;
 import org.jsfml.system.Vector2i;
 
 import graphics.Tile;
+import graphics.Tile.TileType;
 
 /*
  * Represent a building
@@ -67,18 +68,25 @@ public class Building {
 	
 	// Generates resources.
 	public void generateResources(ResourceMap resourcesMap) {
-		switch(this.type) {
-			case GENERATOR:
-				break;
-			case GROCERY_STORE:
-				break;
-			case HOUSE:
-				break;
-			case HYDROLIC_STATION:
-				break;
-			case ROAD:
-				break;
+		
+		for(ArrayList<ResourceStack> a : resourcesMap.resources) {
 			
+			for(ResourceStack r : a) {
+				
+				switch(this.type) {
+					case GENERATOR:
+						break;
+					case GROCERY_STORE:
+						break;
+					case HOUSE:
+						break;
+					case HYDROLIC_STATION:
+						break;
+					case ROAD:
+						break;
+					
+				}
+			}
 		}
 	}
 }
