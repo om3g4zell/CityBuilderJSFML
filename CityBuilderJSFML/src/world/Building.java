@@ -65,7 +65,7 @@ public class Building {
 	}
 	
 	// Generates resources.
-	public void generateResources(ResourceMap resourcesMap) {
+	public void generateResources(ResourcesMap resourcesMap) {
 		// We use squared range and squared euclidean distance for performance.
 		double squaredRange = Math.pow(range, 2);
 		
