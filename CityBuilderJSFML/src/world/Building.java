@@ -66,7 +66,6 @@ public class Building {
 			case GENERATOR:
 				this.range = 18;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
-				this.needs.add(new Need(Resource.ResourceType.PEOPLE, 10, 1f));
 				break;
 			case GROCERY_STORE:
 				this.range = 28;
