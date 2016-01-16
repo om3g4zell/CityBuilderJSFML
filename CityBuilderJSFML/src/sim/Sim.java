@@ -88,6 +88,9 @@ public class Sim {
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(38, 22)));
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(39, 22)));
 		
+		// Grossery store
+		this.buildings.add(new Building(BuildingType.GROCERY_STORE, new Vector2i(40, 21)));
+		
 		// Inits the tilemap.
 		this.tilemap = new TileMap(TILEMAP_SIZE, TILE_SIZE);
 		this.tilemap.addTypeColor(TileType.TERRAIN_GRASS, new Color(0, 70, 0));
