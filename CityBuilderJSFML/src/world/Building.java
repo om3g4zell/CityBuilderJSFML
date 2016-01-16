@@ -12,6 +12,7 @@ import world.Resource.ResourceType;
  * Represent a building
  */
 public class Building {
+	/** Static. **/
 	// Building Type
 	public static enum BuildingType {
 		HOUSE,
@@ -23,7 +24,25 @@ public class Building {
 		NONE
 	}
 	
-	// Attributs
+	public static BuildingType getBuildingTypeGenerating(ResourceType type) {
+		switch(type) {
+			case PEOPLE:
+				return BuildingType.HOUSE;
+			case ELECTRICITY:
+				return BuildingType.GENERATOR;
+			case WATER:
+				return BuildingType.HYDROLIC_STATION;
+			case FOOD:
+				return BuildingType.GROCERY_STORE;
+			case ROAD_PROXIMITY:
+				return BuildingType.ROAD;
+			default:
+				return BuildingType.NONE;
+		}
+	}
+	
+	/** Non-static. **/
+	// Attributes
 	protected ArrayList<Need> needs;
 	protected int range;
 	protected IntRect hitbox;
@@ -57,7 +76,7 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.FOOD, 10, 0.9f));
 				break;
 			case ROAD:
-				this.range = 1;
+				this.range = 2;
 				this.hitbox = new IntRect(position.x,position.y, 1, 1);
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
 				break;
@@ -137,6 +156,62 @@ public class Building {
 	
 	// Consumes resources.
 	public BuildingType consumeResources(ResourcesMap resourcesMap) {
+		// Get the resources available for the building.
+		ResourcesStack availableResources = new ResourcesStack();
+		
+		for(int x = this.hitbox.left ; x < this.hitbox.left + this.hitbox.width ; ++x) {
+			for(int y = this.hitbox.top ; y < this.hitbox.top + this.hitbox.height ; ++y) {
+				availableResources.add(resourcesMap.getResources(new Vector2i(x, y)));
+			}
+		}
+		
+		// Check if enough resources for minimal (minimal = need * fill factor).
+		boolean enoughForMinimal = true;
+		
+		for(Need need : this.needs) {
+			// If only one is not fullfilled, we stop.
+			if(availableResources.get(need.type) < need.amount * need.fillFactor) {
+				enoughForMinimal = false;
+				break;
+			}
+		}
+		
+		// If yes :
+		if(enoughForMinimal) {
+			// Check if enough resources for 100%.
+			boolean enoughForFull = true;
+			
+			for(Need need : this.needs) {
+				// If only one is not fullfilled, we stop.
+				if(availableResources.get(need.type) < need.amount * need.fillFactor) {
+					enoughForFull = false;
+					break;
+				}
+			}
+			
+			// If yes, perfect.
+			if(enoughForFull) {
+				// Consume all needed resources.
+				
+			}
+			// If no :
+			else {
+				// Consume all needed resources.
+				// require new building(s) to satisfy needs at 100%.
+			}
+		}
+		// If no :
+		else {
+			// halt the building and don't consume anything.
+			// require new building(s) to satisfy needs.
+			for(Need need : this.needs) {
+				// If only one is not fullfilled, we stop.
+				if(availableResources.get(need.type) < need.amount * need.fillFactor) {
+					return getBuildingTypeGenerating(need.type);
+				}
+			}
+		}
+		
 		return BuildingType.NONE;
 	}
 }
