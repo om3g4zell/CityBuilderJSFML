@@ -65,6 +65,7 @@ public class Building {
 		switch(this.type) {
 			case GENERATOR:
 				this.range = 18;
+				this.needs.add(new Need(Resource.ResourceType.PEOPLE, 10, 0.8f));
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				break;
 			case GROCERY_STORE:
@@ -142,7 +143,6 @@ public class Building {
 							// Generate water and food
 							rStack = resourcesMap.getResources(new Vector2i(x, y));
 							rStack.add(ResourceType.FOOD, 10);
-							rStack.add(ResourceType.WATER, 75);
 							resourcesMap.setResources(new Vector2i(x, y), rStack);
 							break;
 						case HOUSE:
