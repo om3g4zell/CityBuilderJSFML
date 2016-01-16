@@ -97,13 +97,13 @@ public class Building {
 					// Generate resources depending on the building type.
 					switch(this.type) {
 						case GENERATOR:
-							// Generate 220 v of electricity
+							// Generate 220V of electricity
 							ResourcesStack rStack = resourcesMap.getResources(new Vector2i(x, y));
 							rStack.add(ResourceType.ELECTRICITY, 220);
 							resourcesMap.setResources(new Vector2i(x, y), rStack);
 							break;
 						case GROCERY_STORE:
-							// Generate Water and food
+							// Generate water and food
 							rStack = resourcesMap.getResources(new Vector2i(x, y));
 							rStack.add(ResourceType.FOOD, 10);
 							rStack.add(ResourceType.WATER, 75);
@@ -119,7 +119,7 @@ public class Building {
 							// Generate road proximity
 							rStack = resourcesMap.getResources(new Vector2i(x, y));
 							rStack.add(ResourceType.ROAD_PROXIMITY, 1);
-							resourcesMap.setResources(new Vector2i(x ,y), rStack);
+							resourcesMap.setResources(new Vector2i(x, y), rStack);
 							break;
 						case HYDROLIC_STATION:
 							// Generate water
