@@ -95,6 +95,7 @@ public class Sim {
 		this.tilemap.addTypeColor(TileType.BUILDING_ROAD, new Color(190, 190, 190));
 		this.tilemap.addTypeColor(TileType.BUILDING_GENERATOR, new Color(227, 168, 87));
 		this.tilemap.addTypeColor(TileType.BUILDING_HYDROLIC_STATION, new Color(51, 153, 255));
+		this.tilemap.addTypeColor(TileType.BUILDING_SUPERMARKET, new Color(194, 195, 98));
 		this.tilemap.setTiles(this.tiles);
 	}
 	
