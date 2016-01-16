@@ -65,7 +65,6 @@ public class Building {
 		switch(this.type) {
 			case GENERATOR:
 				this.range = 18;
-				this.needs.add(new Need(Resource.ResourceType.PEOPLE, 10, 0.8f));
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				break;
 			case GROCERY_STORE:
@@ -124,9 +123,10 @@ public class Building {
 		double squaredRange = Math.pow(range, 2);
 		
 		// Check all resource map in square range.
-		for(int x = Math.max(0,this.hitbox.left - this.range) ; x < Math.min(resourcesMap.getSize().x,this.hitbox.left + this.range) ; ++x)
+		
+		for(int x = Math.max(0, this.hitbox.left - this.range) ; x < Math.min(resourcesMap.getSize().x, this.hitbox.left + this.range) ; ++x)
 		{
-			for(int y = Math.max(0,this.hitbox.top - this.range) ; y < Math.min(resourcesMap.getSize().y,this.hitbox.top + this.range) ; ++y)
+			for(int y = Math.max(0, this.hitbox.top - this.range) ; y < Math.min(resourcesMap.getSize().y, this.hitbox.top + this.range) ; ++y)
 			{
 				// Check only in range.
 				if(Distance.squaredEuclidean(new Vector2i(this.hitbox.left, this.hitbox.top), new Vector2i(x, y)) <= squaredRange)
