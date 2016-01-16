@@ -154,6 +154,37 @@ public class Building {
 		}
 	}
 	
+	// Consumes one 
+	public void consumeResourcesForNeed(ResourcesMap resourcesMap, ResourceType resourceType, float amount, float fillFactor) {
+		float neededAmount = amount * fillFactor;
+		
+		// We have to distribute the consummation on all the tiles.
+		for(int x = this.hitbox.left ; x < this.hitbox.left + this.hitbox.width ; ++x) {
+			for(int y = this.hitbox.top ; y < this.hitbox.top + this.hitbox.height ; ++y) {
+				// Check what is available on this tile.
+				ResourcesStack resourcesOnThisTile = resourcesMap.getResources(new Vector2i(x, y));
+				
+				// Enough ?
+				float availableAmountOnThisTile = resourcesOnThisTile.get(resourceType);
+				
+				if(availableAmountOnThisTile > neededAmount) {
+					// There is more than needed.
+					// Consume all we need.
+					resourcesOnThisTile.add(resourceType, -neededAmount);
+					neededAmount = 0.f;
+				}
+				else {
+					// Consume all available.
+					resourcesOnThisTile.set(resourceType, 0.f);
+					neededAmount -= availableAmountOnThisTile;
+				}
+				
+				// Sets the resources back on the map.
+				resourcesMap.setResources(new Vector2i(x, y), resourcesOnThisTile);
+			}
+		}
+	}
+	
 	// Consumes resources.
 	public BuildingType consumeResources(ResourcesMap resourcesMap) {
 		// Get the resources available for the building.
@@ -178,12 +209,14 @@ public class Building {
 		
 		// If yes :
 		if(enoughForMinimal) {
+			/** TODO : IF HALTED, RESUME PRODUCTION. **/
+			
 			// Check if enough resources for 100%.
 			boolean enoughForFull = true;
 			
 			for(Need need : this.needs) {
 				// If only one is not fullfilled, we stop.
-				if(availableResources.get(need.type) < need.amount * need.fillFactor) {
+				if(availableResources.get(need.type) < need.amount) {
 					enoughForFull = false;
 					break;
 				}
@@ -191,19 +224,33 @@ public class Building {
 			
 			// If yes, perfect.
 			if(enoughForFull) {
-				// Consume all needed resources.
-				
+				// Consume all needed resources at 100% (-> fillFactor = 1).
+				for(Need need : this.needs) {
+					this.consumeResourcesForNeed(resourcesMap, need.type, need.amount, 1.f);
+				}
 			}
 			// If no :
 			else {
 				// Consume all needed resources.
-				// require new building(s) to satisfy needs at 100%.
+				for(Need need : this.needs) {
+					this.consumeResourcesForNeed(resourcesMap, need.type, need.amount, need.fillFactor);
+				}
+
+				// Require new building(s) to satisfy needs at 100%.
+				for(Need need : this.needs) {
+					// If only one is not fullfilled, we stop.
+					if(availableResources.get(need.type) < need.amount) {
+						return getBuildingTypeGenerating(need.type);
+					}
+				}
 			}
 		}
 		// If no :
 		else {
-			// halt the building and don't consume anything.
-			// require new building(s) to satisfy needs.
+			// Halt the building and don't consume anything.
+			/** TODO : HALT. **/
+			
+			// Require new building(s) to satisfy needs.
 			for(Need need : this.needs) {
 				// If only one is not fullfilled, we stop.
 				if(availableResources.get(need.type) < need.amount * need.fillFactor) {
