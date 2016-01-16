@@ -1,6 +1,7 @@
 package sim;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
@@ -15,9 +16,7 @@ import graphics.Tile;
 import graphics.TileMap;
 import world.Building;
 import world.Building.BuildingType;
-import world.Resource.ResourceType;
 import world.ResourcesMap;
-import world.ResourcesStack;
 
 /*
  * Simulation class.

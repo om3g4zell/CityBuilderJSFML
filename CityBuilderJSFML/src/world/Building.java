@@ -51,6 +51,7 @@ public class Building {
 	protected int range;
 	protected IntRect hitbox;
 	protected BuildingType type;
+	protected boolean halted;
 	
 	// Constructor
 	public Building(BuildingType type, Vector2i position) {
@@ -59,16 +60,17 @@ public class Building {
 		
 		this.type = type;
 		this.needs = new ArrayList<Need>();
+		this.halted = false;
 		
 		switch(this.type) {
 			case GENERATOR:
 				this.range = 18;
-				this.hitbox = new IntRect(position.x,position.y, 1, 1);
+				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				this.needs.add(new Need(Resource.ResourceType.PEOPLE, 10, 1f));
 				break;
 			case GROCERY_STORE:
 				this.range = 28;
-				this.hitbox = new IntRect(position.x,position.y, 8, 4);
+				this.hitbox = new IntRect(position.x, position.y, 8, 4);
 				this.needs.add(new Need(Resource.ResourceType.PEOPLE, 40, 0.5f));
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
@@ -76,7 +78,7 @@ public class Building {
 				break;
 			case HOUSE:
 				this.range = 99;
-				this.hitbox = new IntRect(position.x,position.y, 2, 2);
+				this.hitbox = new IntRect(position.x, position.y, 2, 2);
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
@@ -84,12 +86,12 @@ public class Building {
 				break;
 			case ROAD:
 				this.range = 2;
-				this.hitbox = new IntRect(position.x,position.y, 1, 1);
+				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
 				break;
 			case HYDROLIC_STATION:
 				this.range = 18;
-				this.hitbox = new IntRect(position.x,position.y, 1, 1);
+				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				break;
 			default:
@@ -110,11 +112,13 @@ public class Building {
 	// Returns the hitbox.
 	public IntRect getHitbox() {
 		return this.hitbox;
-	}	
+	}
 	
 	// Generates resources.
 	public void generateResources(ResourcesMap resourcesMap) {
-		/** TODO : DO NOT GENERATE IF HALTED. **/
+		// Do not generate if halted.
+		if(this.halted)
+			return;
 		
 		// We use squared range and squared euclidean distance for performance.
 		double squaredRange = Math.pow(range, 2);
@@ -223,7 +227,8 @@ public class Building {
 		
 		// If yes :
 		if(enoughForMinimal) {
-			/** TODO : IF HALTED, RESUME PRODUCTION. **/
+			// If there is enough resources for minimal, we resume the building production.
+			this.halted = false;
 			
 			// Check if enough resources for 100%.
 			boolean enoughForFull = true;
@@ -252,7 +257,7 @@ public class Building {
 
 				// Require new building(s) to satisfy needs at 100%.
 				for(Need need : this.needs) {
-					// If only one is not fullfilled, we stop.
+					// If only one is not fullfilled, we require it.
 					if(availableResources.get(need.type) < need.amount) {
 						return getBuildingTypeGenerating(need.type);
 					}
@@ -262,11 +267,11 @@ public class Building {
 		// If no :
 		else {
 			// Halt the building and don't consume anything.
-			/** TODO : HALT. **/
+			this.halted = true;
 			
 			// Require new building(s) to satisfy needs.
 			for(Need need : this.needs) {
-				// If only one is not fullfilled, we stop.
+				// If only one is not fullfilled, we require it.
 				if(availableResources.get(need.type) < need.amount * need.fillFactor) {
 					return getBuildingTypeGenerating(need.type);
 				}
