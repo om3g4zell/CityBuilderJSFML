@@ -99,32 +99,32 @@ public class Building {
 						case GENERATOR:
 							// Generate 220 v of electricity
 							ResourcesStack rStack = resourcesMap.getResources(new Vector2i(x, y));
-							rStack.set(ResourceType.ELECTRICITY, rStack.get(ResourceType.ELECTRICITY) + 220);
+							rStack.add(ResourceType.ELECTRICITY, 220);
 							resourcesMap.setResources(new Vector2i(x, y), rStack);
 							break;
 						case GROCERY_STORE:
 							// Generate Water and food
 							rStack = resourcesMap.getResources(new Vector2i(x, y));
-							rStack.set(ResourceType.FOOD, rStack.get(ResourceType.FOOD) + 10);
-							rStack.set(ResourceType.WATER, rStack.get(ResourceType.WATER) + 75);
+							rStack.add(ResourceType.FOOD, 10);
+							rStack.add(ResourceType.WATER, 75);
 							resourcesMap.setResources(new Vector2i(x, y), rStack);
 							break;
 						case HOUSE:
 							// Generate people
 							rStack = resourcesMap.getResources(new Vector2i(x, y));
-							rStack.set(ResourceType.PEOPLE, rStack.get(ResourceType.PEOPLE) + 4);
+							rStack.add(ResourceType.PEOPLE, 4);
 							resourcesMap.setResources(new Vector2i(x, y), rStack);
 							break;
 						case ROAD:
 							// Generate road proximity
 							rStack = resourcesMap.getResources(new Vector2i(x, y));
-							rStack.set(ResourceType.ROAD_PROXIMITY, rStack.get(ResourceType.ROAD_PROXIMITY) + 1);
+							rStack.add(ResourceType.ROAD_PROXIMITY, 1);
 							resourcesMap.setResources(new Vector2i(x ,y), rStack);
 							break;
 						case HYDROLIC_STATION:
 							// Generate water
 							rStack = resourcesMap.getResources(new Vector2i(x, y));
-							rStack.set(ResourceType.WATER, rStack.get(ResourceType.WATER) + 100);
+							rStack.add(ResourceType.WATER, 100);
 							resourcesMap.setResources(new Vector2i(x, y), rStack);
 							break;
 						default:
@@ -133,5 +133,10 @@ public class Building {
 				}
 			}
 		}
+	}
+	
+	// Consumes resources.
+	public BuildingType consumeResources(ResourcesMap resourcesMap) {
+		return BuildingType.NONE;
 	}
 }

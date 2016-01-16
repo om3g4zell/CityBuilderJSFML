@@ -6,6 +6,7 @@ import java.util.*;
  * List of resources available on one tile.
  */
 public class ResourcesStack {
+	// Resources.
 	protected Map<Resource.ResourceType, Resource> resources;
 	
 	public ResourcesStack() {
@@ -33,5 +34,24 @@ public class ResourcesStack {
 	// Sets the amounts of the resource type.
 	public void set(Resource.ResourceType type, float amount) {
 		this.resources.put(type, new Resource(type, amount));
+	}
+	
+	// Adds given amount to a certain resource type to the current stack.
+	public void add(Resource.ResourceType type, float amount) {
+		this.set(type, this.get(type) + amount);
+	}
+	
+	// Adds given resources to the current stack.
+	public void add(Resource resource) {
+		this.add(resource.type, resource.amount);
+	}
+	
+	// Adds two resources stack to the current stack.
+	public void add(ResourcesStack a) {
+		this.add(Resource.ResourceType.ROAD_PROXIMITY, a.get(Resource.ResourceType.ROAD_PROXIMITY));
+		this.add(Resource.ResourceType.ELECTRICITY, a.get(Resource.ResourceType.ELECTRICITY));
+		this.add(Resource.ResourceType.PEOPLE, a.get(Resource.ResourceType.PEOPLE));
+		this.add(Resource.ResourceType.WATER, a.get(Resource.ResourceType.WATER));
+		this.add(Resource.ResourceType.FOOD, a.get(Resource.ResourceType.FOOD));
 	}
 }
