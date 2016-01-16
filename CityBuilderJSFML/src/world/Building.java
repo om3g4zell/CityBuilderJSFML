@@ -25,7 +25,7 @@ public class Building {
 	}
 	
 	public static enum BuildingClass {
-		RESIDENTIEL,
+		RESIDENTIAL,
 		CULTURAL,
 		INDUSTRY,
 		COMMERCIAL,
