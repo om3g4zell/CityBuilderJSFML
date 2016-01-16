@@ -26,7 +26,7 @@ public class Building {
 	
 	public static enum BuildingClass {
 		RESIDENTIEL,
-		CULTUR,
+		CULTURAL,
 		INDUSTRY,
 		COMMERCIAL,
 		ROAD
