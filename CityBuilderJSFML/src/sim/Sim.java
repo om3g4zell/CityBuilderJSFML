@@ -15,7 +15,9 @@ import graphics.Tile;
 import graphics.TileMap;
 import world.Building;
 import world.Building.BuildingType;
+import world.Resource.ResourceType;
 import world.ResourcesMap;
+import world.ResourcesStack;
 
 /*
  * Simulation class.
@@ -99,18 +101,21 @@ public class Sim {
 	
 	// Updates all the simulation.
 	public void update(Time dt) {
+		System.out.println("Update:");
+
 		// Reset the resources.
 		this.resourcesMap.reset();
 		
 		// Generate resources.
 		for(Building b : this.buildings) {
-			// Generate resources.
 			b.generateResources(this.resourcesMap);
 		}
 		
 		// Consume resources.
 		for(Building b : this.buildings) {
+			BuildingType requiredBuilding = b.consumeResources(this.resourcesMap);
 			
+			System.out.println("\t" + b.getType().toString() + " wants to build " + requiredBuilding.toString());
 		}
 		
 		// Project buildings on the tilemap.
