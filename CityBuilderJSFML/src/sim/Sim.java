@@ -70,10 +70,13 @@ public class Sim {
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(35, 23)));
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(37, 23)));
 		
-		// Road.
+		// Generator.
 		this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(39, 21)));
 		
-		// Generator.
+		// Water station.
+		this.buildings.add(new Building(BuildingType.HYDROLIC_STATION, new Vector2i(39, 23)));
+		
+		// Road.
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(31, 22)));
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(32, 22)));
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(33, 22)));
@@ -90,6 +93,7 @@ public class Sim {
 		this.tilemap.addTypeColor(TileType.BUILDING_HOUSE, new Color(70, 0, 0));
 		this.tilemap.addTypeColor(TileType.BUILDING_ROAD, new Color(190, 190, 190));
 		this.tilemap.addTypeColor(TileType.BUILDING_GENERATOR, new Color(227, 168, 87));
+		this.tilemap.addTypeColor(TileType.BUILDING_HYDROLIC_STATION, new Color(51, 153, 255));
 		this.tilemap.setTiles(this.tiles);
 	}
 	
@@ -106,17 +110,7 @@ public class Sim {
 		
 		// Consume resources.
 		for(Building b : this.buildings) {
-			// Check if enough resources for minimal (minimal = need * fill factor).
-			// If yes :
-				// Check if enough resources for 100%.
-				// If yes, perfect.
-					// Consume all needed resources.
-				// If no :
-					// Consume all resources available and needed.
-					// require new building(s) to satisfy needs.
-			// If no :
-				// halt the building and don't consume anything.
-				// require new building(s) to satisfy needs.
+			
 		}
 		
 		// Project buildings on the tilemap.
