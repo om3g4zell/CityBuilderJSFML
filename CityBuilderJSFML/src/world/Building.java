@@ -41,8 +41,12 @@ public class Building {
 		}
 	}
 	
+	// Last building id.
+	protected static int lastId = 1;
+	
 	/** Non-static. **/
 	// Attributes
+	protected int id;
 	protected ArrayList<Need> needs;
 	protected int range;
 	protected IntRect hitbox;
@@ -50,6 +54,9 @@ public class Building {
 	
 	// Constructor
 	public Building(BuildingType type, Vector2i position) {
+		this.id = lastId;
+		lastId++;
+		
 		this.type = type;
 		this.needs = new ArrayList<Need>();
 		
@@ -90,15 +97,20 @@ public class Building {
 		}
 	}
 	
-	// Returns the hitbox.
-	public IntRect getHitbox() {
-		return this.hitbox;
+	// Returns the id.
+	public int getId() {
+		return this.id;
 	}
 	
 	// Returns the type.
 	public BuildingType getType() {
 		return this.type;
 	}
+
+	// Returns the hitbox.
+	public IntRect getHitbox() {
+		return this.hitbox;
+	}	
 	
 	// Generates resources.
 	public void generateResources(ResourcesMap resourcesMap) {
