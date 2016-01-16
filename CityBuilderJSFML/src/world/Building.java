@@ -24,6 +24,15 @@ public class Building {
 		NONE
 	}
 	
+	public static enum BuildingClass {
+		RESIDENTIEL,
+		CULTUR,
+		INDUSTRY,
+		COMMERCIAL,
+		
+		NONE
+	}
+	
 	public static BuildingType getBuildingTypeGenerating(ResourceType type) {
 		switch(type) {
 			case PEOPLE:
@@ -51,6 +60,7 @@ public class Building {
 	protected int range;
 	protected IntRect hitbox;
 	protected BuildingType type;
+	protected BuildingClass buildingClass;
 	protected boolean halted;
 	
 	// Constructor
@@ -66,6 +76,7 @@ public class Building {
 			case GENERATOR:
 				this.range = 18;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
+				this.buildingClass = BuildingClass.INDUSTRY;
 				break;
 			case GROCERY_STORE:
 				this.range = 28;
@@ -74,6 +85,7 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
+				this.buildingClass = BuildingClass.COMMERCIAL;
 				break;
 			case HOUSE:
 				this.range = 99;
@@ -82,16 +94,19 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
 				this.needs.add(new Need(Resource.ResourceType.FOOD, 10, 0.9f));
+				this.buildingClass = BuildingClass.RESIDENTIEL;
 				break;
 			case ROAD:
 				this.range = 2;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
+				this.buildingClass = BuildingClass.NONE;
 				break;
 			case HYDROLIC_STATION:
 				this.range = 18;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
+				this.buildingClass = BuildingClass.INDUSTRY;
 				break;
 			default:
 				break;
@@ -123,10 +138,9 @@ public class Building {
 		double squaredRange = Math.pow(range, 2);
 		
 		// Check all resource map in square range.
-		
-		for(int x = Math.max(0, this.hitbox.left - this.range) ; x < Math.min(resourcesMap.getSize().x, this.hitbox.left + this.range) ; ++x)
+		for(int x = Math.max(0,this.hitbox.left - this.range) ; x < Math.min(resourcesMap.getSize().x,this.hitbox.left + this.range) ; ++x)
 		{
-			for(int y = Math.max(0, this.hitbox.top - this.range) ; y < Math.min(resourcesMap.getSize().y, this.hitbox.top + this.range) ; ++y)
+			for(int y = Math.max(0,this.hitbox.top - this.range) ; y < Math.min(resourcesMap.getSize().y,this.hitbox.top + this.range) ; ++y)
 			{
 				// Check only in range.
 				if(Distance.squaredEuclidean(new Vector2i(this.hitbox.left, this.hitbox.top), new Vector2i(x, y)) <= squaredRange)
