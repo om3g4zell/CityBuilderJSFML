@@ -65,6 +65,7 @@ public class Building {
 		switch(this.type) {
 			case GENERATOR:
 				this.range = 18;
+				this.needs.add(new Need(Resource.ResourceType.PEOPLE, 10, 0.8f));
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				break;
 			case GROCERY_STORE:
@@ -142,7 +143,6 @@ public class Building {
 							// Generate water and food
 							rStack = resourcesMap.getResources(new Vector2i(x, y));
 							rStack.add(ResourceType.FOOD, 10);
-							rStack.add(ResourceType.WATER, 75);
 							resourcesMap.setResources(new Vector2i(x, y), rStack);
 							break;
 						case HOUSE:
@@ -212,6 +212,13 @@ public class Building {
 				availableResources.add(resourcesMap.getResources(new Vector2i(x, y)));
 			}
 		}
+		
+		System.out.println("For building " + this.type.toString() + "[" + this.id + "] :");
+		System.out.println("\t" + ResourceType.WATER.toString() + " " + availableResources.get(ResourceType.WATER));
+		System.out.println("\t" + ResourceType.ELECTRICITY.toString() + " " + availableResources.get(ResourceType.ELECTRICITY));
+		System.out.println("\t" + ResourceType.PEOPLE.toString() + " " + availableResources.get(ResourceType.PEOPLE));
+		System.out.println("\t" + ResourceType.ROAD_PROXIMITY.toString() + " " + availableResources.get(ResourceType.ROAD_PROXIMITY));
+		System.out.println("\t" + ResourceType.FOOD.toString() + " " + availableResources.get(ResourceType.FOOD));
 		
 		// Check if enough resources for minimal (minimal = need * fill factor).
 		boolean enoughForMinimal = true;
