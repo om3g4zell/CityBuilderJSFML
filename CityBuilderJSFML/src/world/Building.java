@@ -93,7 +93,7 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
 				this.needs.add(new Need(Resource.ResourceType.FOOD, 10, 0.9f));
-				this.buildingClass = BuildingClass.RESIDENTIEL;
+				this.buildingClass = BuildingClass.RESIDENTIAL;
 				break;
 			case ROAD:
 				this.range = 2;
