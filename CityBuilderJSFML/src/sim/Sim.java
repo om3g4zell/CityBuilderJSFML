@@ -1,11 +1,9 @@
 package sim;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
-import org.jsfml.graphics.Sprite;
 import org.jsfml.system.Time;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
@@ -13,9 +11,11 @@ import org.jsfml.window.VideoMode;
 
 import graphics.Tile.TileType;
 import graphics.BuildingProjector;
+import graphics.FontManager;
 import graphics.TextureManager;
 import graphics.Tile;
 import graphics.TileMap;
+import gui.StatsGui;
 import world.Building;
 import world.Building.BuildingType;
 import world.CityStats;
@@ -37,7 +37,8 @@ public class Sim {
 	protected ArrayList<Building> buildings;
 	protected CityStats stats;
 	protected TextureManager textureManager;
-	protected Sprite people;
+	protected FontManager fontManager;
+	protected StatsGui gui;
 	
 	/**
 	 * Constructor
@@ -69,11 +70,12 @@ public class Sim {
 		// Instanciate the TextureManger
 		this.textureManager = new TextureManager();
 		
-		//Sprite
-		this.people = new Sprite();
-		this.people.setTexture(this.textureManager.get(TextureManager.TextureID.PEOPLE_TEXTURE));
-		this.people.setPosition(new Vector2f(10,10));
 		
+		// Instanciate the fontManager
+		this.fontManager = new FontManager();
+		
+		//Instanciate the GUI
+		this.gui = new StatsGui(textureManager, fontManager);
 		
 		// Create the resources map.
 		this.resourcesMap = new ResourcesMap(TILEMAP_SIZE);
@@ -156,7 +158,8 @@ public class Sim {
 		
 		//Update stats
 		this.stats.update(buildings);
-		System.out.println(this.stats.getPopulation());
+		this.gui.setMoney(this.stats.getMoney());
+		this.gui.setPopulation(this.stats.getPopulation());
 	}
 	
 	/**
@@ -167,7 +170,7 @@ public class Sim {
 		/////////////
 
 		this.window.draw(tilemap);
-		this.window.draw(people);
+		this.window.draw(this.gui);
 		
 		/////////////
 		this.window.display();

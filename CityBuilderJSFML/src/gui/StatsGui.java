@@ -20,6 +20,11 @@ public class StatsGui extends BasicTransformable implements Drawable{
 	protected Text moneyText;
 	protected Text peopleText;
 	
+	/**
+	 * Initiate sprite and text for the GUI
+	 * @param loader : TextureLoader for get the Texture
+	 * @param font : FontLoader for get the Font
+	 */
 	public StatsGui(TextureManager loader,FontManager font) {
 		this.money = new Sprite();
 		this.people = new Sprite();
@@ -28,25 +33,36 @@ public class StatsGui extends BasicTransformable implements Drawable{
 		this.money.setPosition(10, 10);
 		
 		this.people.setTexture(loader.get(TextureManager.TextureID.PEOPLE_TEXTURE));
-		this.people.setPosition(10, 10);
+		this.people.setPosition(100, 10);
 		
 		this.moneyText = new Text();
 		this.moneyText.setFont(font.get(FontManager.FontID.BASIC));
 		this.moneyText.setCharacterSize(16);
 		this.moneyText.setColor(Color.BLACK);
+		this.moneyText.setPosition(50, 10);
 		
 		this.peopleText = new Text();
 		this.peopleText.setFont(font.get(FontManager.FontID.BASIC));
 		this.peopleText.setCharacterSize(16);
 		this.peopleText.setColor(Color.BLACK);
+		this.moneyText.setPosition(140, 10);
 				
 	}
+	
+	/** 
+	 * @param population : change the text with the population
+	 */
 	public void setPopulation(int population) {
 		this.peopleText.setString(""+population);
 	}
+	
+	/**
+	 * @param money : change the text with the money
+	 */
 	public void setMoney(int money) {
 		this.moneyText.setString(""+money+" $");
 	}
+	
 	@Override
 	public void draw(RenderTarget target, RenderStates states) {
 		RenderStates newStates = new RenderStates(Transform.combine(states.transform, this.getTransform()));

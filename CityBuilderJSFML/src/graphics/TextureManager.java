@@ -19,6 +19,7 @@ public class TextureManager {
 	public TextureManager() {
 		this.textures = new HashMap<TextureID, Texture>();
 		this.textures.put(TextureID.PEOPLE_TEXTURE, load("res/people.png"));
+		this.textures.put(TextureID.MONEY_TEXTURE, load("res/billets.32.png"));
 	}
 	/**
 	 * Load the Texture
