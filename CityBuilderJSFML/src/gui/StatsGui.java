@@ -20,6 +20,11 @@ public class StatsGui extends BasicTransformable implements Drawable{
 	protected Text moneyText;
 	protected Text peopleText;
 	
+	/**
+	 * Initiate sprite and text for the GUI
+	 * @param loader : TextureLoader for get the Texture
+	 * @param font : FontLoader for get the Font
+	 */
 	public StatsGui(TextureManager loader,FontManager font) {
 		this.money = new Sprite();
 		this.people = new Sprite();
@@ -41,12 +46,21 @@ public class StatsGui extends BasicTransformable implements Drawable{
 		this.peopleText.setColor(Color.BLACK);
 				
 	}
+	
+	/** 
+	 * @param population : change the text with the population
+	 */
 	public void setPopulation(int population) {
 		this.peopleText.setString(""+population);
 	}
+	
+	/**
+	 * @param money : change the text with the money
+	 */
 	public void setMoney(int money) {
 		this.moneyText.setString(""+money+" $");
 	}
+	
 	@Override
 	public void draw(RenderTarget target, RenderStates states) {
 		RenderStates newStates = new RenderStates(Transform.combine(states.transform, this.getTransform()));
