@@ -1,6 +1,7 @@
 package world;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.jsfml.graphics.IntRect;
 import org.jsfml.system.Vector2i;
@@ -59,7 +60,7 @@ public class Building {
 	protected int range;
 	protected IntRect hitbox;
 	protected BuildingType type;
-	protected BuildingClass buildingClass;
+	protected List<BuildingClass> buildingClass;
 	protected boolean halted;
 	
 	// Constructor
@@ -69,13 +70,14 @@ public class Building {
 		
 		this.type = type;
 		this.needs = new ArrayList<Need>();
+		this.buildingClass = new ArrayList<BuildingClass>();
 		this.halted = false;
 		
 		switch(this.type) {
 			case GENERATOR:
 				this.range = 18;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
-				this.buildingClass = BuildingClass.INDUSTRY;
+				this.buildingClass.add(BuildingClass.INDUSTRY);
 				break;
 			case GROCERY_STORE:
 				this.range = 28;
@@ -84,7 +86,7 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
-				this.buildingClass = BuildingClass.COMMERCIAL;
+				this.buildingClass.add(BuildingClass.COMMERCIAL);
 				break;
 			case HOUSE:
 				this.range = 99;
@@ -93,21 +95,22 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
 				this.needs.add(new Need(Resource.ResourceType.FOOD, 10, 0.9f));
-				this.buildingClass = BuildingClass.RESIDENTIAL;
+				this.buildingClass.add(BuildingClass.RESIDENTIAL);
 				break;
 			case ROAD:
 				this.range = 2;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
-				this.buildingClass = BuildingClass.ROAD;
+				this.buildingClass.add(BuildingClass.ROAD);
 				break;
 			case HYDROLIC_STATION:
 				this.range = 18;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
-				this.buildingClass = BuildingClass.INDUSTRY;
+				this.buildingClass.add(BuildingClass.INDUSTRY);
 				break;
 			default:
+		 
 				break;
 		}
 	}

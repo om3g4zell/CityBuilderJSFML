@@ -10,7 +10,7 @@ import org.jsfml.system.Vector2i;
  */
 public class ResourcesMap {
 	
-	protected ArrayList<ArrayList<ResourcesStack>> resources;
+	protected List<List<ResourcesStack>> resources;
 	protected Vector2i size;
 	
 	// Constructs the map.
@@ -18,7 +18,7 @@ public class ResourcesMap {
 		this.size = size;
 
 		// Instantiates the resources
-		this.resources = new  ArrayList<ArrayList<ResourcesStack>>();
+		this.resources = new  ArrayList<List<ResourcesStack>>();
 		
 		// Create a large enough two-dimensional array.
 		for(int i = 0 ; i < size.y ; ++i) {
@@ -49,7 +49,7 @@ public class ResourcesMap {
 	// Sets the resources on the tile.
 	public void setResources(Vector2i position, ResourcesStack resources) {
 		// Get the row and modify the row.
-		ArrayList<ResourcesStack> row = this.resources.get(position.y);
+		List<ResourcesStack> row = this.resources.get(position.y);
 		row.set(position.x, resources);
 		
 		// Set the row back in the two-dimensional array.
