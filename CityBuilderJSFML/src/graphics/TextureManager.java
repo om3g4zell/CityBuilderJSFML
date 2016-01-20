@@ -17,13 +17,14 @@ public class TextureManager {
 	
 	public TextureManager() {
 		this.textures = new HashMap<TextureID, Texture>();
+		this.textures.put(TextureID.PEOPLE_TEXTURE, load("res/people.png"));
 	}
 	/**
 	 * Load the Texture
-	 * @param id : ID of the Texture
 	 * @param path : file path of the texture
+	 * @return texture : return the texture
 	 */
-	public void load(TextureID id, String path) {
+	public Texture load(String path) {
 		//Create a Texture instance
 		Texture jsfmlLogoTexture = new Texture();
 
@@ -35,6 +36,7 @@ public class TextureManager {
 		    //Ouch! something went wrong
 		    ex.printStackTrace();
 		}
+		return jsfmlLogoTexture;
 	}
 	/**
 	 *
