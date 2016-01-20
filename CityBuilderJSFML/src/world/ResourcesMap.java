@@ -34,7 +34,9 @@ public class ResourcesMap {
 		}
 	}
 	
-	// Resets all the resources to 0.
+	/**
+	 * Resets all the resources to 0.
+	 */
 	public void reset() {
 		for(int i = 0 ; i < this.size.y ; ++i) {
 			for(int j = 0 ; j < this.size.x ; ++j) {
@@ -43,12 +45,30 @@ public class ResourcesMap {
 		}
 	}
 	
-	// Returns the resources on the tile.
-	public ResourcesStack getResources(Vector2i position) {
-		return this.resources.get(position.y).get(position.x);
+	/**
+	 * Returns the resources on the tile.
+	 * @param x : the x position in tile coordinates
+	 * @param y : the y position in tile coordinates
+	 * @return the resources stack at the given position
+	 */
+	public ResourcesStack getResources(int x, int y) {
+		return this.resources.get(y).get(x);
 	}
 	
-	// Sets the resources on the tile.
+	/**
+	 * Returns the resources on the tile.
+	 * @param position : the position in tile coordinates
+	 * @return the resources stack at the given position
+	 */
+	public ResourcesStack getResources(Vector2i position) {
+		return getResources(position.x, position.y);
+	}
+	
+	/**
+	 * Sets the resources on the tile.
+	 * @param position  : the position in tile coordinates
+	 * @param resources : the new resources stack
+	 */
 	public void setResources(Vector2i position, ResourcesStack resources) {
 		// Get the row and modify the row.
 		List<ResourcesStack> row = this.resources.get(position.y);
@@ -57,6 +77,12 @@ public class ResourcesMap {
 		// Set the row back in the two-dimensional array.
 		this.resources.set(position.y, row);
 	}
+	
+	/**
+	 * Returns the size of the resources map.
+	 * 
+	 * @return the size
+	 */
 	public Vector2i getSize() {
 		return this.size;
 	}
