@@ -1,1 +1,5 @@
 /world/
+/graphics/
+/maths/
+/sim/
+*.class
