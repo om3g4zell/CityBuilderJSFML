@@ -6,6 +6,10 @@ public class CityStats {
 	
 	protected int population;
 	
+	/**
+	 * 
+	 * @param buildings
+	 */
 	public void update(List<Building> buildings) {
 		this.population = 0;
 		for(Building b :  buildings) {
