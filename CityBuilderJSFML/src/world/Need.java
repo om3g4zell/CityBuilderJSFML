@@ -1,6 +1,6 @@
 package world;
 
-/*
+/**
  * Represents a need.
  */
 public class Need {
@@ -9,7 +9,12 @@ public class Need {
 	public int amount;
 	public float fillFactor;
 	
-	// Constructor
+	/**
+	 * Constructor
+	 * @param type : type of the resource needed
+	 * @param amount : amount needed
+	 * @param fillFactor : fill factor to separate minimum and maximum amount
+	 */
 	public Need(Resource.ResourceType type, int amount, float fillFactor) {
 		this.type = type;
 		this.amount = amount;
