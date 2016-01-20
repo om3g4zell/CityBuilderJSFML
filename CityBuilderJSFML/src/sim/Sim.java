@@ -18,8 +18,7 @@ import world.Building;
 import world.Building.BuildingType;
 import world.ResourcesMap;
 
-/*
- * Simulation class.
+/**
  * Contains init, update and render.
  */
 public class Sim {
@@ -34,12 +33,19 @@ public class Sim {
 	protected ResourcesMap resourcesMap;
 	protected ArrayList<Building> buildings;
 	
-	// Constructor
+	/**
+	 * Constructor
+	 * @param width : width of the window
+	 * @param height : height of the window
+	 * @param title : title of the window
+	 */
 	public Sim(int width, int height, String title) {
 		this.window = new RenderWindow(new VideoMode(width, height), title);
 	}
 	
-	// Initialization
+	/**
+	 * Inits the simulation.
+	 */
 	public void init() {
 		// Inits the tiles array.
 		this.tiles = new ArrayList<ArrayList<Tile>>();
@@ -102,7 +108,10 @@ public class Sim {
 		this.tilemap.setTiles(this.tiles);
 	}
 	
-	// Updates all the simulation.
+	/**
+	 * Updates all the simulation.
+	 * @param dt : frame of time to use
+	 */
 	public void update(Time dt) {
 		System.out.println("Update:");
 
@@ -128,7 +137,9 @@ public class Sim {
 		this.tilemap.update();
 	}
 	
-	// Renders all the simulation.
+	/**
+	 * Renders all the simulation.
+	 */
 	public void render() {
 		this.window.clear(Color.WHITE);
 		/////////////
@@ -140,7 +151,10 @@ public class Sim {
 		
 	}
 	
-	// Returns the window.
+	/**
+	 * Returns the window.
+	 * @return the window used by the simulation
+	 */
 	public RenderWindow getWindow() {
 		return this.window;
 	}

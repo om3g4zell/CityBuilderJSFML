@@ -5,7 +5,7 @@ import org.jsfml.system.Time;
 import org.jsfml.window.Keyboard;
 import org.jsfml.window.event.Event;
 
-/*
+/**
  * Main program/loop.
  */
 public class Main {
