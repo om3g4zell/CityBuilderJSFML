@@ -9,11 +9,15 @@ import graphics.Tile.TileType;
 import world.Building;
 import world.Building.BuildingType;
 
-/*
+/**
  * Methods to "draw" the buildings on the tile map.
  */
 public class BuildingProjector {
-	// Converts the building type to the corresponding tile type.
+	/**
+	 * Converts the building type to the corresponding tile type.
+	 * @param buildingType : the type of the building
+	 * @return the equivalent in tile type
+	 */
 	public static TileType getCorrespondingTileType(BuildingType buildingType) {
 		switch(buildingType) {
 			case GENERATOR:
@@ -31,7 +35,11 @@ public class BuildingProjector {
 		}
 	}
 	
-	// Projects the building list onto the tilemap.
+	/**
+	 * Projects the building list onto the tilemap.
+	 * @param buildings : the list of buildings on the map
+	 * @param tilemap : the world tile map
+	 */
 	public static void project(ArrayList<Building> buildings, TileMap tilemap) {
 		for(Building b : buildings) {
 			// Take the size.

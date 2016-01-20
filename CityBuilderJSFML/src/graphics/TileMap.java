@@ -18,8 +18,7 @@ import org.jsfml.system.Vector2i;
 
 import graphics.Tile.TileType;
 
-/*
- * TileMap class.
+/**
  * Draws a tilemap.
  */
 public class TileMap extends BasicTransformable implements Drawable {
@@ -42,7 +41,11 @@ public class TileMap extends BasicTransformable implements Drawable {
 	// Boolean flag to indicate if tiles data has changed.
 	protected boolean hasChanged;
 	
-	// Constructor.
+	/**
+	 * Constructor.
+	 * @param size : size (in tiles) of the map
+	 * @param sizeOfTile : the size of a tile in floating number
+	 */
 	public TileMap(Vector2i size, Vector2f sizeOfTile) {
 		this.size = size;
 		this.sizeOfTile = sizeOfTile;
@@ -52,14 +55,22 @@ public class TileMap extends BasicTransformable implements Drawable {
 		this.borderVertexArray = new VertexArray(PrimitiveType.LINES);
 	}
 	
-	// Adds type <-> color.
+	/**
+	 *  Adds a (type, color) pair.
+	 * @param type : the type
+	 * @param color : the color to use for this tile
+	 */
 	public void addTypeColor(Tile.TileType type, Color color) {
 		this.typeColorMap.put(type, color);
 		
 		this.hasChanged = true;
 	}
 	
-	// Sets only one tile type.
+	/**
+	 * Sets the type of the tile at the given position.
+	 * @param position : position of the tile in tiles coordinates
+	 * @param type : type of the tile
+	 */
 	public void setTile(Vector2i position, TileType type) {
 		// Only change if modifications.
 		if(this.tiles.get(position.y).get(position.x).tileType != type) {
@@ -68,7 +79,10 @@ public class TileMap extends BasicTransformable implements Drawable {
 		}
 	}
 	
-	// Sets the tiles.
+	/**
+	 * Sets the tiles.
+	 * @param tiles : sets the tile array of the tile map
+	 */
 	public void setTiles(ArrayList<ArrayList<Tile>> tiles) {
 		// Only change if modifications.
 		this.tiles = tiles;
@@ -76,7 +90,9 @@ public class TileMap extends BasicTransformable implements Drawable {
 		this.hasChanged = true;
 	}
 	
-	// Updates the tilemap data (not time dependent).
+	/**
+	 * Updates the tilemap data (not time dependent).
+	 */
 	public void update() {
 		// No need to update if nothing changed.
 		if(!this.hasChanged)
@@ -137,7 +153,12 @@ public class TileMap extends BasicTransformable implements Drawable {
 		this.hasChanged = false;
 	}
 
-	// Draws the tilemap.
+	/**
+	 * Draws the tilemap.
+	 * 
+	 * @param target : the target to draw on
+	 * @param states : the states to use draw
+	 */
 	@Override
 	public void draw(RenderTarget target, RenderStates states) {
 		RenderStates newStates = new RenderStates(Transform.combine(states.transform, this.getTransform()));

@@ -2,11 +2,13 @@ package graphics;
 
 import org.jsfml.system.Vector2i;
 
-/*
- * Represents a tile
+/**
+ * Represents a tile.
  */
 public class Tile {
-	// Enum of each tileType
+	/**
+	 * Enum of each tileType.
+	 */
 	public static enum TileType {
 		TERRAIN_GRASS,
 		BUILDING_HOUSE,
@@ -16,7 +18,7 @@ public class Tile {
 		BUILDING_HYDROLIC_STATION
 	}
 
-	// Track the last id.
+	/** Track the last id. */
 	protected static int lastId = 0;
 	
 	// Attributes.
@@ -24,7 +26,11 @@ public class Tile {
 	protected int id;
 	protected Vector2i position;
 	
-	// Constructor.
+	/**
+	 *  Constructor.
+	 * @param tileType : the type of the tile
+	 * @param position : the position in tile coordinates
+	 */
 	public Tile(TileType tileType, Vector2i position) {
 		this.tileType = tileType;
 		this.id = Tile.lastId;
@@ -34,37 +40,51 @@ public class Tile {
 		Tile.lastId++;
 	}
 	
-	// Set the tileType
-	public void setTileType(TileType tileType) {
-		this.tileType = tileType;
-	}
-	
-	// Return the tileType
+	/**
+	 * Returns the tile type.
+	 * @return the tile type
+	 */
 	public TileType getTileType() {
 		return this.tileType;
 	}
 	
-	// Set the tile ID
+	/**
+	 * Set the tile ID
+	 * @param id
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
 	
-	// Return the tile ID
+	/**
+	 * Returns the tile ID
+	 * @return the id
+	 */
 	public int getId() {
 		return this.id;
 	}
 	
-	// Set the position of the tile with Vector2i
+	/**
+	 * Sets the position of the tile with Vector2i
+	 * @param a : the new position vector
+	 */
 	public void setPosition(Vector2i a) {
 		this.position = a;
 	}
 	
-	// Set the position of the tile with int
+	/**
+	 * Sets the position of the tile with int
+	 * @param x
+	 * @param y
+	 */
 	public void setPosition(int x, int y) {
-		setPosition(new Vector2i(x,y));
+		setPosition(new Vector2i(x, y));
 	}
 	
-	// Return the position of the tile
+	/**
+	 * Returns the position of the tile
+	 * @return the position
+	 */
 	public Vector2i getPosition() {
 		return this.position;
 	}
