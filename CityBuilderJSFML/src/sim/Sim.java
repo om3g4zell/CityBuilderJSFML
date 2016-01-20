@@ -16,6 +16,7 @@ import graphics.Tile;
 import graphics.TileMap;
 import world.Building;
 import world.Building.BuildingType;
+import world.CityStats;
 import world.ResourcesMap;
 
 /**
@@ -32,6 +33,7 @@ public class Sim {
 	protected ArrayList<ArrayList<Tile>> tiles;
 	protected ResourcesMap resourcesMap;
 	protected ArrayList<Building> buildings;
+	protected CityStats stats;
 	
 	/**
 	 * Constructor
@@ -65,6 +67,9 @@ public class Sim {
 		
 		// Create the buildings list.
 		this.buildings = new ArrayList<Building>();
+		
+		//
+		this.stats = new CityStats();
 		
 		// Houses.
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(31, 20)));
@@ -135,6 +140,10 @@ public class Sim {
 
 		// Update the tilemap.
 		this.tilemap.update();
+		
+		//Update stats
+		this.stats.update(buildings);
+		System.out.println(this.stats.getPopulation());
 	}
 	
 	/**
