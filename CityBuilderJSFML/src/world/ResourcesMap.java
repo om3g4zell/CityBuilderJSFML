@@ -4,8 +4,7 @@ import java.util.*;
 
 import org.jsfml.system.Vector2i;
 
-/*
- * ResourceMap class.
+/**
  * Common interface for all maps.
  */
 public class ResourcesMap {
@@ -13,7 +12,10 @@ public class ResourcesMap {
 	protected List<List<ResourcesStack>> resources;
 	protected Vector2i size;
 	
-	// Constructs the map.
+	/**
+	 * Constructs the map.
+	 * @param size : the size of the resources map in tiles
+	 */
 	public ResourcesMap(Vector2i size) {
 		this.size = size;
 
