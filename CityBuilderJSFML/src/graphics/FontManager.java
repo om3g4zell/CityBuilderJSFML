@@ -10,14 +10,14 @@ import org.jsfml.graphics.Font;
 public class FontManager {
 	
 	public static enum FontID {
-		BASIC
+		VCR_MONO
 	}
 	
 	protected Map<FontID, Font> fonts;
 	
 	public FontManager() {
 		this.fonts = new HashMap<FontID, Font>();
-		this.fonts.put(FontID.BASIC, load("res/basic.ttf"));
+		this.fonts.put(FontID.VCR_MONO, load("res/font/VCR_MONO.ttf"));
 	}
 	
 	public Font load(String path) {

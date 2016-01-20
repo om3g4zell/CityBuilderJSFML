@@ -36,16 +36,16 @@ public class StatsGui extends BasicTransformable implements Drawable{
 		this.people.setPosition(100, 10);
 		
 		this.moneyText = new Text();
-		this.moneyText.setFont(font.get(FontManager.FontID.BASIC));
-		this.moneyText.setCharacterSize(16);
+		this.moneyText.setFont(font.get(FontManager.FontID.VCR_MONO));
+		this.moneyText.setCharacterSize(24);
 		this.moneyText.setColor(Color.BLACK);
 		this.moneyText.setPosition(50, 10);
 		
 		this.peopleText = new Text();
-		this.peopleText.setFont(font.get(FontManager.FontID.BASIC));
-		this.peopleText.setCharacterSize(16);
+		this.peopleText.setFont(font.get(FontManager.FontID.VCR_MONO));
+		this.peopleText.setCharacterSize(24);
 		this.peopleText.setColor(Color.BLACK);
-		this.moneyText.setPosition(140, 10);
+		this.peopleText.setPosition(140, 10);
 				
 	}
 	
