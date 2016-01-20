@@ -1,6 +1,5 @@
 /graphics/
+/gui/
 /maths/
 /sim/
 /world/
-/gui/
-*.class
