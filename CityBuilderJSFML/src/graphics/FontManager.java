@@ -15,11 +15,19 @@ public class FontManager {
 	
 	protected Map<FontID, Font> fonts;
 	
+	/**
+	 * Instanciate the font manger and load fonts
+	 */
 	public FontManager() {
 		this.fonts = new HashMap<FontID, Font>();
 		this.fonts.put(FontID.VCR_MONO, load("res/font/VCR_MONO.ttf"));
 	}
 	
+	/**
+	 * 
+	 * @param path : the filepath of the font
+	 * @return the font
+	 */
 	public Font load(String path) {
 		Font font = new Font();
 		try {
@@ -31,6 +39,11 @@ public class FontManager {
 		return font;
 	}
 	
+	/**
+	 * 
+	 * @param id : id of the font
+	 * @return the font
+	 */
 	public Font get(FontID id) {
 		return fonts.get(id);
 	}
