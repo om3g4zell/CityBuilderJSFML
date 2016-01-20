@@ -9,12 +9,11 @@ import org.jsfml.system.Vector2i;
 import maths.Distance;
 import world.Resource.ResourceType;
 
-/*
- * Represent a building
+/**
+ * Represents a building
  */
 public class Building {
-	/** Static. **/
-	// Building Type
+	/** Building type */
 	public static enum BuildingType {
 		HOUSE,
 		GROCERY_STORE,
@@ -25,6 +24,7 @@ public class Building {
 		NONE
 	}
 	
+	/** Building class */
 	public static enum BuildingClass {
 		RESIDENTIAL,
 		CULTURAL,
@@ -33,6 +33,11 @@ public class Building {
 		ROAD
 	}
 	
+	/**
+	 * Returns the building type generating the resource type given.
+	 * @param type : the resource type
+	 * @return the building type
+	 */
 	public static BuildingType getBuildingTypeGenerating(ResourceType type) {
 		switch(type) {
 			case PEOPLE:
@@ -50,10 +55,9 @@ public class Building {
 		}
 	}
 	
-	// Last building id.
+	/** Last building id. */
 	protected static int lastId = 1;
 	
-	/** Non-static. **/
 	// Attributes
 	protected int id;
 	protected ArrayList<Need> needs;
@@ -63,7 +67,11 @@ public class Building {
 	protected List<BuildingClass> buildingClass;
 	protected boolean halted;
 	
-	// Constructor
+	/**
+	 * Constructor
+	 * @param type : the building type
+	 * @param position : the building position in tile coordinates
+	 */
 	public Building(BuildingType type, Vector2i position) {
 		this.id = lastId;
 		lastId++;
@@ -115,22 +123,34 @@ public class Building {
 		}
 	}
 	
-	// Returns the id.
+	/**
+	 * Returns the id.
+	 * @return the id
+	 */
 	public int getId() {
 		return this.id;
 	}
 	
-	// Returns the type.
+	/**
+	 * Returns the type.
+	 * @return the type
+	 */
 	public BuildingType getType() {
 		return this.type;
 	}
 
-	// Returns the hitbox.
+	/**
+	 * Returns the hitbox.
+	 * @return the hitbox in tile coordinates
+	 */
 	public IntRect getHitbox() {
 		return this.hitbox;
 	}
 	
-	// Generates resources.
+	/**
+	 * Generates resources.
+	 * @param resourcesMap : the resources map to place resources on
+	 */
 	public void generateResources(ResourcesMap resourcesMap) {
 		// Do not generate if halted.
 		if(this.halted)
@@ -187,7 +207,13 @@ public class Building {
 		}
 	}
 	
-	// Consumes one 
+	/**
+	 * Consumes one resource type on the resources map.
+	 * @param resourcesMap : the resources map to place resources on
+	 * @param resourceType : the type of resource to consume
+	 * @param amount : the amount of resource to consume
+	 * @param fillFactor : the fill factor to apply on the amount
+	 */
 	public void consumeResourcesForNeed(ResourcesMap resourcesMap, ResourceType resourceType, float amount, float fillFactor) {
 		float neededAmount = amount * fillFactor;
 		
@@ -218,7 +244,11 @@ public class Building {
 		}
 	}
 	
-	// Consumes resources.
+	/**
+	 * Consumes resources for the building.
+	 * @param resourcesMap : the resources map to place resources on
+	 * @return the type of the building to build
+	 */
 	public BuildingType consumeResources(ResourcesMap resourcesMap) {
 		// Get the resources available for the building.
 		ResourcesStack availableResources = new ResourcesStack();
