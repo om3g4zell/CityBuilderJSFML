@@ -12,6 +12,7 @@ import org.jsfml.window.VideoMode;
 
 import graphics.Tile.TileType;
 import graphics.BuildingProjector;
+import graphics.TextureManager;
 import graphics.Tile;
 import graphics.TileMap;
 import world.Building;
@@ -34,6 +35,7 @@ public class Sim {
 	protected ResourcesMap resourcesMap;
 	protected ArrayList<Building> buildings;
 	protected CityStats stats;
+	protected TextureManager textureManager;
 	
 	/**
 	 * Constructor
@@ -61,6 +63,10 @@ public class Sim {
 			
 			this.tiles.add(row);
 		}
+		
+		// Instanciate the TextureManger
+		this.textureManager = new TextureManager();
+		
 		
 		// Create the resources map.
 		this.resourcesMap = new ResourcesMap(TILEMAP_SIZE);
