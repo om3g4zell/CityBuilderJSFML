@@ -10,7 +10,8 @@ import org.jsfml.graphics.Texture;
 public class TextureManager {
 	
 	public static enum TextureID {
-		PEOPLE_TEXTURE
+		PEOPLE_TEXTURE,
+		MONEY_TEXTURE
 	}
 	
 	protected Map<TextureID, Texture> textures;
