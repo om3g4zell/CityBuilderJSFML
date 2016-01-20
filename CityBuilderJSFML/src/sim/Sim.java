@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
+import org.jsfml.graphics.Sprite;
 import org.jsfml.system.Time;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
@@ -36,6 +37,7 @@ public class Sim {
 	protected ArrayList<Building> buildings;
 	protected CityStats stats;
 	protected TextureManager textureManager;
+	protected Sprite people;
 	
 	/**
 	 * Constructor
@@ -66,6 +68,11 @@ public class Sim {
 		
 		// Instanciate the TextureManger
 		this.textureManager = new TextureManager();
+		
+		//Sprite
+		this.people = new Sprite();
+		this.people.setTexture(this.textureManager.get(TextureManager.TextureID.PEOPLE_TEXTURE));
+		this.people.setPosition(new Vector2f(10,10));
 		
 		
 		// Create the resources map.
@@ -160,6 +167,7 @@ public class Sim {
 		/////////////
 
 		this.window.draw(tilemap);
+		this.window.draw(people);
 		
 		/////////////
 		this.window.display();
