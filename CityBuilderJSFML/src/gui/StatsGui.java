@@ -33,19 +33,19 @@ public class StatsGui extends BasicTransformable implements Drawable{
 		this.money.setPosition(10, 10);
 		
 		this.people.setTexture(loader.get(TextureManager.TextureID.PEOPLE_TEXTURE));
-		this.people.setPosition(100, 10);
+		this.people.setPosition(10, 50);
 		
 		this.moneyText = new Text();
 		this.moneyText.setFont(font.get(FontManager.FontID.VCR_MONO));
 		this.moneyText.setCharacterSize(24);
-		this.moneyText.setColor(Color.BLACK);
+		this.moneyText.setColor(Color.WHITE);
 		this.moneyText.setPosition(50, 10);
 		
 		this.peopleText = new Text();
 		this.peopleText.setFont(font.get(FontManager.FontID.VCR_MONO));
 		this.peopleText.setCharacterSize(24);
-		this.peopleText.setColor(Color.BLACK);
-		this.peopleText.setPosition(140, 10);
+		this.peopleText.setColor(Color.WHITE);
+		this.peopleText.setPosition(50, 50);
 				
 	}
 	
@@ -60,7 +60,7 @@ public class StatsGui extends BasicTransformable implements Drawable{
 	 * @param money : change the text with the money
 	 */
 	public void setMoney(int money) {
-		this.moneyText.setString(""+money+" $");
+		this.moneyText.setString(""+money);
 	}
 	
 	@Override
