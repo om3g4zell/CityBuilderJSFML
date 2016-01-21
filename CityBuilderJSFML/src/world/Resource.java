@@ -13,7 +13,7 @@ public class Resource {
 		PEOPLE,
 		
 		// Need to be the last Type to count how many type we have
-		COUNT
+		//COUNT
 	}
 	
 	/**

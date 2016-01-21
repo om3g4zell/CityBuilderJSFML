@@ -16,6 +16,7 @@ import graphics.TextureManager;
 import graphics.Tile;
 import graphics.TileMap;
 import gui.StatsGui;
+import gui.TileInfoGui;
 import gui.TileSelector;
 import world.Building;
 import world.Building.BuildingType;
@@ -41,6 +42,7 @@ public class Sim {
 	protected FontManager fontManager;
 	protected StatsGui statsGui;
 	protected TileSelector tileSelector;
+	protected TileInfoGui tileInfoGui;
 	
 	/**
 	 * Constructor
@@ -128,6 +130,10 @@ public class Sim {
 		this.tilemap.addTypeColor(TileType.BUILDING_HYDROLIC_STATION, new Color(51, 153, 255));
 		this.tilemap.addTypeColor(TileType.BUILDING_SUPERMARKET, new Color(125, 193, 129));
 		this.tilemap.setTiles(this.tiles);
+		
+
+		// Instanciate the tileInfoGui
+		this.tileInfoGui = new TileInfoGui(this.tiles,this.fontManager);
 	}
 	
 	/**
@@ -163,6 +169,7 @@ public class Sim {
 		this.statsGui.setMoney(this.cityStats.getMoney());
 		this.statsGui.setPopulation(this.cityStats.getPopulation());
 		this.tileSelector.update();
+		this.tileInfoGui.update(resourcesMap, tileSelector, buildings);
 	}
 	
 	/**
@@ -175,6 +182,7 @@ public class Sim {
 		this.window.draw(this.tilemap);
 		this.window.draw(this.tileSelector);
 		this.window.draw(this.statsGui);
+		this.window.draw(tileInfoGui);
 		
 		/////////////
 		this.window.display();
