@@ -16,6 +16,7 @@ import graphics.TextureManager;
 import graphics.Tile;
 import graphics.TileMap;
 import gui.StatsGui;
+import gui.TileSelector;
 import world.Building;
 import world.Building.BuildingType;
 import world.CityStats;
@@ -35,10 +36,11 @@ public class Sim {
 	protected ArrayList<ArrayList<Tile>> tiles;
 	protected ResourcesMap resourcesMap;
 	protected ArrayList<Building> buildings;
-	protected CityStats stats;
+	protected CityStats cityStats;
 	protected TextureManager textureManager;
 	protected FontManager fontManager;
-	protected StatsGui gui;
+	protected StatsGui statsGui;
+	protected TileSelector tileSelector;
 	
 	/**
 	 * Constructor
@@ -67,15 +69,15 @@ public class Sim {
 			this.tiles.add(row);
 		}
 		
-		// Instanciate the TextureManger
+		// Instanciate the TextureManager
 		this.textureManager = new TextureManager();
-		
 		
 		// Instanciate the fontManager
 		this.fontManager = new FontManager();
 		
 		//Instanciate the GUI
-		this.gui = new StatsGui(textureManager, fontManager);
+		this.statsGui = new StatsGui(textureManager, fontManager);
+		this.tileSelector = new TileSelector(this.window, this.textureManager, TILEMAP_SIZE, TILE_SIZE);
 		
 		// Create the resources map.
 		this.resourcesMap = new ResourcesMap(TILEMAP_SIZE);
@@ -84,7 +86,7 @@ public class Sim {
 		this.buildings = new ArrayList<Building>();
 		
 		//
-		this.stats = new CityStats();
+		this.cityStats = new CityStats();
 		
 		// Houses.
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(31, 20)));
@@ -157,9 +159,10 @@ public class Sim {
 		this.tilemap.update();
 		
 		//Update stats
-		this.stats.update(buildings);
-		this.gui.setMoney(this.stats.getMoney());
-		this.gui.setPopulation(this.stats.getPopulation());
+		this.cityStats.update(buildings);
+		this.statsGui.setMoney(this.cityStats.getMoney());
+		this.statsGui.setPopulation(this.cityStats.getPopulation());
+		this.tileSelector.update();
 	}
 	
 	/**
@@ -169,8 +172,9 @@ public class Sim {
 		this.window.clear(Color.WHITE);
 		/////////////
 
-		this.window.draw(tilemap);
-		this.window.draw(this.gui);
+		this.window.draw(this.tilemap);
+		this.window.draw(this.tileSelector);
+		this.window.draw(this.statsGui);
 		
 		/////////////
 		this.window.display();
