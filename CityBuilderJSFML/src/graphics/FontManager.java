@@ -10,7 +10,8 @@ import org.jsfml.graphics.Font;
 public class FontManager {
 	
 	public static enum FontID {
-		VCR_MONO
+		VCR_MONO,
+		CAVIAR_DREAM
 	}
 	
 	protected Map<FontID, Font> fonts;
@@ -21,6 +22,7 @@ public class FontManager {
 	public FontManager() {
 		this.fonts = new HashMap<FontID, Font>();
 		this.fonts.put(FontID.VCR_MONO, load("res/font/VCR_MONO.ttf"));
+		this.fonts.put(FontID.CAVIAR_DREAM, load("res/font/CaviarDreams.ttf"));
 	}
 	
 	/**
