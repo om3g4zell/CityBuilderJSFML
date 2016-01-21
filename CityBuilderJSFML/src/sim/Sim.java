@@ -145,8 +145,6 @@ public class Sim {
 	 * @param dt : frame of time to use
 	 */
 	public void update(Time dt) {
-		System.out.println("Update:");
-
 		// Reset the resources.
 		this.resourcesMap.reset();
 		
