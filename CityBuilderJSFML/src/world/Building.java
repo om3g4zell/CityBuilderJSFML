@@ -229,12 +229,12 @@ public class Building {
 			}
 		}
 		
-		System.out.println("For building " + this.type.toString() + "[" + this.id + "] :");
+		/*System.out.println("For building " + this.type.toString() + "[" + this.id + "] :");
 		System.out.println("\t" + ResourceType.WATER.toString() + " " + availableResources.get(ResourceType.WATER));
 		System.out.println("\t" + ResourceType.ELECTRICITY.toString() + " " + availableResources.get(ResourceType.ELECTRICITY));
 		System.out.println("\t" + ResourceType.PEOPLE.toString() + " " + availableResources.get(ResourceType.PEOPLE));
 		System.out.println("\t" + ResourceType.ROAD_PROXIMITY.toString() + " " + availableResources.get(ResourceType.ROAD_PROXIMITY));
-		System.out.println("\t" + ResourceType.FOOD.toString() + " " + availableResources.get(ResourceType.FOOD));
+		System.out.println("\t" + ResourceType.FOOD.toString() + " " + availableResources.get(ResourceType.FOOD));*/
 		
 		// Check if enough resources for minimal (minimal = need * fill factor).
 		boolean enoughForMinimal = true;
