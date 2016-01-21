@@ -11,7 +11,8 @@ public class TextureManager {
 	
 	public static enum TextureID {
 		PEOPLE_TEXTURE,
-		MONEY_TEXTURE
+		MONEY_TEXTURE,
+		TILE_CURSOR_TEXTURE
 	}
 	
 	protected Map<TextureID, Texture> textures;
@@ -20,6 +21,7 @@ public class TextureManager {
 		this.textures = new HashMap<TextureID, Texture>();
 		this.textures.put(TextureID.PEOPLE_TEXTURE, load("res/people.png"));
 		this.textures.put(TextureID.MONEY_TEXTURE, load("res/billets.32.png"));
+		this.textures.put(TextureID.TILE_CURSOR_TEXTURE, load("res/hoverframe.png"));
 	}
 	/**
 	 * Load the Texture
