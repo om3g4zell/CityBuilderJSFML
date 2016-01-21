@@ -137,11 +137,11 @@ public class TileMap extends BasicTransformable implements Drawable {
 		}
 		
 		for(int j = 0 ; j < this.size.x ; ++j) {
-			Vertex leftTop = new Vertex(new Vector2f(j * this.sizeOfTile.x, 0), Color.BLACK);
-			Vertex leftBottom = new Vertex(new Vector2f(j * this.sizeOfTile.x, this.size.y * this.sizeOfTile.y), Color.BLACK);
+			Vertex leftTop = new Vertex(new Vector2f(j * this.sizeOfTile.x + 1, 0), Color.BLACK);
+			Vertex leftBottom = new Vertex(new Vector2f(j * this.sizeOfTile.x + 1, this.size.y * this.sizeOfTile.y), Color.BLACK);
 			
-			Vertex rightTop = new Vertex(new Vector2f((j + 1) * this.sizeOfTile.x - 1, 0), Color.BLACK);
-			Vertex rightBottom = new Vertex(new Vector2f((j + 1) * this.sizeOfTile.x - 1, this.size.y * this.sizeOfTile.y), Color.BLACK);
+			Vertex rightTop = new Vertex(new Vector2f((j + 1) * this.sizeOfTile.x, 0), Color.BLACK);
+			Vertex rightBottom = new Vertex(new Vector2f((j + 1) * this.sizeOfTile.x, this.size.y * this.sizeOfTile.y), Color.BLACK);
 			
 			this.borderVertexArray.add(leftTop);
 			this.borderVertexArray.add(leftBottom);
