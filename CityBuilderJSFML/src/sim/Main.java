@@ -52,6 +52,8 @@ public class Main {
 			        	simulation.getWindow().close();
 			        else if(event.type == Event.Type.KEY_PRESSED && event.asKeyEvent().key == Keyboard.Key.ESCAPE)
 			        	simulation.getWindow().close();
+			        else
+			        	simulation.handleEvent(event);
 			    }
 			    
 			    // Update

@@ -8,6 +8,7 @@ import org.jsfml.system.Time;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.VideoMode;
+import org.jsfml.window.event.Event;
 
 import graphics.Tile.TileType;
 import graphics.BuildingProjector;
@@ -195,5 +196,13 @@ public class Sim {
 	 */
 	public RenderWindow getWindow() {
 		return this.window;
+	}
+
+	/**
+	 * Handles the event.
+	 * @param event : the JSFML event to handle
+	 */
+	public void handleEvent(Event event) {
+		
 	}
 }
