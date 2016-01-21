@@ -7,6 +7,7 @@ import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Time;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
+import org.jsfml.window.Mouse;
 import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
 
@@ -44,6 +45,7 @@ public class Sim {
 	protected StatsGui statsGui;
 	protected TileSelector tileSelector;
 	protected TileInfoGui tileInfoGui;
+	protected boolean displayTileInfo;
 	
 	/**
 	 * Constructor
@@ -53,6 +55,7 @@ public class Sim {
 	 */
 	public Sim(int width, int height, String title) {
 		this.window = new RenderWindow(new VideoMode(width, height), title);
+		this.displayTileInfo = false;
 	}
 	
 	/**
@@ -155,8 +158,6 @@ public class Sim {
 		// Consume resources.
 		for(Building b : this.buildings) {
 			BuildingType requiredBuilding = b.consumeResources(this.resourcesMap);
-			
-			System.out.println("\t" + b.getType().toString() + " wants to build " + requiredBuilding.toString());
 		}
 		
 		// Project buildings on the tilemap.
@@ -170,7 +171,9 @@ public class Sim {
 		this.statsGui.setMoney(this.cityStats.getMoney());
 		this.statsGui.setPopulation(this.cityStats.getPopulation());
 		this.tileSelector.update();
-		this.tileInfoGui.update(resourcesMap, tileSelector, buildings);
+		
+		if(this.displayTileInfo)
+			this.tileInfoGui.update(resourcesMap, tileSelector, buildings);
 	}
 	
 	/**
@@ -183,7 +186,9 @@ public class Sim {
 		this.window.draw(this.tilemap);
 		this.window.draw(this.tileSelector);
 		this.window.draw(this.statsGui);
-		this.window.draw(tileInfoGui);
+		
+		if(this.displayTileInfo)
+			this.window.draw(tileInfoGui);
 		
 		/////////////
 		this.window.display();
@@ -203,6 +208,8 @@ public class Sim {
 	 * @param event : the JSFML event to handle
 	 */
 	public void handleEvent(Event event) {
-		
+		if(event.type == Event.Type.MOUSE_BUTTON_RELEASED && event.asMouseButtonEvent().button == Mouse.Button.MIDDLE) {
+			this.displayTileInfo = !this.displayTileInfo;
+		}
 	}
 }
