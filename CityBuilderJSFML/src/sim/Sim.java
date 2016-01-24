@@ -1,6 +1,9 @@
 package sim;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
@@ -36,9 +39,9 @@ public class Sim {
 	// Attributes.
 	protected RenderWindow window;
 	protected TileMap tilemap;
-	protected ArrayList<ArrayList<Tile>> tiles;
+	protected List<ArrayList<Tile>> tiles;
 	protected ResourcesMap resourcesMap;
-	protected ArrayList<Building> buildings;
+	protected List<Building> buildings;
 	protected CityStats cityStats;
 	protected TextureManager textureManager;
 	protected FontManager fontManager;
@@ -46,6 +49,7 @@ public class Sim {
 	protected TileSelector tileSelector;
 	protected TileInfoGui tileInfoGui;
 	protected boolean displayTileInfo;
+	protected Map<Building.BuildingType, Integer> buildingsRequired;
 	
 	/**
 	 * Constructor
@@ -91,7 +95,7 @@ public class Sim {
 		// Create the buildings list.
 		this.buildings = new ArrayList<Building>();
 		
-		//
+		// 
 		this.cityStats = new CityStats();
 		
 		// Houses.
@@ -135,9 +139,10 @@ public class Sim {
 		this.tilemap.addTypeColor(TileType.BUILDING_SUPERMARKET, new Color(125, 193, 129));
 		this.tilemap.setTiles(this.tiles);
 		
+		buildingsRequired = new HashMap<Building.BuildingType, Integer>();
 
 		// Instanciate the tileInfoGui
-		this.tileInfoGui = new TileInfoGui(this.tiles,this.fontManager);
+		this.tileInfoGui = new TileInfoGui(this.tiles, this.fontManager);
 	}
 	
 	/**
@@ -154,8 +159,10 @@ public class Sim {
 		}
 		
 		// Consume resources.
+		buildingsRequired.clear();
 		for(Building b : this.buildings) {
 			BuildingType requiredBuilding = b.consumeResources(this.resourcesMap);
+			buildingsRequired.put(requiredBuilding, b.getId());
 		}
 		
 		// Project buildings on the tilemap.

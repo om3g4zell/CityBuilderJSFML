@@ -1,6 +1,7 @@
 package gui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Drawable;
@@ -25,14 +26,14 @@ public class TileInfoGui implements Drawable {
 	protected Vector2i position;
 	protected ResourcesMap resourceMap;
 	protected TileSelector tileSelector;
-	protected ArrayList<ArrayList<Tile>> tileMap;
+	protected List<ArrayList<Tile>> tileMap;
 	protected Tile actualTile;
 	protected Building building;
 	protected RectangleShape rectangleShape;
 	
-	public TileInfoGui(ArrayList<ArrayList<Tile>> tilemap, FontManager fontmanager) {
+	public TileInfoGui(List<ArrayList<Tile>> tiles, FontManager fontmanager) {
 		
-		this.tileMap = tilemap;
+		this.tileMap = tiles;
 		this.infoString = new String();
 		
 		// we instanciate the Text
@@ -53,7 +54,7 @@ public class TileInfoGui implements Drawable {
 	 * @param tileselector : to get the position of the mouse
 	 * @param buildings : to get buildings on the map
 	 */
-	public void update(ResourcesMap resourcemap, TileSelector tileselector,ArrayList<Building> buildings) {
+	public void update(ResourcesMap resourcemap, TileSelector tileselector,List<Building> buildings) {
 		this.tileSelector = tileselector;
 		this.resourceMap = resourcemap;
 		this.infoString = "";
@@ -91,13 +92,6 @@ public class TileInfoGui implements Drawable {
 			for(Resource.ResourceType resource : Resource.ResourceType.values()) {
 				if(availableResources.get(resource) > 0) {
 					this.infoString += resource.toString() + " : " + availableResources.get(resource) + "\n";
-				}
-			}
-			// Tile info
-			this.infoString += "TILE_TYPE :" + this.actualTile.getTileType().toString() + " \n";
-			for(Resource.ResourceType resource : Resource.ResourceType.values()) {
-				if(resourcemap.getResources(this.position.x, this.position.y).get(resource) > 0) {
-					this.infoString += resource.toString() + " : " + resourcemap.getResources(this.position.x, this.position.y).get(resource) + "\n";
 				}
 			}
 		}
