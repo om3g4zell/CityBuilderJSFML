@@ -1,6 +1,6 @@
 package graphics;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.jsfml.graphics.IntRect;
 import org.jsfml.system.Vector2i;
@@ -40,7 +40,7 @@ public class BuildingProjector {
 	 * @param buildings : the list of buildings on the map
 	 * @param tilemap : the world tile map
 	 */
-	public static void project(ArrayList<Building> buildings, TileMap tilemap) {
+	public static void project(List<Building> buildings, TileMap tilemap) {
 		for(Building b : buildings) {
 			// Take the size.
 			IntRect hitbox = b.getHitbox();
