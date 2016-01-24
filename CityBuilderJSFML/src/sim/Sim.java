@@ -20,6 +20,7 @@ import graphics.FontManager;
 import graphics.TextureManager;
 import graphics.Tile;
 import graphics.TileMap;
+import gui.CheckBox;
 import gui.StatsGui;
 import gui.TileInfoGui;
 import gui.TileSelector;
@@ -50,6 +51,7 @@ public class Sim {
 	protected TileInfoGui tileInfoGui;
 	protected boolean displayTileInfo;
 	protected Map<Integer, Building.BuildingType> buildingsRequired;
+	protected CheckBox checkbox1;
 	
 	/**
 	 * Constructor
@@ -95,6 +97,8 @@ public class Sim {
 		// Create the buildings list.
 		this.buildings = new ArrayList<Building>();
 		
+		// Create a checkbox
+		this.checkbox1 = new CheckBox(10, 100 , this.textureManager);
 		// Create the city stats.
 		this.cityStats = new CityStats();
 		
@@ -264,6 +268,7 @@ public class Sim {
 		this.window.draw(this.tilemap);
 		this.window.draw(this.tileSelector);
 		this.window.draw(this.statsGui);
+		this.window.draw(checkbox1);
 		
 		if(this.displayTileInfo)
 			this.window.draw(tileInfoGui);
@@ -288,6 +293,9 @@ public class Sim {
 	public void handleEvent(Event event) {
 		if(event.type == Event.Type.MOUSE_BUTTON_RELEASED && event.asMouseButtonEvent().button == Mouse.Button.MIDDLE) {
 			this.displayTileInfo = !this.displayTileInfo;
+		}
+		if(event.type == Event.Type.MOUSE_BUTTON_RELEASED && event.asMouseButtonEvent().button == Mouse.Button.LEFT && this.checkbox1.getHitbox().contains(Mouse.getPosition(window))) {
+			this.checkbox1.setChecked(!this.checkbox1.isChecked());
 		}
 	}
 }
