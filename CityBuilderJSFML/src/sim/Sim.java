@@ -179,9 +179,38 @@ public class Sim {
 		// We have a building type.
 		if(maxEntry != null) {
 			Building.BuildingType buildingType = maxEntry.getKey();
+			Vector2i position = new Vector2i(0, 0);
 			
 			// Now get the position of everyone asking for that building type.
+			for(Map.Entry<Integer, Building.BuildingType> entry : this.buildingsRequired.entrySet()) {
+				Building.BuildingType btype = entry.getValue();
+				
+				if(btype == buildingType) {
+					Building building = null;
+					
+					// Get the building.
+					for(Building b : this.buildings) {
+						if(b.getId() == entry.getKey()) {
+							building = b;
+							break;
+						}
+					}
+					
+					// Add its position.
+					if(building != null) {
+						Vector2i centerPosition = new Vector2i(building.getHitbox().left + building.getHitbox().width / 2, building.getHitbox().top + building.getHitbox().height / 2);
+						position = Vector2i.add(position, centerPosition);
+					}
+				}
+			}
 			
+			// Compute the average position.
+			Vector2f fposition = new Vector2f(position.x, position.y);
+			fposition = Vector2f.mul(fposition, 1.f / (float)(maxEntry.getValue()));
+			
+			position = new Vector2i((int)fposition.x, (int)fposition.y);
+			
+			// Look around the position to find a suitable spot.
 		}
 	}
 	
