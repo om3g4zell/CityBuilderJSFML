@@ -49,7 +49,7 @@ public class Sim {
 	protected TileSelector tileSelector;
 	protected TileInfoGui tileInfoGui;
 	protected boolean displayTileInfo;
-	protected Map<Building.BuildingType, Integer> buildingsRequired;
+	protected Map<Integer, Building.BuildingType> buildingsRequired;
 	
 	/**
 	 * Constructor
@@ -95,7 +95,7 @@ public class Sim {
 		// Create the buildings list.
 		this.buildings = new ArrayList<Building>();
 		
-		// 
+		// Create the city stats.
 		this.cityStats = new CityStats();
 		
 		// Houses.
@@ -141,10 +141,48 @@ public class Sim {
 		this.tilemap.addTypeColor(TileType.BUILDING_SUPERMARKET, new Color(125, 193, 129));
 		this.tilemap.setTiles(this.tiles);
 		
-		buildingsRequired = new HashMap<Building.BuildingType, Integer>();
+		// The map collecting the required buildings.
+		this.buildingsRequired = new HashMap<Integer, Building.BuildingType>();
 
 		// Instanciate the tileInfoGui
 		this.tileInfoGui = new TileInfoGui(this.tiles, this.fontManager);
+	}
+	
+	/**
+	 * Spawns the new buildings.
+	 */
+	public void spawnBuildings() {
+		// First count the buildings.
+		Map<Building.BuildingType, Integer> buildingCounts = new HashMap<Building.BuildingType, Integer>();
+		
+		for(Map.Entry<Integer, Building.BuildingType> entry : this.buildingsRequired.entrySet()) {
+			Building.BuildingType buildingType = entry.getValue();
+			
+			if(buildingCounts.containsKey(buildingType)) {
+				Integer count = buildingCounts.get(buildingType);
+				count = new Integer(count.intValue() + 1);
+			}
+			else {
+				buildingCounts.put(buildingType, 1);
+			}
+				
+		}
+		
+		// Get the most required.
+		Map.Entry<Building.BuildingType, Integer> maxEntry = null;
+		for(Map.Entry<Building.BuildingType, Integer> entry : buildingCounts.entrySet()) {
+			if(maxEntry == null || entry.getValue() > maxEntry.getValue()) {
+				maxEntry = entry;
+			}
+		}
+		
+		// We have a building type.
+		if(maxEntry != null) {
+			Building.BuildingType buildingType = maxEntry.getKey();
+			
+			// Now get the position of everyone asking for that building type.
+			
+		}
 	}
 	
 	/**
@@ -168,7 +206,9 @@ public class Sim {
 		buildingsRequired.clear();
 		for(Building b : this.buildings) {
 			BuildingType requiredBuilding = b.consumeResources(this.resourcesMap);
-			buildingsRequired.put(requiredBuilding, b.getId());
+			buildingsRequired.put(b.getId(), requiredBuilding);
+			
+			spawnBuildings();
 		}
 		
 		// Project buildings on the tilemap.
