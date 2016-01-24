@@ -149,6 +149,7 @@ public class Building {
 	public IntRect getHitbox() {
 		return this.hitbox;
 	}
+	
 	/**
 	 * Returns the list of need
 	 * @return the list of need
@@ -156,8 +157,9 @@ public class Building {
 	public List<Need> getNeeds() {
 		return this.needs;
 	}
+	
 	/**
-	 * 
+	 * Returns the halted statut
 	 * @return halted statut
 	 */
 	public boolean isHalted() {
