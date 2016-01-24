@@ -15,6 +15,7 @@ import org.jsfml.system.Vector2i;
 import graphics.FontManager;
 import graphics.Tile;
 import world.Building;
+import world.Need;
 import world.Resource;
 import world.ResourcesMap;
 import world.ResourcesStack;
@@ -63,7 +64,6 @@ public class TileInfoGui implements Drawable {
 		this.actualTile = this.tileMap.get(position.y).get(position.x);
 		
 		// if it's the ground with no buildings
-		if(this.actualTile.getTileType().equals(Tile.TileType.TERRAIN_GRASS)) {
 			this.infoString += "TILE_TYPE :" + this.actualTile.getTileType().toString() + " \n";
 			for(Resource.ResourceType resource : Resource.ResourceType.values()) {
 				if(resourcemap.getResources(this.position.x, this.position.y).get(resource) > 0) {
@@ -71,30 +71,37 @@ public class TileInfoGui implements Drawable {
 				}
 			}
 		
-		}
 		// if it's a buildings
-		else {
 			for(Building b : buildings) {
 				if(b.getHitbox().contains(position)) {
 					this.building = b;
 					break;
 				}
 			}
-			this.infoString += "BUILDING_NAME :" + this.building.getType().toString() + "[" + this.building.getId() + "] \n";
-			// Get the resources available for the building.
-			ResourcesStack availableResources = new ResourcesStack();
-			
-			for(int x = this.building.getHitbox().left ; x < this.building.getHitbox().left + this.building.getHitbox().width ; ++x) {
-				for(int y = this.building.getHitbox().top ; y < this.building.getHitbox().top + this.building.getHitbox().height ; ++y) {
-					availableResources.add(resourcemap.getResources(new Vector2i(x, y)));
+			if(this.building != null) {
+				this.infoString += "BUILDING_NAME :" + this.building.getType().toString() + "[" + this.building.getId() + "] \n";
+				
+				// Get the resources available for the building.
+				ResourcesStack availableResources = new ResourcesStack();
+				
+				for(int x = this.building.getHitbox().left ; x < this.building.getHitbox().left + this.building.getHitbox().width ; ++x) {
+					for(int y = this.building.getHitbox().top ; y < this.building.getHitbox().top + this.building.getHitbox().height ; ++y) {
+						availableResources.add(resourcemap.getResources(new Vector2i(x, y)));
+					}
+				}
+				
+				for(Resource.ResourceType resource : Resource.ResourceType.values()) {
+					if(resourcemap.getResources(this.position.x, this.position.y).get(resource) > 0) {
+						this.infoString += resource.toString() + " : " + resourcemap.getResources(this.position.x, this.position.y).get(resource);
+						for(Need need : this.building.getNeeds()) {
+							if(need.type.equals(resource)){
+								this.infoString += " : " + (int)((resourcemap.getResources(this.position.x, this.position.y).get(resource)/need.amount)*100) + " %";
+							}
+						}
+						this.infoString += "\n";
+					}
 				}
 			}
-			for(Resource.ResourceType resource : Resource.ResourceType.values()) {
-				if(availableResources.get(resource) > 0) {
-					this.infoString += resource.toString() + " : " + availableResources.get(resource) + "\n";
-				}
-			}
-		}
 		// we set the text
 		this.infoText.setString(infoString);
 		this.infoText.setPosition(this.position.x*16 +20, this.position.y*16 +20);
@@ -102,6 +109,9 @@ public class TileInfoGui implements Drawable {
 		// we set the rectangle
 		this.rectangleShape.setPosition(this.position.x *16, this.position.y*16);
 		this.rectangleShape.setSize(new Vector2f(this.infoText.getGlobalBounds().width + 30,this.infoText.getGlobalBounds().height + 30));
+		
+		// we reset the building
+		this.building = null;
 		
 	} 
 	
