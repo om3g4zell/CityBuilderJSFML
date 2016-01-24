@@ -211,6 +211,9 @@ public class Sim {
 			position = new Vector2i((int)fposition.x, (int)fposition.y);
 			
 			// Look around the position to find a suitable spot.
+			// Check if we are still in the range of the building.
+				// Spawn the building.
+			// Else, find another spot.
 		}
 	}
 	
