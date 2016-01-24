@@ -126,6 +126,8 @@ public class Sim {
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(38, 22)));
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(39, 22)));
 		
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(10, 10)));
+		
 		// Grossery store
 		this.buildings.add(new Building(BuildingType.GROCERY_STORE, new Vector2i(40, 21)));
 		

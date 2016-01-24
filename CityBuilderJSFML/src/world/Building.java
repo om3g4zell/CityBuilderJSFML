@@ -109,7 +109,7 @@ public class Building {
 				this.buildingClass.add(BuildingClass.RESIDENTIAL);
 				break;
 			case ROAD:
-				this.range = 2;
+				this.range = 1;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
 				this.buildingClass.add(BuildingClass.ROAD);
@@ -170,12 +170,12 @@ public class Building {
 		double squaredRange = Math.pow(range, 2);
 		
 		// Check all resource map in square range.
-		for(int x = Math.max(0,this.hitbox.left - this.range) ; x < Math.min(resourcesMap.getSize().x,this.hitbox.left + this.range) ; ++x)
+		for(int x = Math.max(0, this.hitbox.left - this.range) ; x < Math.min(resourcesMap.getSize().x, this.hitbox.left + this.hitbox.width + this.range + 1) ; ++x)
 		{
-			for(int y = Math.max(0,this.hitbox.top - this.range) ; y < Math.min(resourcesMap.getSize().y,this.hitbox.top + this.range) ; ++y)
+			for(int y = Math.max(0, this.hitbox.top - this.range) ; y < Math.min(resourcesMap.getSize().y, this.hitbox.top + this.hitbox.height + this.range + 1) ; ++y)
 			{
 				// Check only in range.
-				if(Distance.squaredEuclidean(new Vector2i(this.hitbox.left, this.hitbox.top), new Vector2i(x, y)) <= squaredRange)
+				if(Distance.squaredEuclidean(new Vector2i(this.hitbox.left + this.hitbox.width / 2, this.hitbox.top + this.hitbox.height / 2), new Vector2i(x, y)) <= squaredRange)
 				{
 					// Generate resources depending on the building type.
 					switch(this.type) {
