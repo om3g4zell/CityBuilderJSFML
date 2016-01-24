@@ -56,7 +56,7 @@ public class Building {
 	/** Non-static. **/
 	// Attributes
 	protected int id;
-	protected ArrayList<Need> needs;
+	protected List<Need> needs;
 	protected int range;
 	protected IntRect hitbox;
 	protected BuildingType type;
@@ -128,6 +128,13 @@ public class Building {
 	// Returns the hitbox.
 	public IntRect getHitbox() {
 		return this.hitbox;
+	}
+	/**
+	 * 
+	 * @return the list of need
+	 */
+	public List<Need> getNeeds() {
+		return this.needs;
 	}
 	
 	// Generates resources.
