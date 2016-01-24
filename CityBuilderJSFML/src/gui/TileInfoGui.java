@@ -102,6 +102,7 @@ public class TileInfoGui implements Drawable {
 						this.infoString += "\n";
 					}
 				}
+				this.infoString += "Halted : " + this.building.isHalted();
 			}
 		// we set the text
 		this.infoText.setString(infoString);

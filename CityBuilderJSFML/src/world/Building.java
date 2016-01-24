@@ -156,6 +156,13 @@ public class Building {
 	public List<Need> getNeeds() {
 		return this.needs;
 	}
+	/**
+	 * 
+	 * @return halted statut
+	 */
+	public boolean isHalted() {
+		return this.halted;
+	}
 	
 	/**
 	 * Generates resources.
