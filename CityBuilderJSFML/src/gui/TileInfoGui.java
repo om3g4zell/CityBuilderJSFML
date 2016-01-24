@@ -93,6 +93,13 @@ public class TileInfoGui implements Drawable {
 					this.infoString += resource.toString() + " : " + availableResources.get(resource) + "\n";
 				}
 			}
+			// Tile info
+			this.infoString += "TILE_TYPE :" + this.actualTile.getTileType().toString() + " \n";
+			for(Resource.ResourceType resource : Resource.ResourceType.values()) {
+				if(resourcemap.getResources(this.position.x, this.position.y).get(resource) > 0) {
+					this.infoString += resource.toString() + " : " + resourcemap.getResources(this.position.x, this.position.y).get(resource) + "\n";
+				}
+			}
 		}
 		// we set the text
 		this.infoText.setString(infoString);
