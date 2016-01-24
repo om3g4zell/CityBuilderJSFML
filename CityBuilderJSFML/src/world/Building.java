@@ -25,16 +25,7 @@ public class Building {
 		
 		NONE
 	}
-	/**
-	 * building class
-	 */
-	public static enum BuildingClass {
-		RESIDENTIAL,
-		CULTURAL,
-		INDUSTRY,
-		COMMERCIAL,
-		ROAD
-	}
+	
 	/**
 	 * Returns the building type generating the resource type given.
 	 * @param type : the resource type
@@ -67,7 +58,7 @@ public class Building {
 	protected int range;
 	protected IntRect hitbox;
 	protected BuildingType type;
-	protected List<BuildingClass> buildingClass;
+	protected List<Zone.ZoneClass> buildingClass;
 	protected boolean halted;
 	
 	/**
@@ -81,14 +72,14 @@ public class Building {
 		
 		this.type = type;
 		this.needs = new ArrayList<Need>();
-		this.buildingClass = new ArrayList<BuildingClass>();
+		this.buildingClass = new ArrayList<Zone.ZoneClass>();
 		this.halted = false;
 		
 		switch(this.type) {
 			case GENERATOR:
 				this.range = 18;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
-				this.buildingClass.add(BuildingClass.INDUSTRY);
+				this.buildingClass.add(Zone.ZoneClass.INDUSTRY);
 				break;
 			case GROCERY_STORE:
 				this.range = 28;
@@ -97,7 +88,7 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
-				this.buildingClass.add(BuildingClass.COMMERCIAL);
+				this.buildingClass.add(Zone.ZoneClass.COMMERCIAL);
 				break;
 			case HOUSE:
 				this.range = 99;
@@ -106,19 +97,19 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
 				this.needs.add(new Need(Resource.ResourceType.FOOD, 10, 0.9f));
-				this.buildingClass.add(BuildingClass.RESIDENTIAL);
+				this.buildingClass.add(Zone.ZoneClass.RESIDENTIAL);
 				break;
 			case ROAD:
 				this.range = 1;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
-				this.buildingClass.add(BuildingClass.ROAD);
+				this.buildingClass.add(Zone.ZoneClass.ROAD);
 				break;
 			case HYDROLIC_STATION:
 				this.range = 18;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
-				this.buildingClass.add(BuildingClass.INDUSTRY);
+				this.buildingClass.add(Zone.ZoneClass.INDUSTRY);
 				break;
 			default:
 		 
