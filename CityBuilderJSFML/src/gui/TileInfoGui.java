@@ -63,7 +63,7 @@ public class TileInfoGui implements Drawable {
 		this.position = new Vector2i(this.tileSelector.selectedTile.x,this.tileSelector.selectedTile.y);
 		this.actualTile = this.tileMap.get(position.y).get(position.x);
 		
-		// if it's the ground with no buildings
+		// show Tile info
 			this.infoString += "TILE_TYPE :" + this.actualTile.getTileType().toString() + " \n";
 			for(Resource.ResourceType resource : Resource.ResourceType.values()) {
 				if(resourcemap.getResources(this.position.x, this.position.y).get(resource) > 0) {
@@ -71,7 +71,7 @@ public class TileInfoGui implements Drawable {
 				}
 			}
 		
-		// if it's a buildings
+		// show Building info
 			for(Building b : buildings) {
 				if(b.getHitbox().contains(position)) {
 					this.building = b;
@@ -91,11 +91,12 @@ public class TileInfoGui implements Drawable {
 				}
 				
 				for(Resource.ResourceType resource : Resource.ResourceType.values()) {
-					if(resourcemap.getResources(this.position.x, this.position.y).get(resource) > 0) {
-						this.infoString += resource.toString() + " : " + resourcemap.getResources(this.position.x, this.position.y).get(resource);
+					if(availableResources.get(resource) > 0) {
+						this.infoString += resource.toString() + " : " + availableResources.get(resource);
+						// show %
 						for(Need need : this.building.getNeeds()) {
 							if(need.type.equals(resource)){
-								this.infoString += " : " + (int)((resourcemap.getResources(this.position.x, this.position.y).get(resource)/need.amount)*100) + " %";
+								this.infoString += " : " + (int)((availableResources.get(resource)/need.amount)*100) + " %";
 							}
 						}
 						this.infoString += "\n";
