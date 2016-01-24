@@ -2,6 +2,7 @@ package graphics;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jsfml.graphics.BasicTransformable;
@@ -32,7 +33,7 @@ public class TileMap extends BasicTransformable implements Drawable {
 	protected Vector2f sizeOfTile;
 	
 	// Tiles.
-	protected ArrayList<ArrayList<Tile>> tiles;
+	protected List<ArrayList<Tile>> tiles;
 	
 	// Vertex array to draw.
 	protected VertexArray vertexArray;
@@ -81,11 +82,11 @@ public class TileMap extends BasicTransformable implements Drawable {
 	
 	/**
 	 * Sets the tiles.
-	 * @param tiles : sets the tile array of the tile map
+	 * @param tiles2 : sets the tile array of the tile map
 	 */
-	public void setTiles(ArrayList<ArrayList<Tile>> tiles) {
+	public void setTiles(List<ArrayList<Tile>> tiles2) {
 		// Only change if modifications.
-		this.tiles = tiles;
+		this.tiles = tiles2;
 		
 		this.hasChanged = true;
 	}
