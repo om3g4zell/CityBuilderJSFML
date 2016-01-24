@@ -160,6 +160,10 @@ public class Sim {
 			b.generateResources(this.resourcesMap);
 		}
 		
+		// update tile info
+		if(this.displayTileInfo)
+			this.tileInfoGui.update(resourcesMap, tileSelector, buildings);
+		
 		// Consume resources.
 		buildingsRequired.clear();
 		for(Building b : this.buildings) {
@@ -179,8 +183,6 @@ public class Sim {
 		this.statsGui.setPopulation(this.cityStats.getPopulation());
 		this.tileSelector.update();
 		
-		if(this.displayTileInfo)
-			this.tileInfoGui.update(resourcesMap, tileSelector, buildings);
 	}
 	
 	/**
