@@ -20,6 +20,7 @@ import graphics.FontManager;
 import graphics.TextureManager;
 import graphics.Tile;
 import graphics.TileMap;
+import graphics.ZoneMapLayer;
 import gui.CheckBox;
 import gui.StatsGui;
 import gui.TileInfoGui;
@@ -28,6 +29,8 @@ import world.Building;
 import world.Building.BuildingType;
 import world.CityStats;
 import world.ResourcesMap;
+import world.Zone;
+import world.ZoneMap;
 
 /**
  * Contains init, update and render.
@@ -52,6 +55,8 @@ public class Sim {
 	protected boolean displayTileInfo;
 	protected Map<Integer, Building.BuildingType> buildingsRequired;
 	protected CheckBox checkbox1;
+	protected ZoneMap zoneMap;
+	protected ZoneMapLayer zoneMapLayer;
 	
 	/**
 	 * Constructor
@@ -99,8 +104,17 @@ public class Sim {
 		
 		// Create a checkbox
 		this.checkbox1 = new CheckBox(10, 100 , this.textureManager);
+		
 		// Create the city stats.
 		this.cityStats = new CityStats();
+		
+		// Create the zoneMap
+		this.zoneMap = new ZoneMap(TILEMAP_SIZE.x, TILEMAP_SIZE.y);
+		
+		// Create the zoneMapLayer
+		this.zoneMapLayer = new ZoneMapLayer(this.zoneMap);
+		
+		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.FREE, new Color(12, 52, 30, 170));
 		
 		// Houses.
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(31, 20)));
@@ -253,6 +267,10 @@ public class Sim {
 		// Update the tilemap.
 		this.tilemap.update();
 		
+		if(this.checkbox1.isChecked()) {
+			this.zoneMapLayer.update();
+		}
+		
 		//Update stats
 		this.cityStats.update(buildings);
 		this.statsGui.setMoney(this.cityStats.getMoney());
@@ -269,6 +287,9 @@ public class Sim {
 		/////////////
 
 		this.window.draw(this.tilemap);
+		if(this.checkbox1.isChecked()) {
+			this.window.draw(zoneMapLayer);
+		}
 		this.window.draw(this.tileSelector);
 		this.window.draw(this.statsGui);
 		this.window.draw(checkbox1);
@@ -297,8 +318,6 @@ public class Sim {
 		if(event.type == Event.Type.MOUSE_BUTTON_RELEASED && event.asMouseButtonEvent().button == Mouse.Button.MIDDLE) {
 			this.displayTileInfo = !this.displayTileInfo;
 		}
-		if(event.type == Event.Type.MOUSE_BUTTON_RELEASED && event.asMouseButtonEvent().button == Mouse.Button.LEFT && this.checkbox1.getHitbox().contains(Mouse.getPosition(window))) {
-			this.checkbox1.setChecked(!this.checkbox1.isChecked());
-		}
+		this.checkbox1.handleEvent(event,this.window);
 	}
 }

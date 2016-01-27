@@ -4,7 +4,11 @@ import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.IntRect;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
+import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Sprite;
+import org.jsfml.window.Mouse;
+import org.jsfml.window.event.Event;
+
 import graphics.TextureManager;
 
 /*
@@ -28,12 +32,12 @@ public class CheckBox implements Drawable{
 		
 		this.checkedSprite = new Sprite();
 		this.checkedSprite.setTexture(loader.get(TextureManager.TextureID.CHECKBOX_TEXTURE));
-		this.checkedSprite.setTextureRect(new IntRect(0, 0, 16, 16));
+		this.checkedSprite.setTextureRect(new IntRect(16, 0, 16, 16));
 		this.checkedSprite.setPosition(x, y);
 		
 		this.noCheckedSprite = new Sprite();
 		this.noCheckedSprite.setTexture(loader.get(TextureManager.TextureID.CHECKBOX_TEXTURE));
-		this.noCheckedSprite.setTextureRect(new IntRect(16, 0, 16, 16));
+		this.noCheckedSprite.setTextureRect(new IntRect(0, 0, 16, 16));
 		this.noCheckedSprite.setPosition(x, y);
 	}
 	
@@ -59,6 +63,16 @@ public class CheckBox implements Drawable{
 	 */
 	public IntRect getHitbox() {
 		return this.hitbox;
+	}
+	
+	/**
+	 * Handles the event.
+	 * @param event : the JSFML event to handle
+	 */
+	public void handleEvent(Event e,RenderWindow window) {
+		if(e.type == Event.Type.MOUSE_BUTTON_RELEASED && e.asMouseButtonEvent().button == Mouse.Button.LEFT && this.getHitbox().contains(Mouse.getPosition(window))) {
+			this.setChecked(!this.isChecked());
+		}
 	}
 
 	@Override

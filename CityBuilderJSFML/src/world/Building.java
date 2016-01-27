@@ -103,7 +103,7 @@ public class Building {
 				this.range = 1;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
-				this.buildingClass.add(Zone.ZoneClass.ROAD);
+				this.buildingClass.add(Zone.ZoneClass.FREE);
 				break;
 			case HYDROLIC_STATION:
 				this.range = 18;

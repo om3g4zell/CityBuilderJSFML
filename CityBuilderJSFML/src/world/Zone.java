@@ -1,6 +1,6 @@
 package world;
 
-import org.jsfml.graphics.IntRect;
+import org.jsfml.system.Vector2i;
 
 /*
  * definite zone 
@@ -16,10 +16,10 @@ public class Zone {
 		CULTURAL,
 		INDUSTRY,
 		COMMERCIAL,
-		ROAD
+		FREE
 	}
 	
-	protected IntRect hitbox;
+	protected Vector2i position;
 	protected ZoneClass zoneType;
 	
 	/**
@@ -30,17 +30,17 @@ public class Zone {
 	 * @param height : sizeY of the zone
 	 * @param type : type of the zone
 	 */
-	public Zone(int x, int y ,int width , int height, ZoneClass type) {
-		this.hitbox = new IntRect(x,y,width,height);
+	public Zone(int x, int y, ZoneClass type) {
+		this.position = new Vector2i(x, y);
 		this.zoneType = type;
 	}
 	
 	/**
-	 * return the hitbox of the zone
-	 * @return IntRect : the hitbox of the zone
+	 * return the position of the zone
+	 * @return Vector2i : the position of the zone
 	 */
-	public IntRect getHitbox() {
-		return this.hitbox;
+	public Vector2i getPosition() {
+		return this.position;
 	}
 	
 	/**
@@ -50,4 +50,14 @@ public class Zone {
 	public ZoneClass getType() {
 		return this.zoneType;
 	}
+	
+	/**
+	 * set the type of the zone
+	 * @param type : type of the zone
+	 */
+	public void setType(ZoneClass type) {
+		this.zoneType = type;
+	}
+	
+	
 }
