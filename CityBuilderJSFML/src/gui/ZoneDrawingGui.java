@@ -6,6 +6,9 @@ import java.util.List;
 import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
+import org.jsfml.graphics.RenderWindow;
+import org.jsfml.system.Time;
+import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.Mouse;
 import org.jsfml.window.event.Event;
@@ -18,6 +21,7 @@ import world.ZoneMap;
 
 public class ZoneDrawingGui implements Drawable {
 	protected List<CheckBox> checkboxes;
+	protected Time lastZoneClassChange;
 	
 	/**
 	 * Constructor.
@@ -26,6 +30,7 @@ public class ZoneDrawingGui implements Drawable {
 	 */
 	public ZoneDrawingGui(TextureManager textures, FontManager fonts) {
 		this.checkboxes = new ArrayList<CheckBox>();
+		this.lastZoneClassChange = Time.ZERO;
 		
 		int i = 0;
 		for(ZoneClass z : ZoneClass.values()) {
@@ -39,22 +44,38 @@ public class ZoneDrawingGui implements Drawable {
 	 * @param zoneMap : the zone map
 	 * @param tileSelector : the tile selector
 	 */
-	public void update(ZoneMap zoneMap, TileSelector tileSelector) {
-		if(Mouse.isButtonPressed(Mouse.Button.LEFT)) {
-			ZoneClass zoneClass = ZoneClass.FREE;
+	public void update(Time dt, RenderWindow window, ZoneMap zoneMap, TileSelector tileSelector) {
+		// Get the window position.
+	    Vector2i rawMousePosition = Mouse.getPosition(window);
+	    Vector2f mousePosition = window.mapPixelToCoords(rawMousePosition);
+	    
+		lastZoneClassChange = Time.add(lastZoneClassChange, dt);
+
+		if(Mouse.isButtonPressed(Mouse.Button.LEFT) && Time.ratio(lastZoneClassChange, Time.getSeconds(0.5f)) >= 1.f) {
+			// Do not draw under checkboxes.
+			boolean underCheckbox = false;
 			for(CheckBox cb : this.checkboxes) {
-				if(cb.isChecked()) {
-					int zoneClassHashCode = cb.getValue();
-					
-					for(ZoneClass z : ZoneClass.values())
-						if(z.hashCode() == zoneClassHashCode)
-							zoneClass = z;
-				}
+				if(cb.getHitbox().contains((int)mousePosition.x, (int)mousePosition.y))
+					underCheckbox = true;
 			}
 			
-			Vector2i selectedTile = tileSelector.getSelectedTile();
-			Zone z = zoneMap.getZoneMap().get(selectedTile.y).get(selectedTile.x);
-			z.setType(zoneClass);
+			if(!underCheckbox) {
+				// Get the zone class and draw.
+				ZoneClass zoneClass = ZoneClass.FREE;
+				for(CheckBox cb : this.checkboxes) {
+					if(cb.isChecked()) {
+						int zoneClassHashCode = cb.getValue();
+						
+						for(ZoneClass z : ZoneClass.values())
+							if(z.hashCode() == zoneClassHashCode)
+								zoneClass = z;
+					}
+				}
+				
+				Vector2i selectedTile = tileSelector.getSelectedTile();
+				Zone z = zoneMap.getZoneMap().get(selectedTile.y).get(selectedTile.x);
+				z.setType(zoneClass);
+			}
 		}
 	}
 	
@@ -70,6 +91,7 @@ public class ZoneDrawingGui implements Drawable {
 			
 			if(checkedCache != cb.isChecked()) {
 				disableCheckboxes(cb);
+				lastZoneClassChange = Time.ZERO;
 			}
 		}
 	}

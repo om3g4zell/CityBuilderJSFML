@@ -117,7 +117,7 @@ public class Sim {
 		this.zoneMapLayer = new ZoneMapLayer(this.zoneMap);
 		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.FREE, new Color(12, 52, 30, 170));
 		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.COMMERCIAL, new Color(125, 193, 129, 170));
-		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.CULTURAL, new Color(0, 70, 0, 170));
+		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.CULTURAL, new Color(51, 153, 255, 170));
 		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.INDUSTRY, new Color(227, 168, 87, 170));
 		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.RESIDENTIAL, new Color(70, 0, 0, 170));
 		
@@ -273,7 +273,7 @@ public class Sim {
 		this.tilemap.update();
 		
 		if(this.checkbox1.isChecked()) {
-			this.zoneDrawingGui.update(this.zoneMap, this.tileSelector);
+			this.zoneDrawingGui.update(dt, this.window, this.zoneMap, this.tileSelector);
 			this.zoneMapLayer.update();
 		}
 		
@@ -297,6 +297,7 @@ public class Sim {
 			this.window.draw(this.zoneMapLayer);
 			this.window.draw(this.zoneDrawingGui);
 		}
+		
 		this.window.draw(this.tileSelector);
 		this.window.draw(this.statsGui);
 		this.window.draw(checkbox1);
