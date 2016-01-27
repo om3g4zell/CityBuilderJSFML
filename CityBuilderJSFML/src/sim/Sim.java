@@ -113,8 +113,11 @@ public class Sim {
 		
 		// Create the zoneMapLayer
 		this.zoneMapLayer = new ZoneMapLayer(this.zoneMap);
-		
 		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.FREE, new Color(12, 52, 30, 170));
+		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.COMMERCIAL, new Color(125, 193, 129, 170));
+		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.CULTURAL, new Color(0, 70, 0, 170));
+		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.INDUSTRY, new Color(227, 168, 87, 170));
+		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.RESIDENTIAL, new Color(70, 0, 0, 170));
 		
 		// Houses.
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(31, 20)));
@@ -143,8 +146,6 @@ public class Sim {
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(37, 22)));
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(38, 22)));
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(39, 22)));
-		
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(10, 10)));
 		
 		// Grossery store
 		this.buildings.add(new Building(BuildingType.GROCERY_STORE, new Vector2i(40, 21)));
@@ -183,7 +184,6 @@ public class Sim {
 			else {
 				buildingCounts.put(buildingType, 1);
 			}
-				
 		}
 		
 		// Get the most required.
