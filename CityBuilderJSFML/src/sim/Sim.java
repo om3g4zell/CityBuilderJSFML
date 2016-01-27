@@ -26,6 +26,7 @@ import gui.StatsGui;
 import gui.TileInfoGui;
 import gui.TileSelector;
 import gui.ZoneDrawingGui;
+import maths.Distance;
 import world.Building;
 import world.Building.BuildingType;
 import world.CityStats;
@@ -227,16 +228,57 @@ public class Sim {
 				}
 			}
 			
-			// Compute the average position.
+			// Compute the average position, aka the center of the search area.
 			Vector2f fposition = new Vector2f(position.x, position.y);
 			fposition = Vector2f.mul(fposition, 1.f / (float)(maxEntry.getValue()));
 			
-			position = new Vector2i((int)fposition.x, (int)fposition.y);
+			Vector2i centerOfSearchArea = new Vector2i((int)fposition.x, (int)fposition.y);
 			
-			// Look around the position to find a suitable spot.
-			// Check if we are still in the range of the building.
-				// Spawn the building.
-			// Else, find another spot.
+			// Get the further building from the average position, to compute the radius of the search area.
+			float radius = 0.f;
+			
+			for(Map.Entry<Integer, Building.BuildingType> entry : this.buildingsRequired.entrySet()) {
+				Building.BuildingType btype = entry.getValue();
+				
+				if(btype == buildingType) {
+					Building building = null;
+					
+					// Get the building.
+					for(Building b : this.buildings) {
+						if(b.getId() == entry.getKey()) {
+							building = b;
+							break;
+						}
+					}
+					
+					// Add its position.
+					if(building != null) {
+						Vector2i centerPosition = new Vector2i(building.getHitbox().left + building.getHitbox().width / 2, building.getHitbox().top + building.getHitbox().height / 2);
+						float distance = Distance.manhattan(centerOfSearchArea, centerPosition);
+						
+						if(distance > radius)
+							radius = distance;
+					}
+				}
+			}
+			
+			// We use squared radius and squared euclidean distance for performance.
+			double squaredRadius = Math.pow(radius, 2);
+			
+			// Check all resource map in square range.
+			for(int x = Math.max(0, centerOfSearchArea.x - (int)radius) ; x < Math.min(resourcesMap.getSize().x, centerOfSearchArea.x + radius + 1) ; ++x)
+			{
+				for(int y = Math.max(0, centerOfSearchArea.y - (int)radius) ; y < Math.min(resourcesMap.getSize().y, centerOfSearchArea.y + radius + 1) ; ++y)
+				{
+					// Check only in radius.
+					if(Distance.squaredEuclidean(centerOfSearchArea, new Vector2i(x, y)) <= squaredRadius)
+					{
+						// Check zone compatibility.
+						
+						// Check available resources on map.
+					}
+				}
+			}
 		}
 	}
 	
@@ -282,7 +324,6 @@ public class Sim {
 		this.statsGui.setMoney(this.cityStats.getMoney());
 		this.statsGui.setPopulation(this.cityStats.getPopulation());
 		this.tileSelector.update();
-		
 	}
 	
 	/**
