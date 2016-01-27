@@ -22,6 +22,7 @@ import graphics.Tile;
 import graphics.TileMap;
 import graphics.ZoneMapLayer;
 import gui.CheckBox;
+import gui.GameSpeedGui;
 import gui.StatsGui;
 import gui.TileInfoGui;
 import gui.TileSelector;
@@ -60,6 +61,7 @@ public class Sim {
 	protected ZoneMap zoneMap;
 	protected ZoneMapLayer zoneMapLayer;
 	protected ZoneDrawingGui zoneDrawingGui;
+	protected GameSpeedGui gameSpeedGui;
 	
 	/**
 	 * Constructor
@@ -113,6 +115,9 @@ public class Sim {
 		
 		// Create the zoneMap
 		this.zoneMap = new ZoneMap(TILEMAP_SIZE.x, TILEMAP_SIZE.y);
+		
+		// Create the game speed GUI
+		this.gameSpeedGui = new GameSpeedGui(textureManager, this.window.getSize().x - 80, 20);
 		
 		// Create the zoneMapLayer
 		this.zoneMapLayer = new ZoneMapLayer(this.zoneMap);
@@ -320,6 +325,7 @@ public class Sim {
 		}
 		
 		//Update stats
+		this.gameSpeedGui.update(dt);
 		this.cityStats.update(buildings);
 		this.statsGui.setMoney(this.cityStats.getMoney());
 		this.statsGui.setPopulation(this.cityStats.getPopulation());
@@ -342,6 +348,7 @@ public class Sim {
 		this.window.draw(this.tileSelector);
 		this.window.draw(this.statsGui);
 		this.window.draw(checkbox1);
+		this.window.draw(gameSpeedGui);
 		
 		if(this.displayTileInfo)
 			this.window.draw(tileInfoGui);
@@ -372,5 +379,7 @@ public class Sim {
 		
 		if(this.checkbox1.isChecked())
 			this.zoneDrawingGui.handleEvent(event);
+		
+		this.gameSpeedGui.handleEvent(event);
 	}
 }
