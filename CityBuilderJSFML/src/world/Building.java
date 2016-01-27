@@ -136,6 +136,14 @@ public class Building {
 	}
 	
 	/**
+	 * Returns the classes this building fits into.
+	 * @return array of the classes
+	 */
+	public List<Zone.ZoneClass> getZoneClasses() {
+		return this.buildingClass;
+	}
+	
+	/**
 	 * Returns the type.
 	 * @return the type
 	 */
