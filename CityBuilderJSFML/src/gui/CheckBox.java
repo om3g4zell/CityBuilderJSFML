@@ -17,12 +17,12 @@ import graphics.TextureManager;
  * A simple checkbox class
  */
 public class CheckBox implements Drawable{
-	
 	protected IntRect hitbox;
 	protected boolean checkFlag;
 	protected Sprite checkedSprite;
 	protected Sprite noCheckedSprite;
 	protected Text text;
+	protected int value;
 	
 	/**
 	 * Constructor of the checkbox
@@ -30,7 +30,7 @@ public class CheckBox implements Drawable{
 	 * @param y : the position y of the checkbox
 	 * @param loader : to get the texture of the checkbox
 	 */
-	public CheckBox(int x, int y, TextureManager textures, FontManager fonts, String text) {
+	public CheckBox(int x, int y, TextureManager textures, FontManager fonts, String text, int value) {
 		this.hitbox = new IntRect(x, y, 16, 16);
 		this.text = new Text();
 		this.text.setFont(fonts.get(FontManager.FontID.VCR_MONO));
@@ -38,7 +38,6 @@ public class CheckBox implements Drawable{
 		this.text.setString(text);
 		this.text.setColor(Color.WHITE);
 		this.text.setPosition(this.hitbox.left + 20, this.hitbox.top - 2);
-		
 		
 		this.checkedSprite = new Sprite();
 		this.checkedSprite.setTexture(textures.get(TextureManager.TextureID.CHECKBOX_TEXTURE));
@@ -49,6 +48,16 @@ public class CheckBox implements Drawable{
 		this.noCheckedSprite.setTexture(textures.get(TextureManager.TextureID.CHECKBOX_TEXTURE));
 		this.noCheckedSprite.setTextureRect(new IntRect(0, 0, 16, 16));
 		this.noCheckedSprite.setPosition(x, y);
+		
+		this.value = value;
+	}
+	
+	/**
+	 * Returns the value of the checkbox.
+	 * @return the value.
+	 */
+	public int getValue() {
+		return value;
 	}
 	
 	/**

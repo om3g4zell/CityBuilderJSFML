@@ -25,6 +25,7 @@ import gui.CheckBox;
 import gui.StatsGui;
 import gui.TileInfoGui;
 import gui.TileSelector;
+import gui.ZoneDrawingGui;
 import world.Building;
 import world.Building.BuildingType;
 import world.CityStats;
@@ -57,6 +58,7 @@ public class Sim {
 	protected CheckBox checkbox1;
 	protected ZoneMap zoneMap;
 	protected ZoneMapLayer zoneMapLayer;
+	protected ZoneDrawingGui zoneDrawingGui;
 	
 	/**
 	 * Constructor
@@ -103,7 +105,7 @@ public class Sim {
 		this.buildings = new ArrayList<Building>();
 		
 		// Create a checkbox
-		this.checkbox1 = new CheckBox(10, 100 , this.textureManager, this.fontManager , "Afficher les zones");
+		this.checkbox1 = new CheckBox(10, 100 , this.textureManager, this.fontManager , "Afficher les zones", 0);
 		
 		// Create the city stats.
 		this.cityStats = new CityStats();
@@ -165,6 +167,9 @@ public class Sim {
 
 		// Instanciate the tileInfoGui
 		this.tileInfoGui = new TileInfoGui(this.tiles, this.fontManager);
+		
+		// Instanciate the zone drawing GUI.
+		this.zoneDrawingGui = new ZoneDrawingGui(this.textureManager, this.fontManager);
 	}
 	
 	/**
@@ -268,6 +273,7 @@ public class Sim {
 		this.tilemap.update();
 		
 		if(this.checkbox1.isChecked()) {
+			this.zoneDrawingGui.update(this.zoneMap, this.tileSelector);
 			this.zoneMapLayer.update();
 		}
 		
@@ -288,7 +294,8 @@ public class Sim {
 
 		this.window.draw(this.tilemap);
 		if(this.checkbox1.isChecked()) {
-			this.window.draw(zoneMapLayer);
+			this.window.draw(this.zoneMapLayer);
+			this.window.draw(this.zoneDrawingGui);
 		}
 		this.window.draw(this.tileSelector);
 		this.window.draw(this.statsGui);
@@ -320,5 +327,8 @@ public class Sim {
 		}
 		
 		this.checkbox1.handleEvent(event);
+		
+		if(this.checkbox1.isChecked())
+			this.zoneDrawingGui.handleEvent(event);
 	}
 }
