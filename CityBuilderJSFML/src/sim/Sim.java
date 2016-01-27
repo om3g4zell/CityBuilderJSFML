@@ -31,7 +31,9 @@ import maths.Distance;
 import world.Building;
 import world.Building.BuildingType;
 import world.CityStats;
+import world.Need;
 import world.ResourcesMap;
+import world.ResourcesStack;
 import world.Zone;
 import world.ZoneMap;
 
@@ -270,6 +272,9 @@ public class Sim {
 			// We use squared radius and squared euclidean distance for performance.
 			double squaredRadius = Math.pow(radius, 2);
 			
+			// Create a fake building.
+			Building requiredBuilding = new Building(maxEntry.getKey(), new Vector2i(0, 0));
+			
 			// Check all resource map in square range.
 			for(int x = Math.max(0, centerOfSearchArea.x - (int)radius) ; x < Math.min(resourcesMap.getSize().x, centerOfSearchArea.x + radius + 1) ; ++x)
 			{
@@ -280,7 +285,22 @@ public class Sim {
 					{
 						// Check zone compatibility.
 						
-						// Check available resources on map.
+						// Get resources on tile.
+						ResourcesStack rstack = resourcesMap.getResources(x, y);
+						
+						// Check if they satisfy the needs.
+						boolean allNeedsSatisfied = false;
+						for(Need n : requiredBuilding.getNeeds()) {
+							float minAmount = n.amount * n.fillFactor;
+							
+							if(rstack.get(n.type) < minAmount)
+								allNeedsSatisfied = false;
+						}
+						
+						if(!allNeedsSatisfied) {
+							// This position is not suitable.
+							break;
+						}
 					}
 				}
 			}
