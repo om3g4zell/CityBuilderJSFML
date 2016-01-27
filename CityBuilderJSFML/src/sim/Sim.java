@@ -142,10 +142,10 @@ public class Sim {
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(37, 23)));
 		
 		// Generator.
-		//this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(39, 21)));
+		this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(39, 21)));
 		
 		// Water station.
-		this.buildings.add(new Building(BuildingType.HYDROLIC_STATION, new Vector2i(39, 23)));
+		//this.buildings.add(new Building(BuildingType.HYDROLIC_STATION, new Vector2i(39, 23)));
 		
 		// Road.
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(31, 22)));
@@ -280,10 +280,14 @@ public class Sim {
 			// Create a fake building.
 			Building requiredBuilding = new Building(maxEntry.getKey(), new Vector2i(0, 0));
 			
+			// We may need to expand the radius.
+			radius = Math.max(radius, requiredBuilding.getRange());
+			
 			// Map of the considered positions.
 			HashMap<Vector2i, Integer> candidatesPositions = new HashMap<Vector2i, Integer>();
 			
 			// Check all resource map in square range.
+			System.out.println("For [" + requiredBuilding.getType().toString() + "]:");
 			for(int x = Math.max(0, centerOfSearchArea.x - (int)radius) ; x < Math.min(resourcesMap.getSize().x, centerOfSearchArea.x + radius + 1) ; ++x)
 			{
 				for(int y = Math.max(0, centerOfSearchArea.y - (int)radius) ; y < Math.min(resourcesMap.getSize().y, centerOfSearchArea.y + radius + 1) ; ++y)
@@ -302,6 +306,7 @@ public class Sim {
 						
 						if(collide) {
 							// This position is not suitable.
+							System.out.println("\t=> Collision : radius " + radius + "");
 							break;
 						}
 						
@@ -324,6 +329,7 @@ public class Sim {
 							// If one need is not satisfied to its minimum, we quit.
 							if(rstack.get(n.type) < minAmount) {
 								allNeedsSatisfied = false;
+								System.out.println("\t=> Missing resource : [" + n.type.toString() + "] " + rstack.get(n.type) + "/" + minAmount);
 								break;
 							}
 						}
@@ -405,7 +411,7 @@ public class Sim {
 			BuildingType requiredBuilding = b.consumeResources(this.resourcesMap);
 			buildingsRequired.put(b.getId(), requiredBuilding);
 			
-			System.out.println(b.getType().toString() + " requires " + requiredBuilding.toString());
+			//System.out.println(b.getType().toString() + " requires " + requiredBuilding.toString());
 		}
 		spawnBuildings();
 		
