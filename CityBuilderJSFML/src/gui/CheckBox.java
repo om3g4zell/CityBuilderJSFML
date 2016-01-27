@@ -5,7 +5,6 @@ import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.IntRect;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
-import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Text;
 import org.jsfml.window.Mouse;
@@ -80,8 +79,8 @@ public class CheckBox implements Drawable{
 	 * Handles the event.
 	 * @param event : the JSFML event to handle
 	 */
-	public void handleEvent(Event e,RenderWindow window) {
-		if(e.type == Event.Type.MOUSE_BUTTON_RELEASED && e.asMouseButtonEvent().button == Mouse.Button.LEFT && this.getHitbox().contains(Mouse.getPosition(window))) {
+	public void handleEvent(Event e) {
+		if(e.type == Event.Type.MOUSE_BUTTON_RELEASED && e.asMouseButtonEvent().button == Mouse.Button.LEFT && this.getHitbox().contains(e.asMouseEvent().position)) {
 			this.setChecked(!this.isChecked());
 		}
 	}

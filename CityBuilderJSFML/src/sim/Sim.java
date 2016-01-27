@@ -318,6 +318,7 @@ public class Sim {
 		if(event.type == Event.Type.MOUSE_BUTTON_RELEASED && event.asMouseButtonEvent().button == Mouse.Button.MIDDLE) {
 			this.displayTileInfo = !this.displayTileInfo;
 		}
-		this.checkbox1.handleEvent(event,this.window);
+		
+		this.checkbox1.handleEvent(event);
 	}
 }
