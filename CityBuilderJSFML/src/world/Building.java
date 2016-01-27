@@ -126,6 +126,14 @@ public class Building {
 	}
 	
 	/**
+	 * Returns the range of generation.
+	 * @return the range
+	 */
+	public int getRange() {
+		return this.range;
+	}
+	
+	/**
 	 * Returns the type.
 	 * @return the type
 	 */
