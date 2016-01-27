@@ -103,7 +103,7 @@ public class Sim {
 		this.buildings = new ArrayList<Building>();
 		
 		// Create a checkbox
-		this.checkbox1 = new CheckBox(10, 100 , this.textureManager);
+		this.checkbox1 = new CheckBox(10, 100 , this.textureManager, this.fontManager , "Afficher les zones");
 		
 		// Create the city stats.
 		this.cityStats = new CityStats();
