@@ -184,7 +184,8 @@ public class Sim {
 	 * Spawns the new buildings.
 	 */
 	public void spawnBuildings() {
-		// First count the buildings.
+		// First count the required buildings.
+		System.out.println("First count the required buildings.");
 		Map<Building.BuildingType, Integer> buildingCounts = new HashMap<Building.BuildingType, Integer>();
 		
 		for(Map.Entry<Integer, Building.BuildingType> entry : this.buildingsRequired.entrySet()) {
@@ -200,6 +201,7 @@ public class Sim {
 		}
 		
 		// Get the most required.
+		System.out.println("\tGet the most required.");
 		Map.Entry<Building.BuildingType, Integer> maxEntry = null;
 		for(Map.Entry<Building.BuildingType, Integer> entry : buildingCounts.entrySet()) {
 			if(maxEntry == null || entry.getValue() > maxEntry.getValue()) {
@@ -209,10 +211,12 @@ public class Sim {
 		
 		// We have a building type.
 		if(maxEntry != null) {
+			System.out.println("Most required : " + maxEntry.getKey().toString());
 			Building.BuildingType buildingType = maxEntry.getKey();
 			Vector2i position = new Vector2i(0, 0);
 			
 			// Now get the position of everyone asking for that building type.
+			System.out.println("\tGet the position of everyone asking for that building type.");
 			for(Map.Entry<Integer, Building.BuildingType> entry : this.buildingsRequired.entrySet()) {
 				Building.BuildingType btype = entry.getValue();
 				
@@ -242,6 +246,7 @@ public class Sim {
 			Vector2i centerOfSearchArea = new Vector2i((int)fposition.x, (int)fposition.y);
 			
 			// Get the further building from the average position, to compute the radius of the search area.
+			System.out.println("\tGet the further building from the average position.");
 			float radius = 0.f;
 			
 			for(Map.Entry<Integer, Building.BuildingType> entry : this.buildingsRequired.entrySet()) {
@@ -279,6 +284,7 @@ public class Sim {
 			HashMap<Vector2i, Integer> candidatesPositions = new HashMap<Vector2i, Integer>();
 			
 			// Check all resource map in square range.
+			System.out.println("\tCheck all resource map in square range.");
 			for(int x = Math.max(0, centerOfSearchArea.x - (int)radius) ; x < Math.min(resourcesMap.getSize().x, centerOfSearchArea.x + radius + 1) ; ++x)
 			{
 				for(int y = Math.max(0, centerOfSearchArea.y - (int)radius) ; y < Math.min(resourcesMap.getSize().y, centerOfSearchArea.y + radius + 1) ; ++y)
@@ -339,6 +345,7 @@ public class Sim {
 			}
 			
 			// Check the position which reach the most buildings.
+			System.out.println("\tCheck the position which reach the most buildings.");
 			Map.Entry<Vector2i, Integer> bestPosition = null;
 			for(Map.Entry<Vector2i, Integer> entry : candidatesPositions.entrySet()) {
 				if(bestPosition == null || entry.getValue() > bestPosition.getValue()) {
@@ -347,6 +354,7 @@ public class Sim {
 			}
 			
 			// Add the building to the position.
+			System.out.println("\tAdd the building to the position.");
 			if(bestPosition != null) {
 				this.buildings.add(new Building(maxEntry.getKey(), bestPosition.getKey()));
 				System.out.println("Spawning : " + maxEntry.getKey().toString() + " @ " + bestPosition.getKey().x + ", " + bestPosition.getKey().y);
