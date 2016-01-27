@@ -158,7 +158,7 @@ public class Sim {
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(39, 22)));
 		
 		// Grossery store
-		this.buildings.add(new Building(BuildingType.GROCERY_STORE, new Vector2i(40, 21)));
+		//this.buildings.add(new Building(BuildingType.GROCERY_STORE, new Vector2i(40, 21)));
 		
 		// Inits the tilemap.
 		this.tilemap = new TileMap(TILEMAP_SIZE, TILE_SIZE);
@@ -275,6 +275,9 @@ public class Sim {
 			// Create a fake building.
 			Building requiredBuilding = new Building(maxEntry.getKey(), new Vector2i(0, 0));
 			
+			// Map of the considered positions.
+			HashMap<Vector2i, Integer> candidatesPositions = new HashMap<Vector2i, Integer>();
+			
 			// Check all resource map in square range.
 			for(int x = Math.max(0, centerOfSearchArea.x - (int)radius) ; x < Math.min(resourcesMap.getSize().x, centerOfSearchArea.x + radius + 1) ; ++x)
 			{
@@ -301,8 +304,52 @@ public class Sim {
 							// This position is not suitable.
 							break;
 						}
+						
+						// Check how many buildings (which required the building construction) are in range of the required building.
+						int inRange = 0;
+						for(Map.Entry<Integer, Building.BuildingType> buildingRequiredEntry : this.buildingsRequired.entrySet()) {
+							if(buildingRequiredEntry.getValue() == requiredBuilding.getType()) {
+								Building building = null;
+								
+								// Get the building.
+								for(Building b : this.buildings) {
+									if(b.getId() == buildingRequiredEntry.getKey()) {
+										building = b;
+										break;
+									}
+								}
+								
+								// Check if in range.
+								if(building != null) {
+									Vector2i buildingCenter = new Vector2i(building.getHitbox().left + building.getHitbox().width / 2,
+																			building.getHitbox().top + building.getHitbox().height / 2);
+									int distance = (int)Distance.euclidean(buildingCenter, new Vector2i(x, y));
+									
+									if(distance < requiredBuilding.getRange()) {
+										inRange++;
+									}
+								}
+							}
+						}
+						
+						// Add to the candidates positions.
+						candidatesPositions.put(new Vector2i(x, y), inRange);
 					}
 				}
+			}
+			
+			// Check the position which reach the most buildings.
+			Map.Entry<Vector2i, Integer> bestPosition = null;
+			for(Map.Entry<Vector2i, Integer> entry : candidatesPositions.entrySet()) {
+				if(bestPosition == null || entry.getValue() > bestPosition.getValue()) {
+					bestPosition = entry;
+				}
+			}
+			
+			// Add the building to the position.
+			if(bestPosition != null) {
+				this.buildings.add(new Building(maxEntry.getKey(), bestPosition.getKey()));
+				System.out.println("Spawning : " + maxEntry.getKey().toString() + " @ " + bestPosition.getKey().x + ", " + bestPosition.getKey().y);
 			}
 		}
 	}
@@ -330,8 +377,9 @@ public class Sim {
 			BuildingType requiredBuilding = b.consumeResources(this.resourcesMap);
 			buildingsRequired.put(b.getId(), requiredBuilding);
 			
-			spawnBuildings();
+			System.out.println("Requiring building : " + requiredBuilding.toString());
 		}
+		spawnBuildings();
 		
 		// Project buildings on the tilemap.
 		BuildingProjector.project(this.buildings, this.tilemap);
