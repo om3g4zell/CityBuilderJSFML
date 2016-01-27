@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jsfml.graphics.Color;
+import org.jsfml.graphics.IntRect;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Time;
 import org.jsfml.system.Vector2f;
@@ -141,7 +142,7 @@ public class Sim {
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(37, 23)));
 		
 		// Generator.
-		this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(39, 21)));
+		//this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(39, 21)));
 		
 		// Water station.
 		this.buildings.add(new Building(BuildingType.HYDROLIC_STATION, new Vector2i(39, 23)));
@@ -158,7 +159,7 @@ public class Sim {
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(39, 22)));
 		
 		// Grossery store
-		//this.buildings.add(new Building(BuildingType.GROCERY_STORE, new Vector2i(40, 21)));
+		this.buildings.add(new Building(BuildingType.GROCERY_STORE, new Vector2i(40, 21)));
 		
 		// Inits the tilemap.
 		this.tilemap = new TileMap(TILEMAP_SIZE, TILE_SIZE);
@@ -185,11 +186,15 @@ public class Sim {
 	 */
 	public void spawnBuildings() {
 		// First count the required buildings.
-		System.out.println("First count the required buildings.");
+		//System.out.println("First count the required buildings.");
 		Map<Building.BuildingType, Integer> buildingCounts = new HashMap<Building.BuildingType, Integer>();
 		
 		for(Map.Entry<Integer, Building.BuildingType> entry : this.buildingsRequired.entrySet()) {
 			Building.BuildingType buildingType = entry.getValue();
+			
+			// Do not count NONE.
+			if(buildingType == Building.BuildingType.NONE)
+				continue;
 			
 			if(buildingCounts.containsKey(buildingType)) {
 				Integer count = buildingCounts.get(buildingType);
@@ -201,7 +206,7 @@ public class Sim {
 		}
 		
 		// Get the most required.
-		System.out.println("\tGet the most required.");
+		//System.out.println("\tGet the most required.");
 		Map.Entry<Building.BuildingType, Integer> maxEntry = null;
 		for(Map.Entry<Building.BuildingType, Integer> entry : buildingCounts.entrySet()) {
 			if(maxEntry == null || entry.getValue() > maxEntry.getValue()) {
@@ -211,12 +216,12 @@ public class Sim {
 		
 		// We have a building type.
 		if(maxEntry != null) {
-			System.out.println("Most required : " + maxEntry.getKey().toString());
+			//System.out.println("\tMost required : " + maxEntry.getKey().toString());
 			Building.BuildingType buildingType = maxEntry.getKey();
 			Vector2i position = new Vector2i(0, 0);
 			
 			// Now get the position of everyone asking for that building type.
-			System.out.println("\tGet the position of everyone asking for that building type.");
+			//System.out.println("\tGet the position of everyone asking for that building type.");
 			for(Map.Entry<Integer, Building.BuildingType> entry : this.buildingsRequired.entrySet()) {
 				Building.BuildingType btype = entry.getValue();
 				
@@ -246,7 +251,7 @@ public class Sim {
 			Vector2i centerOfSearchArea = new Vector2i((int)fposition.x, (int)fposition.y);
 			
 			// Get the further building from the average position, to compute the radius of the search area.
-			System.out.println("\tGet the further building from the average position.");
+			//System.out.println("\tGet the further building from the average position.");
 			float radius = 0.f;
 			
 			for(Map.Entry<Integer, Building.BuildingType> entry : this.buildingsRequired.entrySet()) {
@@ -284,7 +289,7 @@ public class Sim {
 			HashMap<Vector2i, Integer> candidatesPositions = new HashMap<Vector2i, Integer>();
 			
 			// Check all resource map in square range.
-			System.out.println("\tCheck all resource map in square range.");
+			//System.out.println("\tCheck all resource map in square range.");
 			for(int x = Math.max(0, centerOfSearchArea.x - (int)radius) ; x < Math.min(resourcesMap.getSize().x, centerOfSearchArea.x + radius + 1) ; ++x)
 			{
 				for(int y = Math.max(0, centerOfSearchArea.y - (int)radius) ; y < Math.min(resourcesMap.getSize().y, centerOfSearchArea.y + radius + 1) ; ++y)
@@ -292,18 +297,41 @@ public class Sim {
 					// Check only in radius.
 					if(Distance.squaredEuclidean(centerOfSearchArea, new Vector2i(x, y)) <= squaredRadius)
 					{
+						// Check collision with other buildings.
+						boolean collide = false;
+						IntRect candidateHitbox = new IntRect(x, y, requiredBuilding.getHitbox().width, requiredBuilding.getHitbox().height);
+						
+						for(Building b : this.buildings) {
+							if(candidateHitbox.intersection(b.getHitbox()) != null)
+								collide = true;
+						}
+						
+						if(collide) {
+							// This position is not suitable.
+							break;
+						}
+						
 						// Check zone compatibility.
 						
-						// Get resources on tile.
+						// Get the resources available for the building.
 						ResourcesStack rstack = resourcesMap.getResources(x, y);
+						
+						for(int rx = x ; rx < Math.min(x + requiredBuilding.getHitbox().width, TILEMAP_SIZE.x) ; rx++) {
+							for(int ry = y ; ry < Math.min(y + requiredBuilding.getHitbox().height, TILEMAP_SIZE.y) ; ry++) {
+								rstack.add(resourcesMap.getResources(rx, ry));
+							}
+						}
 						
 						// Check if they satisfy the needs.
 						boolean allNeedsSatisfied = true;
 						for(Need n : requiredBuilding.getNeeds()) {
 							float minAmount = n.amount * n.fillFactor;
 							
-							if(rstack.get(n.type) < minAmount)
+							// If one need is not satisfied to its minimum, we quit.
+							if(rstack.get(n.type) < minAmount) {
 								allNeedsSatisfied = false;
+								break;
+							}
 						}
 						
 						if(!allNeedsSatisfied) {
@@ -339,14 +367,13 @@ public class Sim {
 						}
 						
 						// Add to the candidates positions.
-						System.out.println("\t\tAdding new candidate position.");
 						candidatesPositions.put(new Vector2i(x, y), inRange);
 					}
 				}
 			}
 			
 			// Check the position which reach the most buildings.
-			System.out.println("\tCheck the position which reach the most buildings.");
+			//System.out.println("\tCheck the position which reach the most buildings.");
 			Map.Entry<Vector2i, Integer> bestPosition = null;
 			for(Map.Entry<Vector2i, Integer> entry : candidatesPositions.entrySet()) {
 				if(bestPosition == null || entry.getValue() > bestPosition.getValue()) {
@@ -355,7 +382,7 @@ public class Sim {
 			}
 			
 			// Add the building to the position.
-			System.out.println("\tAdd the building to the position.");
+			//System.out.println("\tAdd the building to the position.");
 			if(bestPosition != null) {
 				this.buildings.add(new Building(maxEntry.getKey(), bestPosition.getKey()));
 				System.out.println("Spawning : " + maxEntry.getKey().toString() + " @ " + bestPosition.getKey().x + ", " + bestPosition.getKey().y);
@@ -386,7 +413,7 @@ public class Sim {
 			BuildingType requiredBuilding = b.consumeResources(this.resourcesMap);
 			buildingsRequired.put(b.getId(), requiredBuilding);
 			
-			System.out.println("Requiring building : " + requiredBuilding.toString());
+			System.out.println(b.getType().toString() + " requires " + requiredBuilding.toString());
 		}
 		spawnBuildings();
 		
