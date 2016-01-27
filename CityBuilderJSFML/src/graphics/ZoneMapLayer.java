@@ -32,13 +32,10 @@ public class ZoneMapLayer implements Drawable {
 	// size of the zone map
 	protected Vector2i size;
 	
-	// Boolean flag to indicate if tiles data has changed.
-	protected boolean hasChanged;
 		
 	public ZoneMapLayer(ZoneMap zones) {
 		
 		this.zones = zones;
-		this.hasChanged = false;
 		this.size = zones.getSize();
 		this.sizeOfTile = new Vector2i(16 ,16);
 		
@@ -46,23 +43,8 @@ public class ZoneMapLayer implements Drawable {
 		this.vertexArray = new VertexArray(PrimitiveType.QUADS);
 	}
 	
-	/**
-	 * Sets the type of the tile at the given position.
-	 * @param position : position of the tile in tiles coordinates
-	 * @param type : type of the tile
-	 */
-	public void setTile(Vector2i position, Zone.ZoneClass type) {
-		// Only change if modifications.
-		if(this.zones.getZoneMap().get(position.y).get(position.x).getType() != type) {
-			this.zones.getZoneMap().get(position.y).get(position.x).setType(type);
-			this.hasChanged = true;
-		}
-	}
 	
 	public void update() {
-		if(!this.hasChanged)
-			return;
-		
 		// Clear the old vertex array.
 		this.vertexArray.clear();
 		
@@ -90,7 +72,6 @@ public class ZoneMapLayer implements Drawable {
 	public void addTypeColor(Zone.ZoneClass type, Color color) {
 		this.typeColorMap.put(type, color);
 		
-		this.hasChanged = true;
 	}
 	
 	@Override

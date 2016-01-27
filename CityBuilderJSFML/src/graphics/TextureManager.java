@@ -14,7 +14,8 @@ public class TextureManager {
 		MONEY_TEXTURE,
 		TILE_CURSOR_TEXTURE,
 		GROSSERY_STORE_TEXTURE,
-		CHECKBOX_TEXTURE
+		CHECKBOX_TEXTURE,
+		PAUSE
 	}
 	
 	protected Map<TextureID, Texture> textures;
@@ -26,6 +27,7 @@ public class TextureManager {
 		this.textures.put(TextureID.TILE_CURSOR_TEXTURE, load("res/hoverframe.png"));
 		this.textures.put(TextureID.GROSSERY_STORE_TEXTURE, load("res/grocery_store.64x32.png"));
 		this.textures.put(TextureID.CHECKBOX_TEXTURE, load("res/checkbox.png"));
+		this.textures.put(TextureID.PAUSE, load("res/pause.png"));
 	}
 	/**
 	 * Load the Texture
