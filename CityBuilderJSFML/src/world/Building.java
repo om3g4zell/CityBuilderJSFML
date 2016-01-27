@@ -60,6 +60,7 @@ public class Building {
 	protected BuildingType type;
 	protected List<Zone.ZoneClass> buildingClass;
 	protected boolean halted;
+	protected boolean haltWarning;
 	
 	/**
 	 * Constructor
@@ -74,6 +75,7 @@ public class Building {
 		this.needs = new ArrayList<Need>();
 		this.buildingClass = new ArrayList<Zone.ZoneClass>();
 		this.halted = false;
+		this.haltWarning = false;
 		
 		switch(this.type) {
 			case GENERATOR:
@@ -277,13 +279,6 @@ public class Building {
 			}
 		}
 		
-		/*System.out.println("For building " + this.type.toString() + "[" + this.id + "] :");
-		System.out.println("\t" + ResourceType.WATER.toString() + " " + availableResources.get(ResourceType.WATER));
-		System.out.println("\t" + ResourceType.ELECTRICITY.toString() + " " + availableResources.get(ResourceType.ELECTRICITY));
-		System.out.println("\t" + ResourceType.PEOPLE.toString() + " " + availableResources.get(ResourceType.PEOPLE));
-		System.out.println("\t" + ResourceType.ROAD_PROXIMITY.toString() + " " + availableResources.get(ResourceType.ROAD_PROXIMITY));
-		System.out.println("\t" + ResourceType.FOOD.toString() + " " + availableResources.get(ResourceType.FOOD));*/
-		
 		// Check if enough resources for minimal (minimal = need * fill factor).
 		boolean enoughForMinimal = true;
 		
@@ -337,7 +332,10 @@ public class Building {
 		// If no :
 		else {
 			// Halt the building and don't consume anything.
-			this.halted = true;
+			if(this.haltWarning)
+				this.halted = true;
+			else
+				this.haltWarning = true;
 			
 			// Require new building(s) to satisfy needs.
 			for(Need need : this.needs) {
