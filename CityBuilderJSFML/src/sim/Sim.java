@@ -298,7 +298,7 @@ public class Sim {
 						ResourcesStack rstack = resourcesMap.getResources(x, y);
 						
 						// Check if they satisfy the needs.
-						boolean allNeedsSatisfied = false;
+						boolean allNeedsSatisfied = true;
 						for(Need n : requiredBuilding.getNeeds()) {
 							float minAmount = n.amount * n.fillFactor;
 							
@@ -339,6 +339,7 @@ public class Sim {
 						}
 						
 						// Add to the candidates positions.
+						System.out.println("\t\tAdding new candidate position.");
 						candidatesPositions.put(new Vector2i(x, y), inRange);
 					}
 				}
