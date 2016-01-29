@@ -22,6 +22,7 @@ import world.ZoneMap;
 public class ZoneDrawingGui implements Drawable {
 	protected List<CheckBox> checkboxes;
 	protected Time lastZoneClassChange;
+	protected Vector2i position;
 	
 	/**
 	 * Constructor.
@@ -76,6 +77,30 @@ public class ZoneDrawingGui implements Drawable {
 				Zone z = zoneMap.getZoneMap().get(selectedTile.y).get(selectedTile.x);
 				z.setType(zoneClass);
 			}
+		}else if(Mouse.isButtonPressed(Mouse.Button.RIGHT) && Time.ratio(lastZoneClassChange, Time.getSeconds(0.5f)) >= 1.f) {
+			// Do not draw under checkboxes.
+			boolean underCheckbox = false;
+			for(CheckBox cb : this.checkboxes) {
+				if(cb.getHitbox().contains((int)mousePosition.x, (int)mousePosition.y))
+					underCheckbox = true;
+			}
+						
+			if(!underCheckbox) {
+				// Get the zone class and draw.
+				ZoneClass zoneClass = ZoneClass.FREE;
+				for(CheckBox cb : this.checkboxes) {
+					if(cb.isChecked()) {
+						int zoneClassHashCode = cb.getValue();
+									
+						for(ZoneClass z : ZoneClass.values())
+							if(z.hashCode() == zoneClassHashCode)
+								zoneClass = z;
+							}
+						}
+			}
+			
+							
+						
 		}
 	}
 	

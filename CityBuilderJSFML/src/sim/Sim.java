@@ -142,7 +142,7 @@ public class Sim {
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(37, 23)));
 		
 		// Generator.
-		this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(39, 21)));
+		//this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(39, 21)));
 		
 		// Water station.
 		//this.buildings.add(new Building(BuildingType.HYDROLIC_STATION, new Vector2i(39, 23)));
@@ -402,10 +402,6 @@ public class Sim {
 				b.generateResources(this.resourcesMap);
 			}
 			
-			// update tile info
-			if(this.displayTileInfo)
-				this.tileInfoGui.update(resourcesMap, tileSelector, buildings);
-			
 			// Consume resources.
 			buildingsRequired.clear();
 			for(Building b : this.buildings) {
@@ -419,6 +415,10 @@ public class Sim {
 			// Project buildings on the tilemap.
 			BuildingProjector.project(this.buildings, this.tilemap);
 		}
+		
+		// update tile info
+			if(this.displayTileInfo)
+			this.tileInfoGui.update(resourcesMap, tileSelector, buildings);
 		// Update the tilemap.
 		this.tilemap.update();
 		
