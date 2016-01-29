@@ -373,11 +373,14 @@ public class Sim {
 				}
 			}
 			
-			// Check the position which reach the most buildings.
+			// Check the position which reach the most buildings AND is the closer to the center of the search area.
 			Map.Entry<Vector2i, Integer> bestPosition = null;
+			double mindistance = Double.MAX_VALUE;
+			
 			for(Map.Entry<Vector2i, Integer> entry : candidatesPositions.entrySet()) {
-				if(bestPosition == null || entry.getValue() > bestPosition.getValue()) {
+				if((bestPosition == null) || (entry.getValue() >= bestPosition.getValue() && mindistance > Distance.euclidean(entry.getKey(), centerOfSearchArea))) {
 					bestPosition = entry;
+					mindistance = Distance.euclidean(bestPosition.getKey(), centerOfSearchArea);
 				}
 			}
 			
@@ -385,6 +388,8 @@ public class Sim {
 			if(bestPosition != null) {
 				this.buildings.add(new Building(maxEntry.getKey(), bestPosition.getKey()));
 				System.out.println("Spawning : " + maxEntry.getKey().toString() + " @ " + bestPosition.getKey().x + ", " + bestPosition.getKey().y);
+				System.out.println("\tdistance to CoSA: " + Distance.euclidean(bestPosition.getKey(), centerOfSearchArea));
+				System.out.println("\tefficiency: " + bestPosition.getValue() + "/" + maxEntry.getValue());
 			}
 			else {
 				System.out.println("No suitable position found for : " + maxEntry.getKey().toString());
