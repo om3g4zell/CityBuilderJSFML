@@ -120,7 +120,7 @@ public class Sim {
 		this.zoneMap = new ZoneMap(TILEMAP_SIZE.x, TILEMAP_SIZE.y);
 		
 		// Create the game speed GUI
-		this.gameSpeedGui = new GameSpeedGui(textureManager, this.window.getSize().x - 80, 20);
+		this.gameSpeedGui = new GameSpeedGui(textureManager, fontManager, this.window.getSize().x - 80, 20);
 		
 		// Create the zoneMapLayer
 		this.zoneMapLayer = new ZoneMapLayer(this.zoneMap);
@@ -393,31 +393,32 @@ public class Sim {
 	 * @param dt : frame of time to use
 	 */
 	public void update(Time dt) {
-		// Reset the resources.
-		this.resourcesMap.reset();
-		
-		// Generate resources.
-		for(Building b : this.buildings) {
-			b.generateResources(this.resourcesMap);
-		}
-		
-		// update tile info
-		if(this.displayTileInfo)
-			this.tileInfoGui.update(resourcesMap, tileSelector, buildings);
-		
-		// Consume resources.
-		buildingsRequired.clear();
-		for(Building b : this.buildings) {
-			BuildingType requiredBuilding = b.consumeResources(this.resourcesMap);
-			buildingsRequired.put(b.getId(), requiredBuilding);
+		if(!this.gameSpeedGui.isInPause()) {
+			// Reset the resources.
+			this.resourcesMap.reset();
 			
-			//System.out.println(b.getType().toString() + " requires " + requiredBuilding.toString());
+			// Generate resources.
+			for(Building b : this.buildings) {
+				b.generateResources(this.resourcesMap);
+			}
+			
+			// update tile info
+			if(this.displayTileInfo)
+				this.tileInfoGui.update(resourcesMap, tileSelector, buildings);
+			
+			// Consume resources.
+			buildingsRequired.clear();
+			for(Building b : this.buildings) {
+				BuildingType requiredBuilding = b.consumeResources(this.resourcesMap);
+				buildingsRequired.put(b.getId(), requiredBuilding);
+				
+				//System.out.println(b.getType().toString() + " requires " + requiredBuilding.toString());
+			}
+			spawnBuildings();
+			
+			// Project buildings on the tilemap.
+			BuildingProjector.project(this.buildings, this.tilemap);
 		}
-		spawnBuildings();
-		
-		// Project buildings on the tilemap.
-		BuildingProjector.project(this.buildings, this.tilemap);
-
 		// Update the tilemap.
 		this.tilemap.update();
 		
