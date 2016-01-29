@@ -418,7 +418,12 @@ public class Sim {
 			this.buildingsRequired.clear();
 			for(Building b : this.buildings) {
 				BuildingType requiredBuilding = b.consumeResources(this.resourcesMap);
-				this.buildingsRequired.put(b.getId(), requiredBuilding);
+				
+				// Don't do anything if none required.
+				if(requiredBuilding != BuildingType.NONE) {
+					this.buildingsRequired.put(b.getId(), requiredBuilding);
+					System.out.println("" + b.getType().toString() + " requires " + requiredBuilding.toString() + "");
+				}
 			}
 			
 			if(this.buildingSpawnTimer.asSeconds() >= 1.f) {
