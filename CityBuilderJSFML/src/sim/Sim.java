@@ -413,7 +413,12 @@ public class Sim {
 			for(Building b : this.buildings) {
 				b.generateResources(this.resourcesMap);
 			}
+		}
+			// update tile info
+			if(this.displayTileInfo)
+				this.tileInfoGui.update(this.resourcesMap, this.tileSelector, this.buildings);
 			
+		if(!this.gameSpeedGui.isInPause()) {	
 			// Consume resources.
 			this.buildingsRequired.clear();
 			for(Building b : this.buildings) {
@@ -422,7 +427,6 @@ public class Sim {
 				// Don't do anything if none required.
 				if(requiredBuilding != BuildingType.NONE) {
 					this.buildingsRequired.put(b.getId(), requiredBuilding);
-					System.out.println("" + b.getType().toString() + " requires " + requiredBuilding.toString() + "");
 				}
 			}
 			
@@ -435,9 +439,6 @@ public class Sim {
 			BuildingProjector.project(this.buildings, this.tilemap);
 		}
 		
-		// update tile info
-		if(this.displayTileInfo)
-			this.tileInfoGui.update(this.resourcesMap, this.tileSelector, this.buildings);
 		
 		// Update the tilemap.
 		this.tilemap.update();

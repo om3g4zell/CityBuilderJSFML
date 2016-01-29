@@ -39,6 +39,7 @@ public class GameSpeedGui implements Drawable{
 		this.sprite.setTexture(textures.get(TextureID.PAUSE));
 		this.sprite.setPosition(this.position.x , this.position.y);
 		
+		this.pauseFlag = true;
 		this.text = new Text();
 		this.text.setFont(fonts.get(FontID.CAVIAR_DREAM));
 		this.text.setPosition(this.position.x - 10, this.position.y + 50);
