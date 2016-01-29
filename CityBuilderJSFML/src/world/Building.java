@@ -341,7 +341,7 @@ public class Building {
 		else {
 			// Halt the building and don't consume anything.
 			if(this.haltWarning)
-				this.halted = true;
+				this.halted = false;
 			else
 				this.haltWarning = true;
 			

@@ -65,6 +65,7 @@ public class Sim {
 	protected ZoneMapLayer zoneMapLayer;
 	protected ZoneDrawingGui zoneDrawingGui;
 	protected GameSpeedGui gameSpeedGui;
+	protected Time buildingSpawnTimer;
 	
 	/**
 	 * Constructor
@@ -142,10 +143,10 @@ public class Sim {
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(37, 23)));
 		
 		// Generator.
-		this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(39, 21)));
+		//this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(39, 21)));
 		
 		// Water station.
-		this.buildings.add(new Building(BuildingType.HYDROLIC_STATION, new Vector2i(39, 23)));
+		//this.buildings.add(new Building(BuildingType.HYDROLIC_STATION, new Vector2i(39, 23)));
 		
 		// Road.
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(31, 22)));
@@ -179,6 +180,9 @@ public class Sim {
 		
 		// Instanciate the zone drawing GUI.
 		this.zoneDrawingGui = new ZoneDrawingGui(this.textureManager, this.fontManager);
+		
+		// Building spawn timer.
+		this.buildingSpawnTimer = Time.ZERO;
 	}
 	
 	/**
@@ -277,7 +281,6 @@ public class Sim {
 			
 			// We may need to expand the radius.
 			radius = Math.max(radius, requiredBuilding.getRange());
-			radius = 200;
 			
 			// We use squared radius and squared euclidean distance for performance.
 			double squaredRadius = Math.pow(radius, 2);
@@ -286,10 +289,6 @@ public class Sim {
 			HashMap<Vector2i, Integer> candidatesPositions = new HashMap<Vector2i, Integer>();
 			
 			// Check all resource map in square range.
-			System.out.println("For [" + requiredBuilding.getType().toString() + "]:");
-			System.out.println("Center of search area : {" + centerOfSearchArea.x + ", " + centerOfSearchArea.y + "}");
-			System.out.println("Radius of search area : " + radius);
-			
 			for(int x = Math.max(0, centerOfSearchArea.x - (int)radius) ; x < Math.min(resourcesMap.getSize().x, centerOfSearchArea.x + radius + 1) ; ++x)
 			{
 				for(int y = Math.max(0, centerOfSearchArea.y - (int)radius) ; y < Math.min(resourcesMap.getSize().y, centerOfSearchArea.y + radius + 1) ; ++y)
@@ -308,12 +307,13 @@ public class Sim {
 						
 						if(collide) {
 							// This position is not suitable.
-							System.out.println("\t=> {" + x + ", " + y + "} Collision : radius " + radius + "");
 							continue;
 						}
 						
 						// Check zone compatibility.
+						/*** <TODO: Ajout de la zone.> ***/
 						
+						/*** </TODO> ***/
 						// Get the resources available for the building.
 						ResourcesStack rstack = resourcesMap.getResources(x, y);
 						
@@ -331,7 +331,6 @@ public class Sim {
 							// If one need is not satisfied to its minimum, we quit.
 							if(rstack.get(n.type) < minAmount) {
 								allNeedsSatisfied = false;
-								System.out.println("\t=> {" + x + ", " + y + "} Missing resource : [" + n.type.toString() + "] " + rstack.get(n.type) + "/" + minAmount);
 								break;
 							}
 						}
@@ -388,7 +387,7 @@ public class Sim {
 				System.out.println("Spawning : " + maxEntry.getKey().toString() + " @ " + bestPosition.getKey().x + ", " + bestPosition.getKey().y);
 			}
 			else {
-				System.out.println("No suitable position found.");
+				System.out.println("No suitable position found for : " + maxEntry.getKey().toString());
 			}
 		}
 	}
@@ -399,6 +398,9 @@ public class Sim {
 	 */
 	public void update(Time dt) {
 		if(!this.gameSpeedGui.isInPause()) {
+			// Update the building spawn timer.
+			this.buildingSpawnTimer = Time.add(this.buildingSpawnTimer, dt);
+			
 			// Reset the resources.
 			this.resourcesMap.reset();
 			
@@ -408,22 +410,25 @@ public class Sim {
 			}
 			
 			// Consume resources.
-			buildingsRequired.clear();
+			this.buildingsRequired.clear();
 			for(Building b : this.buildings) {
 				BuildingType requiredBuilding = b.consumeResources(this.resourcesMap);
-				buildingsRequired.put(b.getId(), requiredBuilding);
-				
-				//System.out.println(b.getType().toString() + " requires " + requiredBuilding.toString());
+				this.buildingsRequired.put(b.getId(), requiredBuilding);
 			}
-			spawnBuildings();
+			
+			if(this.buildingSpawnTimer.asSeconds() >= 1.f) {
+				this.buildingSpawnTimer = Time.sub(this.buildingSpawnTimer, Time.getSeconds(1.f));
+				spawnBuildings();
+			}
 			
 			// Project buildings on the tilemap.
 			BuildingProjector.project(this.buildings, this.tilemap);
 		}
 		
 		// update tile info
-			if(this.displayTileInfo)
-			this.tileInfoGui.update(resourcesMap, tileSelector, buildings);
+		if(this.displayTileInfo)
+			this.tileInfoGui.update(this.resourcesMap, this.tileSelector, this.buildings);
+		
 		// Update the tilemap.
 		this.tilemap.update();
 		
@@ -434,7 +439,7 @@ public class Sim {
 		
 		//Update stats
 		this.gameSpeedGui.update(dt);
-		this.cityStats.update(buildings);
+		this.cityStats.update(this.buildings);
 		this.statsGui.setMoney(this.cityStats.getMoney());
 		this.statsGui.setPopulation(this.cityStats.getPopulation());
 		this.tileSelector.update();
