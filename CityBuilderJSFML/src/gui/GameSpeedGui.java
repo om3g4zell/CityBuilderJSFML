@@ -2,6 +2,7 @@ package gui;
 
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Drawable;
+import org.jsfml.graphics.IntRect;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
 import org.jsfml.graphics.Sprite;
@@ -55,13 +56,13 @@ public class GameSpeedGui implements Drawable{
 	 * @param dt : elapsed time
 	 */
 	public void update(Time dt) {
-		
+		this.timer = Time.add(dt, timer);
 		if(this.pauseFlag) {
-			this.timer = Time.add(dt, timer);
+			this.sprite.setTextureRect(new IntRect(0,0,32,32));
 		}
 		else {
 			this.temp += dt.asSeconds();
-			this.timer = Time.ZERO;
+			this.sprite.setTextureRect(new IntRect(32,0,32,32));
 		}
 		convertTime();
 		this.text.setString(tempS);
@@ -120,10 +121,6 @@ public class GameSpeedGui implements Drawable{
 	@Override
 	public void draw(RenderTarget target, RenderStates states) {
 		target.draw(text);
-		
-		if(!this.pauseFlag) {
-			return;
-		}
 		
 		if(this.timer.asSeconds() <= 0.5f ) {
 			target.draw(sprite);

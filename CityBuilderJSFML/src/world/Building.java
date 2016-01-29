@@ -317,7 +317,7 @@ public class Building {
 			// If yes, perfect.
 			if(enoughForFull) {
 				// Consume all needed resources at 100% (-> fillFactor = 1).
-				for(Need need : this.needs) {			
+				for(Need need : this.needs) {
 					this.consumeResourcesForNeed(resourcesMap, need.type, need.amount, 1.f);
 				}
 			}
