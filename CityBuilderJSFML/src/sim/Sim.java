@@ -266,7 +266,7 @@ public class Sim {
 					// Add its position.
 					if(building != null) {
 						Vector2i centerPosition = new Vector2i(building.getHitbox().left + building.getHitbox().width / 2, building.getHitbox().top + building.getHitbox().height / 2);
-						float distance = Distance.manhattan(centerOfSearchArea, centerPosition);
+						float distance = (float)Distance.euclidean(centerOfSearchArea, centerPosition);
 						
 						if(distance > radius)
 							radius = distance;
