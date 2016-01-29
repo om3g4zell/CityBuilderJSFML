@@ -104,8 +104,8 @@ public class ZoneDrawingGui implements Drawable {
 					}
 				}
 				Vector2i selectedTile = tileSelector.getSelectedTile();
-				for(int i = this.position.y ; i < selectedTile.y ; i ++) {
-					for(int j = this.position.x ; j < selectedTile.x ; j ++) {
+				for(int i = this.position.y ; i <= selectedTile.y ; i ++) {
+					for(int j = this.position.x ; j <= selectedTile.x ; j ++) {
 						Zone z = zoneMap.getZoneMap().get(i).get(j);
 						z.setType(zoneClass);
 					}
