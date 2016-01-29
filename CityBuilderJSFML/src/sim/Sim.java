@@ -133,14 +133,14 @@ public class Sim {
 		
 		// Houses.
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(31, 20)));
-		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(33, 20)));
+		/*this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(33, 20)));
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(35, 20)));
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(37, 20)));
 		
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(31, 23)));
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(33, 23)));
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(35, 23)));
-		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(37, 23)));
+		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(37, 23)));*/
 		
 		// Generator.
 		//this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(39, 21)));
@@ -150,8 +150,8 @@ public class Sim {
 		
 		// Road.
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(31, 22)));
-		/*this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(32, 22)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(33, 22)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(32, 22)));
+		/*this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(33, 22)));
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(34, 22)));
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(35, 22)));
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(36, 22)));
