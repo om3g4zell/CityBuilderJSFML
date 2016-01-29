@@ -142,10 +142,10 @@ public class Sim {
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(37, 23)));
 		
 		// Generator.
-		//this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(39, 21)));
+		this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(39, 21)));
 		
 		// Water station.
-		//this.buildings.add(new Building(BuildingType.HYDROLIC_STATION, new Vector2i(39, 23)));
+		this.buildings.add(new Building(BuildingType.HYDROLIC_STATION, new Vector2i(39, 23)));
 		
 		// Road.
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(31, 22)));
@@ -159,7 +159,7 @@ public class Sim {
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(39, 22)));
 		
 		// Grossery store
-		this.buildings.add(new Building(BuildingType.GROCERY_STORE, new Vector2i(40, 21)));
+		//this.buildings.add(new Building(BuildingType.GROCERY_STORE, new Vector2i(40, 21)));
 		
 		// Inits the tilemap.
 		this.tilemap = new TileMap(TILEMAP_SIZE, TILE_SIZE);
@@ -198,6 +198,7 @@ public class Sim {
 			if(buildingCounts.containsKey(buildingType)) {
 				Integer count = buildingCounts.get(buildingType);
 				count = new Integer(count.intValue() + 1);
+				buildingCounts.put(buildingType, count);
 			}
 			else {
 				buildingCounts.put(buildingType, 1);
@@ -241,10 +242,7 @@ public class Sim {
 			}
 			
 			// Compute the average position, aka the center of the search area.
-			Vector2f fposition = new Vector2f(position.x, position.y);
-			fposition = Vector2f.mul(fposition, 1.f / (float)(maxEntry.getValue()));
-			
-			Vector2i centerOfSearchArea = new Vector2i((int)fposition.x, (int)fposition.y);
+			Vector2i centerOfSearchArea = new Vector2i((int)(position.x / maxEntry.getValue()), (int)(position.y / maxEntry.getValue()));
 			
 			// Get the further building from the average position, to compute the radius of the search area.
 			float radius = 0.f;
@@ -274,26 +272,30 @@ public class Sim {
 				}
 			}
 			
-			// We use squared radius and squared euclidean distance for performance.
-			double squaredRadius = Math.pow(radius, 2);
-			
 			// Create a fake building.
 			Building requiredBuilding = new Building(maxEntry.getKey(), new Vector2i(0, 0));
 			
 			// We may need to expand the radius.
 			radius = Math.max(radius, requiredBuilding.getRange());
+			radius = 200;
+			
+			// We use squared radius and squared euclidean distance for performance.
+			double squaredRadius = Math.pow(radius, 2);
 			
 			// Map of the considered positions.
 			HashMap<Vector2i, Integer> candidatesPositions = new HashMap<Vector2i, Integer>();
 			
 			// Check all resource map in square range.
 			System.out.println("For [" + requiredBuilding.getType().toString() + "]:");
+			System.out.println("Center of search area : {" + centerOfSearchArea.x + ", " + centerOfSearchArea.y + "}");
+			System.out.println("Radius of search area : " + radius);
+			
 			for(int x = Math.max(0, centerOfSearchArea.x - (int)radius) ; x < Math.min(resourcesMap.getSize().x, centerOfSearchArea.x + radius + 1) ; ++x)
 			{
 				for(int y = Math.max(0, centerOfSearchArea.y - (int)radius) ; y < Math.min(resourcesMap.getSize().y, centerOfSearchArea.y + radius + 1) ; ++y)
 				{
 					// Check only in radius.
-					if(Distance.squaredEuclidean(centerOfSearchArea, new Vector2i(x, y)) <= squaredRadius)
+					if(Distance.euclidean(centerOfSearchArea, new Vector2i(x, y)) <= squaredRadius)
 					{
 						// Check collision with other buildings.
 						boolean collide = false;
@@ -306,8 +308,8 @@ public class Sim {
 						
 						if(collide) {
 							// This position is not suitable.
-							System.out.println("\t=> Collision : radius " + radius + "");
-							break;
+							System.out.println("\t=> {" + x + ", " + y + "} Collision : radius " + radius + "");
+							continue;
 						}
 						
 						// Check zone compatibility.
@@ -329,14 +331,14 @@ public class Sim {
 							// If one need is not satisfied to its minimum, we quit.
 							if(rstack.get(n.type) < minAmount) {
 								allNeedsSatisfied = false;
-								System.out.println("\t=> Missing resource : [" + n.type.toString() + "] " + rstack.get(n.type) + "/" + minAmount);
+								System.out.println("\t=> {" + x + ", " + y + "} Missing resource : [" + n.type.toString() + "] " + rstack.get(n.type) + "/" + minAmount);
 								break;
 							}
 						}
 						
 						if(!allNeedsSatisfied) {
 							// This position is not suitable.
-							break;
+							continue;
 						}
 						
 						// Check how many buildings (which required the building construction) are in range of the required building.
@@ -384,6 +386,9 @@ public class Sim {
 			if(bestPosition != null) {
 				this.buildings.add(new Building(maxEntry.getKey(), bestPosition.getKey()));
 				System.out.println("Spawning : " + maxEntry.getKey().toString() + " @ " + bestPosition.getKey().x + ", " + bestPosition.getKey().y);
+			}
+			else {
+				System.out.println("No suitable position found.");
 			}
 		}
 	}
