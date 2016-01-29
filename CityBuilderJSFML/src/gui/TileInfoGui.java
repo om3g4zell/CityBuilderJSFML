@@ -68,7 +68,7 @@ public class TileInfoGui implements Drawable {
 			this.infoString += "TILE_TYPE : " + this.actualTile.getTileType().toString() + "\n";
 			for(Resource.ResourceType resource : Resource.ResourceType.values()) {
 				if(resourcemap.getResources(this.position.x, this.position.y).get(resource) > 0) {
-					this.infoString += resource.toString() + " : " + resourcemap.getResources(this.position.x, this.position.y).get(resource) + "\n";
+					this.infoString += "\t" + resource.toString() + " : " + resourcemap.getResources(this.position.x, this.position.y).get(resource) + "\n";
 				}
 			}
 		
@@ -92,17 +92,16 @@ public class TileInfoGui implements Drawable {
 				}
 				
 				for(Resource.ResourceType resource : Resource.ResourceType.values()) {
-					if(availableResources.get(resource) > 0) {
-						this.infoString += resource.toString() + " : " + availableResources.get(resource);
-						// show %
-						for(Need need : this.building.getNeeds()) {
-							if(need.type.equals(resource)){
-								this.infoString += " : " + (int)((availableResources.get(resource)/need.amount)*100) + " %";
-							}
+					// show %
+					for(Need need : this.building.getNeeds()) {
+						if(need.type.equals(resource)){
+							this.infoString += "\t" + resource.toString() + " : " + availableResources.get(resource);
+							this.infoString += " : " + (int)((availableResources.get(resource) / need.amount) * 100) + " %";
+							this.infoString += "\n";
 						}
-						this.infoString += "\n";
 					}
 				}
+				
 				this.infoString += "Halted : " + this.building.isHalted();
 			}
 		// we set the text
