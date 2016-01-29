@@ -150,14 +150,14 @@ public class Sim {
 		
 		// Road.
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(31, 22)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(32, 22)));
+		/*this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(32, 22)));
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(33, 22)));
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(34, 22)));
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(35, 22)));
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(36, 22)));
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(37, 22)));
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(38, 22)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(39, 22)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(39, 22)));*/
 		
 		// Grossery store
 		//this.buildings.add(new Building(BuildingType.GROCERY_STORE, new Vector2i(40, 21)));
@@ -294,7 +294,7 @@ public class Sim {
 				for(int y = Math.max(0, centerOfSearchArea.y - (int)radius) ; y < Math.min(resourcesMap.getSize().y, centerOfSearchArea.y + radius + 1) ; ++y)
 				{
 					// Check only in radius.
-					if(Distance.euclidean(centerOfSearchArea, new Vector2i(x, y)) <= squaredRadius)
+					if(Distance.squaredEuclidean(centerOfSearchArea, new Vector2i(x, y)) <= squaredRadius)
 					{
 						// Check collision with other buildings.
 						boolean collide = false;

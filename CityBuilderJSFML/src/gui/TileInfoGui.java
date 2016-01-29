@@ -55,7 +55,7 @@ public class TileInfoGui implements Drawable {
 	 * @param tileselector : to get the position of the mouse
 	 * @param buildings : to get buildings on the map
 	 */
-	public void update(ResourcesMap resourcemap, TileSelector tileselector,List<Building> buildings) {
+	public void update(ResourcesMap resourcemap, TileSelector tileselector, List<Building> buildings) {
 		this.tileSelector = tileselector;
 		this.resourceMap = resourcemap;
 		this.infoString = "";
@@ -64,7 +64,8 @@ public class TileInfoGui implements Drawable {
 		this.actualTile = this.tileMap.get(position.y).get(position.x);
 		
 		// show Tile info
-			this.infoString += "TILE_TYPE :" + this.actualTile.getTileType().toString() + " \n";
+			this.infoString += "Tile position : {" + position.x + ", " + position.y + "}\n";
+			this.infoString += "TILE_TYPE : " + this.actualTile.getTileType().toString() + "\n";
 			for(Resource.ResourceType resource : Resource.ResourceType.values()) {
 				if(resourcemap.getResources(this.position.x, this.position.y).get(resource) > 0) {
 					this.infoString += resource.toString() + " : " + resourcemap.getResources(this.position.x, this.position.y).get(resource) + "\n";
@@ -79,7 +80,7 @@ public class TileInfoGui implements Drawable {
 				}
 			}
 			if(this.building != null) {
-				this.infoString += "BUILDING_NAME :" + this.building.getType().toString() + "[" + this.building.getId() + "] \n";
+				this.infoString += "BUILDING_NAME : " + this.building.getType().toString() + "[" + this.building.getId() + "] \n";
 				
 				// Get the resources available for the building.
 				ResourcesStack availableResources = new ResourcesStack();
