@@ -85,30 +85,22 @@ public class ZoneDrawingGui implements Drawable {
 			if(this.position.x == 0 && this.position.y == 0) {
 				this.position = tileSelector.getSelectedTile();
 			}
-			boolean underCheckbox = false;
+			// Get the zone class and draw.
+			ZoneClass zoneClass = ZoneClass.FREE;
 			for(CheckBox cb : this.checkboxes) {
-				if(cb.getHitbox().contains((int)mousePosition.x, (int)mousePosition.y))
-					underCheckbox = true;
-			}
-						
-			if(!underCheckbox) {
-				// Get the zone class and draw.
-				ZoneClass zoneClass = ZoneClass.FREE;
-				for(CheckBox cb : this.checkboxes) {
-					if(cb.isChecked()) {
-						int zoneClassHashCode = cb.getValue();
-									
-						for(ZoneClass z : ZoneClass.values())
-							if(z.hashCode() == zoneClassHashCode)
-								zoneClass = z;
-					}
+				if(cb.isChecked()) {
+					int zoneClassHashCode = cb.getValue();
+								
+					for(ZoneClass z : ZoneClass.values())
+						if(z.hashCode() == zoneClassHashCode)
+							zoneClass = z;
 				}
-				Vector2i selectedTile = tileSelector.getSelectedTile();
-				for(int i = this.position.y ; i <= selectedTile.y ; i ++) {
-					for(int j = this.position.x ; j <= selectedTile.x ; j ++) {
-						Zone z = zoneMap.getZoneMap().get(i).get(j);
-						z.setType(zoneClass);
-					}
+			}
+			Vector2i selectedTile = tileSelector.getSelectedTile();
+			for(int i = this.position.y ; i <= selectedTile.y ; i ++) {
+				for(int j = this.position.x ; j <= selectedTile.x ; j ++) {
+					Zone z = zoneMap.getZoneMap().get(i).get(j);
+					z.setType(zoneClass);
 				}
 			}
 			
