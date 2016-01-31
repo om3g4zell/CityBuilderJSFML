@@ -321,6 +321,9 @@ public class Sim {
 									if(!zone.getType().equals(zoneBuilding)) {
 										validZone = false;
 									}
+									if(requiredBuilding.getZoneClasses().contains(ZoneClass.FREE)) {
+										validZone = true;
+									}
 									if(zone.getType().equals(ZoneClass.FREE)) {
 										validZone = true;
 									}
