@@ -36,6 +36,7 @@ import world.Need;
 import world.ResourcesMap;
 import world.ResourcesStack;
 import world.Zone;
+import world.Zone.ZoneClass;
 import world.ZoneMap;
 
 /**
@@ -312,7 +313,28 @@ public class Sim {
 						
 						// Check zone compatibility.
 						/*** <TODO: Ajout de la zone.> ***/
-						
+						boolean validZone = true;
+						for(int rx = x ; rx < Math.min(x + requiredBuilding.getHitbox().width, TILEMAP_SIZE.x) ; rx++) {
+							for(int ry = y ; ry < Math.min(y + requiredBuilding.getHitbox().height, TILEMAP_SIZE.y) ; ry++) {
+								Zone zone = this.zoneMap.getZoneMap().get(ry).get(rx);
+								for(ZoneClass zoneBuilding : requiredBuilding.getZoneClasses()) {
+									if(!zone.getType().equals(zoneBuilding)) {
+										validZone = false;
+									}
+									if(zone.getType().equals(ZoneClass.FREE)) {
+										validZone = true;
+									}
+								}
+								if(!validZone)
+									break;
+							}
+							if(!validZone)
+								break;
+						}
+						if(!validZone) {
+							// This zone is not suitable
+							continue;
+						}
 						/*** </TODO> ***/
 						// Get the resources available for the building.
 						ResourcesStack rstack = resourcesMap.getResources(x, y);
