@@ -99,14 +99,29 @@ public class GameSpeedGui implements Drawable{
 	 * update
 	 * @param dt : elapsed time
 	 */
+	@SuppressWarnings("incomplete-switch")
 	public void update(Time dt) {
 		this.timer = Time.add(dt, timer);
 		if(this.pauseFlag) {
 			this.sprite.setTextureRect(new IntRect(0,0,32,32));
 		}
 		else {
-			this.temp += dt.asSeconds() * this.coef;
-			this.sprite.setTextureRect(new IntRect(32,0,32,32));
+			this.temp += dt.asSeconds() * coef;
+			switch(this.gameSpeed) {
+			
+			case x1:
+				this.sprite.setTextureRect(new IntRect(32,0,32,32));
+				break;
+			case x2:
+				this.sprite.setTextureRect(new IntRect(69,0,31,32));
+				break;
+			case x3:
+				this.sprite.setTextureRect(new IntRect(101,0,37,32));
+				break;
+			case x4:
+				this.sprite.setTextureRect(new IntRect(139,0,44,32));
+				break;
+			}
 		}
 		convertTime();
 		this.text.setString(tempS);
