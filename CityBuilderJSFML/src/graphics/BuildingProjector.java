@@ -26,8 +26,6 @@ public class BuildingProjector {
 				return TileType.BUILDING_SUPERMARKET;
 			case HOUSE:
 				return TileType.BUILDING_HOUSE;
-			case ROAD:
-				return TileType.BUILDING_ROAD;
 			case HYDROLIC_STATION:
 				return TileType.BUILDING_HYDROLIC_STATION;
 			default:

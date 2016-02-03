@@ -19,7 +19,6 @@ public class Building {
 	public static enum BuildingType {
 		HOUSE,
 		GROCERY_STORE,
-		ROAD,
 		GENERATOR,
 		HYDROLIC_STATION,
 		
@@ -41,8 +40,6 @@ public class Building {
 				return BuildingType.HYDROLIC_STATION;
 			case FOOD:
 				return BuildingType.GROCERY_STORE;
-			case ROAD_PROXIMITY:
-				return BuildingType.ROAD;
 			default:
 				return BuildingType.NONE;
 		}
@@ -82,6 +79,8 @@ public class Building {
 				this.range = 18;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				this.buildingClass.add(Zone.ZoneClass.INDUSTRY);
+				this.buildingClass.add(Zone.ZoneClass.RESIDENTIAL);
+				this.buildingClass.add(Zone.ZoneClass.COMMERCIAL);
 				break;
 			case GROCERY_STORE:
 				this.range = 28;
@@ -89,7 +88,6 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.PEOPLE, 40, 0.5f));
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
-				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
 				this.buildingClass.add(Zone.ZoneClass.COMMERCIAL);
 				break;
 			case HOUSE:
@@ -97,21 +95,16 @@ public class Building {
 				this.hitbox = new IntRect(position.x, position.y, 2, 2);
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
-				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
 				this.needs.add(new Need(Resource.ResourceType.FOOD, 10, 0.9f));
 				this.buildingClass.add(Zone.ZoneClass.RESIDENTIAL);
-				break;
-			case ROAD:
-				this.range = 1;
-				this.hitbox = new IntRect(position.x, position.y, 1, 1);
-				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1f));
-				this.buildingClass.add(Zone.ZoneClass.FREE);
 				break;
 			case HYDROLIC_STATION:
 				this.range = 18;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.buildingClass.add(Zone.ZoneClass.INDUSTRY);
+				this.buildingClass.add(Zone.ZoneClass.RESIDENTIAL);
+				this.buildingClass.add(Zone.ZoneClass.COMMERCIAL);
 				break;
 			default:
 		 
@@ -213,12 +206,6 @@ public class Building {
 							// Generate people
 							rStack = resourcesMap.getResources(new Vector2i(x, y));
 							rStack.add(ResourceType.PEOPLE, 4);
-							resourcesMap.setResources(new Vector2i(x, y), rStack);
-							break;
-						case ROAD:
-							// Generate road proximity
-							rStack = resourcesMap.getResources(new Vector2i(x, y));
-							rStack.add(ResourceType.ROAD_PROXIMITY, 1);
 							resourcesMap.setResources(new Vector2i(x, y), rStack);
 							break;
 						case HYDROLIC_STATION:

@@ -149,17 +149,6 @@ public class Sim {
 		// Water station.
 		//this.buildings.add(new Building(BuildingType.HYDROLIC_STATION, new Vector2i(39, 23)));
 		
-		// Road.
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(31, 22)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(32, 22)));
-		/*this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(33, 22)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(34, 22)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(35, 22)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(36, 22)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(37, 22)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(38, 22)));
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(39, 22)));*/
-		
 		// Grossery store
 		//this.buildings.add(new Building(BuildingType.GROCERY_STORE, new Vector2i(40, 21)));
 		
@@ -320,17 +309,16 @@ public class Sim {
 								for(ZoneClass zoneBuilding : requiredBuilding.getZoneClasses()) {
 									if(!zone.getType().equals(zoneBuilding)) {
 										validZone = false;
+									}else {
+										validZone = true;
+										break;
 									}
 								}
-									
-									if(requiredBuilding.getZoneClasses().contains(ZoneClass.FREE)) {
-										validZone = true;
-									}
-									
-									if(zone.getType().equals(ZoneClass.FREE)) {
-										validZone = true;
-									}
 								
+								if(requiredBuilding.getZoneClasses().contains(ZoneClass.FREE)) {
+									validZone = true;
+								}
+
 								if(!validZone)
 									break;
 							}
