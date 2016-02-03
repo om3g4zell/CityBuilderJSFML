@@ -33,6 +33,7 @@ import world.Building;
 import world.Building.BuildingType;
 import world.CityStats;
 import world.Need;
+import world.Resource;
 import world.ResourcesMap;
 import world.ResourcesStack;
 import world.Zone;
@@ -176,6 +177,13 @@ public class Sim {
 	}
 	
 	/**
+	 * Looks for a position to spawn the building.
+	 */
+	public void spawnBuildingAround(Building.BuildingType buildingType, Vector2i centerOfSearchArea, float searchAreaRadius) {
+		
+	}
+	
+	/**
 	 * Spawns the new buildings.
 	 */
 	public void spawnBuildings() {
@@ -278,6 +286,13 @@ public class Sim {
 			// Map of the considered positions.
 			HashMap<Vector2i, Integer> candidatesPositions = new HashMap<Vector2i, Integer>();
 			
+			// Missing resources for the required building.
+			HashMap<Resource.ResourceType, Integer> missingResources = new HashMap<Resource.ResourceType, Integer>();
+			
+			// Initiates missing resources to 0.
+			for(Resource.ResourceType rtype : Resource.ResourceType.values())
+				missingResources.put(rtype, 0);
+			
 			// Check all resource map in square range.
 			for(int x = Math.max(0, centerOfSearchArea.x - (int)radius) ; x < Math.min(resourcesMap.getSize().x, centerOfSearchArea.x + radius + 1) ; ++x)
 			{
@@ -349,7 +364,9 @@ public class Sim {
 							// If one need is not satisfied to its minimum, we quit.
 							if(rstack.get(n.type) < minAmount) {
 								allNeedsSatisfied = false;
-								break;
+								int count = missingResources.get(n.type).intValue();
+								count += 1;
+								missingResources.put(n.type, count);
 							}
 						}
 						
@@ -410,7 +427,18 @@ public class Sim {
 				System.out.println("\tefficiency: " + bestPosition.getValue() + "/" + maxEntry.getValue());
 			}
 			else {
+				// Get the most rare resource.
+				Map.Entry<Resource.ResourceType, Integer> mostRareResourceEntry = null;
+				for(Map.Entry<Resource.ResourceType, Integer> entry : missingResources.entrySet()) {
+					if(mostRareResourceEntry == null || entry.getValue() > mostRareResourceEntry.getValue()) {
+						mostRareResourceEntry = entry;
+					}
+				}
+				
+				Resource.ResourceType rareResource = mostRareResourceEntry.getKey();
+				
 				System.out.println("No suitable position found for : " + maxEntry.getKey().toString());
+				System.out.println("Most rare resource : " + rareResource.toString());
 			}
 		}
 	}

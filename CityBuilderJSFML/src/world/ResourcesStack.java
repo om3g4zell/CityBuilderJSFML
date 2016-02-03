@@ -19,11 +19,8 @@ public class ResourcesStack {
 	// Resets all the resources to 0.
 	public void reset() {
 		// Constructor of Resource puts amount to 0.
-		this.resources.put(Resource.ResourceType.ROAD_PROXIMITY, new Resource(Resource.ResourceType.ROAD_PROXIMITY));
-		this.resources.put(Resource.ResourceType.ELECTRICITY, new Resource(Resource.ResourceType.ELECTRICITY));
-		this.resources.put(Resource.ResourceType.PEOPLE, new Resource(Resource.ResourceType.PEOPLE));
-		this.resources.put(Resource.ResourceType.WATER, new Resource(Resource.ResourceType.WATER));
-		this.resources.put(Resource.ResourceType.FOOD, new Resource(Resource.ResourceType.FOOD));
+		for(Resource.ResourceType rtype : Resource.ResourceType.values())
+			this.resources.put(rtype, new Resource(rtype));
 	}
 	
 	// Returns the amount of the resource type.
@@ -48,10 +45,7 @@ public class ResourcesStack {
 	
 	// Adds two resources stack to the current stack.
 	public void add(ResourcesStack a) {
-		this.add(Resource.ResourceType.ROAD_PROXIMITY, a.get(Resource.ResourceType.ROAD_PROXIMITY));
-		this.add(Resource.ResourceType.ELECTRICITY, a.get(Resource.ResourceType.ELECTRICITY));
-		this.add(Resource.ResourceType.PEOPLE, a.get(Resource.ResourceType.PEOPLE));
-		this.add(Resource.ResourceType.WATER, a.get(Resource.ResourceType.WATER));
-		this.add(Resource.ResourceType.FOOD, a.get(Resource.ResourceType.FOOD));
+		for(Resource.ResourceType rtype : Resource.ResourceType.values())
+			this.add(rtype, a.get(rtype));
 	}
 }
