@@ -67,7 +67,7 @@ public class Sim {
 	protected ZoneMapLayer zoneMapLayer;
 	protected ZoneDrawingGui zoneDrawingGui;
 	protected GameSpeedGui gameSpeedGui;
-	protected Time buildingSpawnTimer;
+	protected Time simulationSpeedTimer;
 	
 	/**
 	 * Constructor
@@ -173,7 +173,7 @@ public class Sim {
 		this.zoneDrawingGui = new ZoneDrawingGui(this.textureManager, this.fontManager);
 		
 		// Building spawn timer.
-		this.buildingSpawnTimer = Time.ZERO;
+		this.simulationSpeedTimer = Time.ZERO;
 	}
 	
 	/**
@@ -448,10 +448,10 @@ public class Sim {
 	 * @param dt : frame of time to use
 	 */
 	public void update(Time dt) {
-		if(!this.gameSpeedGui.isInPause()) {
-			// Update the building spawn timer.
-			this.buildingSpawnTimer = Time.add(this.buildingSpawnTimer, dt);
-			
+		// Update the simulation timer.
+		this.simulationSpeedTimer = Time.add(this.simulationSpeedTimer, Time.mul(dt * this.gameSpeedGui.getSpeedCoeff()));
+		
+		if(this.simulationSpeedTimer.asSeconds() >= 1.f) {
 			// Reset the resources.
 			this.resourcesMap.reset();
 			
@@ -460,11 +460,12 @@ public class Sim {
 				b.generateResources(this.resourcesMap);
 			}
 		}
-			// update tile info
-			if(this.displayTileInfo)
-				this.tileInfoGui.update(this.resourcesMap, this.tileSelector, this.buildings);
+		
+		// We update tile infos after generate.
+		if(this.displayTileInfo)
+			this.tileInfoGui.update(this.resourcesMap, this.tileSelector, this.buildings);
 			
-		if(!this.gameSpeedGui.isInPause()) {	
+		if(this.simulationSpeedTimer.asSeconds() >= 1.f) {	
 			// Consume resources.
 			this.buildingsRequired.clear();
 			for(Building b : this.buildings) {
@@ -476,15 +477,17 @@ public class Sim {
 				}
 			}
 			
-			if(this.buildingSpawnTimer.asSeconds() >= 1.f) {
-				this.buildingSpawnTimer = Time.sub(this.buildingSpawnTimer, Time.getSeconds(1.f));
-				spawnBuildings();
-			}
+			// Spawn buildings.
+			spawnBuildings();
 			
 			// Project buildings on the tilemap.
 			BuildingProjector.project(this.buildings, this.tilemap);
 		}
 		
+		// Do the time substraction here.
+		if(this.simulationSpeedTimer.asSeconds() >= 1.f) {
+			this.simulationSpeedTimer = Time.sub(this.simulationSpeedTimer, Time.getSeconds(1.f)))
+		}
 		
 		// Update the tilemap.
 		this.tilemap.update();
