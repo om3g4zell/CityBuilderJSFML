@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.IntRect;
@@ -62,6 +63,7 @@ public class Sim {
 	protected TileInfoGui tileInfoGui;
 	protected boolean displayTileInfo;
 	protected Map<Integer, Building.BuildingType> buildingsRequired;
+	protected Stack<Map<Integer, Building.BuildingType>> buildingStackRequired;
 	protected CheckBox checkbox1;
 	protected ZoneMap zoneMap;
 	protected ZoneMapLayer zoneMapLayer;
@@ -437,6 +439,15 @@ public class Sim {
 				
 				Resource.ResourceType rareResource = mostRareResourceEntry.getKey();
 				
+				// Every building asking for the current building, should ask for its pre-requisite.
+				Map<Integer, Building.BuildingType> prerequisiteBuildingMap = new HashMap<Integer, Building.BuildingType>();
+				for(Map.Entry<Integer, Building.BuildingType> entry : this.buildingsRequired.entrySet()) {
+					if(entry == entry.getValue())
+						prerequisiteBuildingMap.put(entry.getKey(), Building.getBuildingTypeGenerating(rareResource));
+				}
+				
+				buildingStackRequired.push(prerequisiteBuildingMap);
+				
 				System.out.println("No suitable position found for : " + maxEntry.getKey().toString());
 				System.out.println("Most rare resource : " + rareResource.toString());
 			}
@@ -475,6 +486,10 @@ public class Sim {
 				if(requiredBuilding != BuildingType.NONE) {
 					this.buildingsRequired.put(b.getId(), requiredBuilding);
 				}
+			}
+			
+			if(this.buildingStackRequired.isEmpty()) {
+				this.buildingStackRequired.push(this.buildingsRequired);
 			}
 			
 			// Spawn buildings.
