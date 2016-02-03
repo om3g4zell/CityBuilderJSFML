@@ -25,6 +25,16 @@ public class GameSpeedGui implements Drawable{
 	protected Text text;
 	protected double temp;
 	protected String tempS = "";
+	protected float coef;
+	protected GameSpeed gameSpeed;
+	
+	public static enum GameSpeed {
+		PAUSE,
+		x1,
+		x2,
+		x3,
+		x4
+	}
 	
 	/**
 	 * Constructor
@@ -34,6 +44,7 @@ public class GameSpeedGui implements Drawable{
 	 */
 	public GameSpeedGui(TextureManager textures, FontManager fonts, int x, int y) {
 		this.position = new Vector2i(x, y);
+		setSpeedCoeff(GameSpeed.PAUSE);
 		this.timer = Time.ZERO;
 		
 		this.sprite = new Sprite();
@@ -52,6 +63,39 @@ public class GameSpeedGui implements Drawable{
 	}
 	
 	/**
+	 * set the coef
+	 * @param state : GameSpeed
+	 */
+	public void setSpeedCoeff(GameSpeed state) {
+		this.gameSpeed = state;
+		switch(this.gameSpeed) {
+		case PAUSE:
+			this.coef = 0.f;
+			break;
+		case x1:
+			this.coef = 1.f;
+			break;
+		case x2:
+			this.coef = 2.f;
+			break;
+		case x3:
+			this.coef = 3.f;
+			break;
+		case x4:
+			this.coef = 4.f;
+			break;
+		}
+	}
+	
+	/**
+	 * return the speed coeff
+	 * @return float : the speed coeff
+	 */
+	public float getSpeedCoeff() {
+		return this.coef;
+	}
+	
+	/**
 	 * update
 	 * @param dt : elapsed time
 	 */
@@ -61,7 +105,7 @@ public class GameSpeedGui implements Drawable{
 			this.sprite.setTextureRect(new IntRect(0,0,32,32));
 		}
 		else {
-			this.temp += dt.asSeconds();
+			this.temp += dt.asSeconds() * this.coef;
 			this.sprite.setTextureRect(new IntRect(32,0,32,32));
 		}
 		convertTime();
@@ -100,6 +144,25 @@ public class GameSpeedGui implements Drawable{
 		if(e.type == Event.Type.KEY_RELEASED && e.asKeyEvent().key == Key.P) {
 			this.pauseFlag = !this.pauseFlag;
 		}
+		
+		if(e.type == Event.Type.KEY_RELEASED && e.asKeyEvent().key == Key.ADD) {
+			int i = 0;
+			for(; i < GameSpeed.values().length ; i++)
+				if(this.gameSpeed == GameSpeed.values()[i])
+					break;
+			i = Math.min(GameSpeed.values().length - 1, i + 1);
+			setSpeedCoeff(GameSpeed.values()[i]);
+		}
+		
+		if(e.type == Event.Type.KEY_RELEASED && e.asKeyEvent().key == Key.SUBTRACT) {
+			int i = 0;
+			for(; i < GameSpeed.values().length ; i++)
+				if(this.gameSpeed == GameSpeed.values()[i])
+					break;
+			i = Math.max(0, i - 1);
+			setSpeedCoeff(GameSpeed.values()[i]);
+		}
+		
 	}
 	
 	/**

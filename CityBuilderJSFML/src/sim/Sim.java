@@ -449,7 +449,8 @@ public class Sim {
 	 */
 	public void update(Time dt) {
 		// Update the simulation timer.
-		this.simulationSpeedTimer = Time.add(this.simulationSpeedTimer, Time.mul(dt * this.gameSpeedGui.getSpeedCoeff()));
+		this.simulationSpeedTimer = Time.add(this.simulationSpeedTimer, Time.mul(dt, this.gameSpeedGui.getSpeedCoeff()));
+		System.out.println("Coeff : " + this.gameSpeedGui.getSpeedCoeff());
 		
 		if(this.simulationSpeedTimer.asSeconds() >= 1.f) {
 			// Reset the resources.
@@ -486,7 +487,7 @@ public class Sim {
 		
 		// Do the time substraction here.
 		if(this.simulationSpeedTimer.asSeconds() >= 1.f) {
-			this.simulationSpeedTimer = Time.sub(this.simulationSpeedTimer, Time.getSeconds(1.f)))
+			this.simulationSpeedTimer = Time.sub(this.simulationSpeedTimer, Time.getSeconds(1.f));
 		}
 		
 		// Update the tilemap.
