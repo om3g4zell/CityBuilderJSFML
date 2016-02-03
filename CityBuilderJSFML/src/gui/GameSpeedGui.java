@@ -200,11 +200,15 @@ public class GameSpeedGui implements Drawable{
 	public void draw(RenderTarget target, RenderStates states) {
 		target.draw(text);
 		
-		if(this.timer.asSeconds() <= 0.5f ) {
+		if(this.pauseFlag) {
+			if(this.timer.asSeconds() <= 0.5f ) {
+				target.draw(sprite);
+			}
+			else if(this.timer.asSeconds() >= 1.f) {
+				this.timer = Time.ZERO;
+			}
+		}else {
 			target.draw(sprite);
-		}
-		else if(this.timer.asSeconds() >= 1.f) {
-			this.timer = Time.ZERO;
 		}
 		
 	}
