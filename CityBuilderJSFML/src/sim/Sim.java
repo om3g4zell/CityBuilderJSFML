@@ -450,9 +450,8 @@ public class Sim {
 	public void update(Time dt) {
 		// Update the simulation timer.
 		this.simulationSpeedTimer = Time.add(this.simulationSpeedTimer, Time.mul(dt, this.gameSpeedGui.getSpeedCoeff()));
-		System.out.println("Coeff : " + this.gameSpeedGui.getSpeedCoeff());
 		
-		if(this.simulationSpeedTimer.asSeconds() >= 1.f) {
+		if(!this.gameSpeedGui.isInPause() && this.simulationSpeedTimer.asSeconds() >= 1.f) {
 			// Reset the resources.
 			this.resourcesMap.reset();
 			
@@ -466,7 +465,7 @@ public class Sim {
 		if(this.displayTileInfo)
 			this.tileInfoGui.update(this.resourcesMap, this.tileSelector, this.buildings);
 			
-		if(this.simulationSpeedTimer.asSeconds() >= 1.f) {	
+		if(!this.gameSpeedGui.isInPause() && this.simulationSpeedTimer.asSeconds() >= 1.f) {	
 			// Consume resources.
 			this.buildingsRequired.clear();
 			for(Building b : this.buildings) {
@@ -486,7 +485,7 @@ public class Sim {
 		}
 		
 		// Do the time substraction here.
-		if(this.simulationSpeedTimer.asSeconds() >= 1.f) {
+		if(!this.gameSpeedGui.isInPause() && this.simulationSpeedTimer.asSeconds() >= 1.f) {
 			this.simulationSpeedTimer = Time.sub(this.simulationSpeedTimer, Time.getSeconds(1.f));
 		}
 		
