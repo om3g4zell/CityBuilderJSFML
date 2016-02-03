@@ -159,7 +159,7 @@ public class GameSpeedGui implements Drawable{
 			for(; i < GameSpeed.values().length ; i++)
 				if(this.gameSpeed == GameSpeed.values()[i])
 					break;
-			i = Math.max(0, i - 1);
+			i = Math.max(1, i - 1);
 			setSpeedCoeff(GameSpeed.values()[i]);
 		}
 		
