@@ -329,7 +329,7 @@ public class Sim {
 						for(int rx = x ; rx < Math.min(x + requiredBuilding.getHitbox().width, TILEMAP_SIZE.x) ; rx++) {
 							for(int ry = y ; ry < Math.min(y + requiredBuilding.getHitbox().height, TILEMAP_SIZE.y) ; ry++) {
 								Zone zone = this.zoneMap.getZoneMap().get(ry).get(rx);
-								
+								// check if the zone is suitable
 								for(ZoneClass zoneBuilding : requiredBuilding.getZoneClasses()) {
 									if(!zone.getType().equals(zoneBuilding)) {
 										validZone = false;
@@ -338,15 +338,15 @@ public class Sim {
 										break;
 									}
 								}
-								
+								// if the building contain the free zone it's ok
 								if(requiredBuilding.getZoneClasses().contains(ZoneClass.FREE)) {
 									validZone = true;
 								}
-
+								// if isn't a valid zone break
 								if(!validZone)
 									break;
 							}
-							
+							// if isn't a valid zone break
 							if(!validZone)
 								break;
 						}
