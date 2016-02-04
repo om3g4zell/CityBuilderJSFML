@@ -89,7 +89,7 @@ public class ResourcesMap {
 	
 	/**
 	 * clone ResourcesMap
-	 * @return ResourcesMap : clone of the ResourcesMap
+	 * @return ResourcesMap :clone of the ResourcesMap
 	 */
 	public ResourcesMap cloneResourcesMap() {
 		ResourcesMap rMap = new ResourcesMap(new Vector2i(this.size.x,this.size.y));

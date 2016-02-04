@@ -42,7 +42,7 @@ public class Resource {
 	
 	/**
 	 * Clone the resource
-	 * @return Resource : a clone a Resource
+	 * @return Resource : clone a Resource
 	 */
 	public Resource cloneResource() {
 		Resource r = new Resource(this.type,this.amount);

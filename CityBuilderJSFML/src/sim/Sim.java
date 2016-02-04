@@ -484,6 +484,7 @@ public class Sim {
 			for(Building b : this.buildings) {
 				b.generateResources(this.resourcesMap);
 			}
+			// Clone the resourceMap
 			this.cachedResourceMap = this.resourcesMap.cloneResourcesMap();
 		}
 		

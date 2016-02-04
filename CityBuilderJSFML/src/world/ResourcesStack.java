@@ -51,7 +51,7 @@ public class ResourcesStack {
 	
 	/**
 	 * clone the resourcesStack
-	 * @return ResourcesStack : the clone of the resourcesStack
+	 * @return ResourcesStack :clone of the resourcesStack
 	 */
 	public ResourcesStack cloneResourcesStack() {
 		ResourcesStack rStacks = new ResourcesStack();
