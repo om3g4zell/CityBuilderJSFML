@@ -62,7 +62,6 @@ public class Sim {
 	protected TileSelector tileSelector;
 	protected TileInfoGui tileInfoGui;
 	protected boolean displayTileInfo;
-	protected Map<Integer, Building.BuildingType> buildingsRequired;
 	protected Stack<Map<Integer, Building.BuildingType>> buildingStackRequired;
 	protected CheckBox checkbox1;
 	protected ZoneMap zoneMap;
@@ -165,8 +164,8 @@ public class Sim {
 		this.tilemap.addTypeColor(TileType.BUILDING_SUPERMARKET, new Color(125, 193, 129));
 		this.tilemap.setTiles(this.tiles);
 		
-		// The map collecting the required buildings.
-		this.buildingsRequired = new HashMap<Integer, Building.BuildingType>();
+		// The stack of the maps which contains the required buildings of everyone.
+		this.buildingStackRequired = new Stack<Map<Integer, Building.BuildingType>>();
 
 		// Instanciate the tileInfoGui
 		this.tileInfoGui = new TileInfoGui(this.tiles, this.fontManager);
@@ -179,20 +178,20 @@ public class Sim {
 	}
 	
 	/**
-	 * Looks for a position to spawn the building.
-	 */
-	public void spawnBuildingAround(Building.BuildingType buildingType, Vector2i centerOfSearchArea, float searchAreaRadius) {
-		
-	}
-	
-	/**
 	 * Spawns the new buildings.
 	 */
 	public void spawnBuildings() {
+		// Look into the required buildings stack.
+		if(this.buildingStackRequired.empty())
+			return;
+		
+		// The map collecting the required buildings.
+		Map<Integer, Building.BuildingType> buildingsRequired = this.buildingStackRequired.peek();
+		
 		// First count the required buildings.
 		Map<Building.BuildingType, Integer> buildingCounts = new HashMap<Building.BuildingType, Integer>();
 		
-		for(Map.Entry<Integer, Building.BuildingType> entry : this.buildingsRequired.entrySet()) {
+		for(Map.Entry<Integer, Building.BuildingType> entry : buildingsRequired.entrySet()) {
 			Building.BuildingType buildingType = entry.getValue();
 			
 			// Do not count NONE.
@@ -223,7 +222,7 @@ public class Sim {
 			Vector2i position = new Vector2i(0, 0);
 			
 			// Now get the position of everyone asking for that building type.
-			for(Map.Entry<Integer, Building.BuildingType> entry : this.buildingsRequired.entrySet()) {
+			for(Map.Entry<Integer, Building.BuildingType> entry : buildingsRequired.entrySet()) {
 				Building.BuildingType btype = entry.getValue();
 				
 				if(btype == buildingType) {
@@ -251,7 +250,7 @@ public class Sim {
 			// Get the further building from the average position, to compute the radius of the search area.
 			float radius = 0.f;
 			
-			for(Map.Entry<Integer, Building.BuildingType> entry : this.buildingsRequired.entrySet()) {
+			for(Map.Entry<Integer, Building.BuildingType> entry : buildingsRequired.entrySet()) {
 				Building.BuildingType btype = entry.getValue();
 				
 				if(btype == buildingType) {
@@ -306,6 +305,9 @@ public class Sim {
 						// Check collision with other buildings.
 						boolean collide = false;
 						IntRect candidateHitbox = new IntRect(x, y, requiredBuilding.getHitbox().width, requiredBuilding.getHitbox().height);
+						
+						if(candidateHitbox.left < 0 || candidateHitbox.top < 0 || candidateHitbox.left + candidateHitbox.width >= TILEMAP_SIZE.x || candidateHitbox.top + candidateHitbox.height >= TILEMAP_SIZE.y)
+							collide = true;
 						
 						for(Building b : this.buildings) {
 							if(candidateHitbox.intersection(b.getHitbox()) != null)
@@ -379,7 +381,7 @@ public class Sim {
 						
 						// Check how many buildings (which required the building construction) are in range of the required building.
 						int inRange = 0;
-						for(Map.Entry<Integer, Building.BuildingType> buildingRequiredEntry : this.buildingsRequired.entrySet()) {
+						for(Map.Entry<Integer, Building.BuildingType> buildingRequiredEntry : buildingsRequired.entrySet()) {
 							if(buildingRequiredEntry.getValue() == requiredBuilding.getType()) {
 								Building building = null;
 								
@@ -424,6 +426,10 @@ public class Sim {
 			// Add the building to the position.
 			if(bestPosition != null) {
 				this.buildings.add(new Building(maxEntry.getKey(), bestPosition.getKey()));
+				
+				// We spawned the building, so get it out of the stack.
+				this.buildingStackRequired.pop();
+				
 				System.out.println("Spawning : " + maxEntry.getKey().toString() + " @ " + bestPosition.getKey().x + ", " + bestPosition.getKey().y);
 				System.out.println("\tdistance to CoSA: " + Distance.euclidean(bestPosition.getKey(), centerOfSearchArea));
 				System.out.println("\tefficiency: " + bestPosition.getValue() + "/" + maxEntry.getValue());
@@ -439,17 +445,18 @@ public class Sim {
 				
 				Resource.ResourceType rareResource = mostRareResourceEntry.getKey();
 				
-				// Every building asking for the current building, should ask for its pre-requisite.
+				// Every building asking for the current building type should ask for its pre-requisite.
 				Map<Integer, Building.BuildingType> prerequisiteBuildingMap = new HashMap<Integer, Building.BuildingType>();
-				for(Map.Entry<Integer, Building.BuildingType> entry : this.buildingsRequired.entrySet()) {
-					if(entry == entry.getValue())
+				for(Map.Entry<Integer, Building.BuildingType> entry : buildingsRequired.entrySet()) {
+					if(requiredBuilding.getType() == entry.getValue())
 						prerequisiteBuildingMap.put(entry.getKey(), Building.getBuildingTypeGenerating(rareResource));
 				}
 				
-				buildingStackRequired.push(prerequisiteBuildingMap);
+				this.buildingStackRequired.push(prerequisiteBuildingMap);
 				
 				System.out.println("No suitable position found for : " + maxEntry.getKey().toString());
 				System.out.println("Most rare resource : " + rareResource.toString());
+				System.out.println("Asking to spawn : " + Building.getBuildingTypeGenerating(rareResource).toString());
 			}
 		}
 	}
@@ -476,20 +483,21 @@ public class Sim {
 		if(this.displayTileInfo)
 			this.tileInfoGui.update(this.resourcesMap, this.tileSelector, this.buildings);
 			
-		if(!this.gameSpeedGui.isInPause() && this.simulationSpeedTimer.asSeconds() >= 1.f) {	
-			// Consume resources.
-			this.buildingsRequired.clear();
+		if(!this.gameSpeedGui.isInPause() && this.simulationSpeedTimer.asSeconds() >= 1.f) {
+			// Consume resources and get required buildings.
+			Map<Integer, Building.BuildingType> buildingsRequired = new HashMap<Integer, Building.BuildingType>();
+			
 			for(Building b : this.buildings) {
 				BuildingType requiredBuilding = b.consumeResources(this.resourcesMap);
 				
 				// Don't do anything if none required.
 				if(requiredBuilding != BuildingType.NONE) {
-					this.buildingsRequired.put(b.getId(), requiredBuilding);
+					buildingsRequired.put(b.getId(), requiredBuilding);
 				}
 			}
 			
 			if(this.buildingStackRequired.isEmpty()) {
-				this.buildingStackRequired.push(this.buildingsRequired);
+				this.buildingStackRequired.push(buildingsRequired);
 			}
 			
 			// Spawn buildings.
