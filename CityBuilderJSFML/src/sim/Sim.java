@@ -284,8 +284,11 @@ public class Sim {
 			// We use squared radius and squared euclidean distance for performance.
 			double squaredRadius = Math.pow(radius, 2);
 			
-			// Map of the considered positions.
+			// Map of the considered positions with the number of requiring building in range.
 			HashMap<Vector2i, Integer> candidatesPositions = new HashMap<Vector2i, Integer>();
+			
+			// Map of the positions where it lacks resources only with the number of requiring building in range.
+			HashMap<Vector2i, Integer> candidatesPositionsLackingResources = new HashMap<Vector2i, Integer>();
 			
 			// Missing resources for the required building.
 			HashMap<Resource.ResourceType, Integer> missingResources = new HashMap<Resource.ResourceType, Integer>();
@@ -374,11 +377,6 @@ public class Sim {
 							}
 						}
 						
-						if(!allNeedsSatisfied) {
-							// This position is not suitable.
-							continue;
-						}
-						
 						// Check how many buildings (which required the building construction) are in range of the required building.
 						int inRange = 0;
 						for(Map.Entry<Integer, Building.BuildingType> buildingRequiredEntry : buildingsRequired.entrySet()) {
@@ -406,8 +404,11 @@ public class Sim {
 							}
 						}
 						
-						// Add to the candidates positions.
-						candidatesPositions.put(new Vector2i(x, y), inRange);
+						// Add to the candidates positions if all resources are available.
+						if(allNeedsSatisfied)
+							candidatesPositions.put(new Vector2i(x, y), inRange);
+						else
+							candidatesPositionsLackingResources.put(new Vector2i(x, y), inRange);
 					}
 				}
 			}
