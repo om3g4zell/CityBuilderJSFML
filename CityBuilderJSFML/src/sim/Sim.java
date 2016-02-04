@@ -179,6 +179,8 @@ public class Sim {
 	
 	/**
 	 * Spawns the new buildings.
+	 * 
+	 * TODO: Separate the algorithm in sub-functions.
 	 */
 	public void spawnBuildings() {
 		// Look into the required buildings stack.
