@@ -86,4 +86,20 @@ public class ResourcesMap {
 	public Vector2i getSize() {
 		return this.size;
 	}
+	
+	/**
+	 * clone ResourcesMap
+	 * @return ResourcesMap : clone of the ResourcesMap
+	 */
+	public ResourcesMap cloneResourcesMap() {
+		ResourcesMap rMap = new ResourcesMap(new Vector2i(this.size.x,this.size.y));
+		
+		for(int i = 0 ; i < this.size.y ; ++i) {
+			for(int j = 0 ; j < this.size.x ; ++j) {
+				rMap.setResources(new Vector2i(j,i), getResources(j,i).cloneResourcesStack());
+			}
+		}
+		return rMap;
+		
+	}
 }

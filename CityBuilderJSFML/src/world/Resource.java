@@ -39,4 +39,13 @@ public class Resource {
 	
 	/** Resource amount. */
 	public float amount;
+	
+	/**
+	 * Clone the resource
+	 * @return Resource : a clone a Resource
+	 */
+	public Resource cloneResource() {
+		Resource r = new Resource(this.type,this.amount);
+		return r;
+	}
 }

@@ -48,4 +48,17 @@ public class ResourcesStack {
 		for(Resource.ResourceType rtype : Resource.ResourceType.values())
 			this.add(rtype, a.get(rtype));
 	}
+	
+	/**
+	 * clone the resourcesStack
+	 * @return ResourcesStack : the clone of the resourcesStack
+	 */
+	public ResourcesStack cloneResourcesStack() {
+		ResourcesStack rStacks = new ResourcesStack();
+		
+		for(Map.Entry<Resource.ResourceType, Resource> r : this.resources.entrySet()) {
+			rStacks.add(r.getValue().cloneResource());
+		}
+		return rStacks;
+	}
 }

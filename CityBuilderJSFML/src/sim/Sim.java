@@ -54,6 +54,7 @@ public class Sim {
 	protected TileMap tilemap;
 	protected List<ArrayList<Tile>> tiles;
 	protected ResourcesMap resourcesMap;
+	protected ResourcesMap cachedResourceMap;
 	protected List<Building> buildings;
 	protected CityStats cityStats;
 	protected TextureManager textureManager;
@@ -110,6 +111,9 @@ public class Sim {
 		
 		// Create the resources map.
 		this.resourcesMap = new ResourcesMap(TILEMAP_SIZE);
+		
+		// Clone the resources map
+		this.cachedResourceMap = this.resourcesMap.cloneResourcesMap();
 		
 		// Create the buildings list.
 		this.buildings = new ArrayList<Building>();
@@ -480,11 +484,12 @@ public class Sim {
 			for(Building b : this.buildings) {
 				b.generateResources(this.resourcesMap);
 			}
+			this.cachedResourceMap = this.resourcesMap.cloneResourcesMap();
 		}
 		
 		// We update tile infos after generate.
 		if(this.displayTileInfo)
-			this.tileInfoGui.update(this.resourcesMap, this.tileSelector, this.buildings);
+			this.tileInfoGui.update(this.cachedResourceMap, this.tileSelector, this.buildings);
 			
 		if(!this.gameSpeedGui.isInPause() && this.simulationSpeedTimer.asSeconds() >= 1.f) {
 			// Consume resources and get required buildings.

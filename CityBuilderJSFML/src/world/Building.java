@@ -85,7 +85,7 @@ public class Building {
 			case GROCERY_STORE:
 				this.range = 28;
 				this.hitbox = new IntRect(position.x, position.y, 4, 2);
-				this.needs.add(new Need(Resource.ResourceType.PEOPLE, 40000, 0.f));
+				this.needs.add(new Need(Resource.ResourceType.PEOPLE, 400, 0.f));
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.buildingClass.add(Zone.ZoneClass.COMMERCIAL);
