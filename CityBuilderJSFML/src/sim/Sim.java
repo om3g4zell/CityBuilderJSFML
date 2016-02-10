@@ -514,6 +514,9 @@ public class Sim {
 			
 			// Project buildings on the tilemap.
 			BuildingProjector.project(this.buildings, this.tilemap);
+			
+			// Update CityStats
+			this.cityStats.update(this.buildings);
 		}
 		
 		// Do the time substraction here.
@@ -531,7 +534,6 @@ public class Sim {
 		
 		//Update stats
 		this.gameSpeedGui.update(dt);
-		this.cityStats.update(this.buildings);
 		this.statsGui.setMoney(this.cityStats.getMoney());
 		this.statsGui.setPopulation(this.cityStats.getPopulation());
 		this.tileSelector.update();
