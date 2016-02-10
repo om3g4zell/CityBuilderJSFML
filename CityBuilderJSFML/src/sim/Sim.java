@@ -476,6 +476,9 @@ public class Sim {
 		}
 	}
 	
+	/**
+	 * Spawn road where the zoneClass road is
+	 */
 	public void spawnRoad() {
 		boolean collisionFlag = false;
 		
