@@ -477,15 +477,18 @@ public class Sim {
 	}
 	
 	/**
-	 * Spawn road where the zoneClass road is
+	 * Spawn road with the zone map
 	 */
 	public void spawnRoad() {
 		boolean collisionFlag = false;
 		
-		// reach de map
+		// run the map
 		for(int y = 0 ; y < this.zoneMap.getSize().y ; y++) {
 			
 			for(int x = 0 ; x < this.zoneMap.getSize().x ; x++) {
+				
+				// reset the collision flag
+				collisionFlag = false;
 				
 				// check if a zoneType is road
 				if(this.zoneMap.getZoneMap().get(y).get(x).getType().equals(ZoneClass.ROAD)) {
@@ -498,11 +501,6 @@ public class Sim {
 							collisionFlag = true;
 							break;
 						}
-						
-						// the position is suitable
-						else {
-							collisionFlag = false;
-						}
 					}
 					
 					// we spawn the road
@@ -513,7 +511,7 @@ public class Sim {
 				}
 			}
 		}
-		this.zoneDrawingGui.setRoadFlag(false);
+		this.zoneDrawingGui.setNewRoadAdded(false);
 	}
 	
 	/**
@@ -527,7 +525,7 @@ public class Sim {
 		// Spawn road
 		if(!this.gameSpeedGui.isInPause() && this.simulationSpeedTimer.asSeconds() >= 1.f) {
 			
-			if(this.zoneDrawingGui.getRoadFlag()) {
+			if(this.zoneDrawingGui.newRoadAdded()) {
 				spawnRoad();
 			}
 			

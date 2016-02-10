@@ -23,7 +23,7 @@ public class ZoneDrawingGui implements Drawable {
 	protected List<CheckBox> checkboxes;
 	protected Time lastZoneClassChange;
 	protected Vector2i position;
-	protected boolean roadZoneFlag;
+	protected boolean newRoadAdded = false;
 	
 	/**
 	 * Constructor.
@@ -81,7 +81,7 @@ public class ZoneDrawingGui implements Drawable {
 				Zone z = zoneMap.getZoneMap().get(selectedTile.y).get(selectedTile.x);
 				z.setType(zoneClass);
 				if(zoneClass.equals(ZoneClass.ROAD)) {
-					setRoadFlag(true);
+					setNewRoadAdded(true);
 				}
 			}
 		}else if(Mouse.isButtonPressed(Mouse.Button.RIGHT) && Time.ratio(lastZoneClassChange, Time.getSeconds(0.5f)) >= 1.f) {
@@ -106,7 +106,7 @@ public class ZoneDrawingGui implements Drawable {
 					Zone z = zoneMap.getZoneMap().get(i).get(j);
 					z.setType(zoneClass);
 					if(zoneClass.equals(ZoneClass.ROAD)) {
-						setRoadFlag(true);
+						setNewRoadAdded(true);
 					}
 				}
 			}
@@ -154,18 +154,18 @@ public class ZoneDrawingGui implements Drawable {
 	}
 	
 	/**
-	 * set road flag
+	 * set road flag : true if zone road has been added
 	 * @param boolean : the road flag
 	 */
-	public void setRoadFlag(boolean b) {
-		this.roadZoneFlag = b;
+	public void setNewRoadAdded(boolean b) {
+		this.newRoadAdded = b;
 	}
 	
 	/**
 	 * return the roadFLag
 	 * @return boolean : the road flag
 	 */
-	public boolean getRoadFlag() {
-		return this.roadZoneFlag;
+	public boolean newRoadAdded() {
+		return this.newRoadAdded;
 	}
 }
