@@ -136,6 +136,7 @@ public class Sim {
 		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.COMMERCIAL, new Color(125, 193, 129, 170));
 		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.CULTURAL, new Color(51, 153, 255, 170));
 		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.INDUSTRY, new Color(227, 168, 87, 170));
+		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.ROAD, new Color(220, 220, 220, 170));
 		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.RESIDENTIAL, new Color(70, 0, 0, 170));
 		
 		// Houses.
@@ -158,6 +159,9 @@ public class Sim {
 		// Grossery store
 		//this.buildings.add(new Building(BuildingType.GROCERY_STORE, new Vector2i(40, 21)));
 		
+		// Roads
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(30, 20)));
+		
 		this.buildings.add(new Building(BuildingType.ANTENNA_4G, new Vector2i(35, 20)));
 		
 		// Inits the tilemap.
@@ -168,6 +172,7 @@ public class Sim {
 		this.tilemap.addTypeColor(TileType.BUILDING_GENERATOR, new Color(227, 168, 87));
 		this.tilemap.addTypeColor(TileType.BUILDING_HYDROLIC_STATION, new Color(51, 153, 255));
 		this.tilemap.addTypeColor(TileType.BUILDING_SUPERMARKET, new Color(125, 193, 129));
+		this.tilemap.addTypeColor(TileType.BUILDING_ROAD, new Color(220, 220, 220));
 		this.tilemap.addTypeColor(TileType.BUILDING_ANTENNA_4G, new Color(63, 63, 63));
 		this.tilemap.setTiles(this.tiles);
 		

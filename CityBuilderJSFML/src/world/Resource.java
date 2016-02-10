@@ -10,6 +10,7 @@ public class Resource {
 		ELECTRICITY,
 		FOOD,
 		PEOPLE,
+		ROAD_PROXIMITY,
 		NETWORK_4G,
 		
 		// Need to be the last Type to count how many type we have
