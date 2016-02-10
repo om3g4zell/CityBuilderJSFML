@@ -52,7 +52,7 @@ public class ZoneDrawingGui implements Drawable {
 	    Vector2i rawMousePosition = Mouse.getPosition(window);
 	    Vector2f mousePosition = window.mapPixelToCoords(rawMousePosition);
 	    if(!Mouse.isButtonPressed(Mouse.Button.RIGHT)) {
-	    	this.position = new Vector2i(0 ,0);
+	    	this.position = new Vector2i(-1 ,-1);
 	    }
 		lastZoneClassChange = Time.add(lastZoneClassChange, dt);
 
@@ -86,7 +86,7 @@ public class ZoneDrawingGui implements Drawable {
 			}
 		}else if(Mouse.isButtonPressed(Mouse.Button.RIGHT) && Time.ratio(lastZoneClassChange, Time.getSeconds(0.5f)) >= 1.f) {
 			// Do not draw under checkboxes.
-			if(this.position.x == 0 && this.position.y == 0) {
+			if(this.position.x == -1 && this.position.y == -1) {
 				this.position = tileSelector.getSelectedTile();
 			}
 			// Get the zone class and draw.
