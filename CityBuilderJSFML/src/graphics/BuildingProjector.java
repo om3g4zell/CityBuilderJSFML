@@ -28,6 +28,8 @@ public class BuildingProjector {
 				return TileType.BUILDING_HOUSE;
 			case HYDROLIC_STATION:
 				return TileType.BUILDING_HYDROLIC_STATION;
+			case ANTENNA_4G:
+				return TileType.BUILDING_ANTENNA_4G;
 			default:
 				return TileType.TERRAIN_GRASS;
 		}

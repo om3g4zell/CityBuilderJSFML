@@ -158,6 +158,8 @@ public class Sim {
 		// Grossery store
 		//this.buildings.add(new Building(BuildingType.GROCERY_STORE, new Vector2i(40, 21)));
 		
+		this.buildings.add(new Building(BuildingType.ANTENNA_4G, new Vector2i(35, 20)));
+		
 		// Inits the tilemap.
 		this.tilemap = new TileMap(TILEMAP_SIZE, TILE_SIZE);
 		this.tilemap.addTypeColor(TileType.TERRAIN_GRASS, new Color(0, 70, 0));
@@ -166,6 +168,7 @@ public class Sim {
 		this.tilemap.addTypeColor(TileType.BUILDING_GENERATOR, new Color(227, 168, 87));
 		this.tilemap.addTypeColor(TileType.BUILDING_HYDROLIC_STATION, new Color(51, 153, 255));
 		this.tilemap.addTypeColor(TileType.BUILDING_SUPERMARKET, new Color(125, 193, 129));
+		this.tilemap.addTypeColor(TileType.BUILDING_ANTENNA_4G, new Color(63, 63, 63));
 		this.tilemap.setTiles(this.tiles);
 		
 		// The stack of the maps which contains the required buildings of everyone.

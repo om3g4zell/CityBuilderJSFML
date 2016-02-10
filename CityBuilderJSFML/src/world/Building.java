@@ -8,6 +8,7 @@ import org.jsfml.system.Vector2i;
 
 import maths.Distance;
 import world.Resource.ResourceType;
+import world.Zone.ZoneClass;
 
 /*
  * Represent a building
@@ -21,6 +22,7 @@ public class Building {
 		GROCERY_STORE,
 		GENERATOR,
 		HYDROLIC_STATION,
+		ANTENNA_4G,
 		
 		NONE
 	}
@@ -40,6 +42,8 @@ public class Building {
 				return BuildingType.HYDROLIC_STATION;
 			case FOOD:
 				return BuildingType.GROCERY_STORE;
+			case NETWORK_4G :
+				return BuildingType.ANTENNA_4G;
 			default:
 				return BuildingType.NONE;
 		}
@@ -106,6 +110,12 @@ public class Building {
 				this.buildingClass.add(Zone.ZoneClass.RESIDENTIAL);
 				this.buildingClass.add(Zone.ZoneClass.COMMERCIAL);
 				break;
+			case ANTENNA_4G:
+				this.range = 50;
+				this.hitbox = new IntRect(position.x, position.y, 1, 1);
+				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
+				this.buildingClass.add(ZoneClass.FREE);
+				
 			default:
 		 
 				break;
@@ -214,6 +224,11 @@ public class Building {
 							rStack.add(ResourceType.WATER, 100);
 							resourcesMap.setResources(new Vector2i(x, y), rStack);
 							break;
+						case ANTENNA_4G:
+							rStack = resourcesMap.getResources(new Vector2i(x, y));
+							rStack.add(ResourceType.NETWORK_4G, 100);
+							resourcesMap.setResources(new Vector2i(x, y), rStack);
+							
 						default:
 							break;
 					}
