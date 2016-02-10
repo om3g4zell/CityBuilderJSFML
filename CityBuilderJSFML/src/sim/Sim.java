@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.jsfml.graphics.Color;
+import org.jsfml.graphics.FloatRect;
 import org.jsfml.graphics.IntRect;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Time;
@@ -485,6 +486,27 @@ public class Sim {
 		this.simulationSpeedTimer = Time.add(this.simulationSpeedTimer, Time.mul(dt, this.gameSpeedGui.getSpeedCoeff()));
 		
 		if(!this.gameSpeedGui.isInPause() && this.simulationSpeedTimer.asSeconds() >= 1.f) {
+			boolean collisionFlag = false;
+			for(int y = 0 ; y < this.zoneMap.getSize().y ; y++) {
+				for(int x = 0 ; x < this.zoneMap.getSize().x ; x++) {
+					if(this.zoneMap.getZoneMap().get(y).get(x).getType().equals(ZoneClass.ROAD)) {
+						for(int i = 0 ; i < this.buildings.size() ; i++) {
+							IntRect hitbox = this.buildings.get(i).getHitbox();
+							System.out.println("-> {" + hitbox.left + ", " + hitbox.top + ", " + hitbox.width + ", " + hitbox.height + "}");
+							System.out.println("\t-> {" + x + ", " + y + "}");
+							if(this.buildings.get(i).getHitbox().contains(x, y)) {
+								collisionFlag = true;
+								break;
+							}
+						}
+						if(!collisionFlag) {
+							this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(x,y)));
+							System.out.println("pop !");
+						}
+					}
+				}
+			}
+			
 			// Reset the resources.
 			this.resourcesMap.reset();
 			

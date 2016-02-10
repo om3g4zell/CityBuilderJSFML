@@ -95,6 +95,7 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.PEOPLE, 400, 0.f));
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
+				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				this.buildingClass.add(Zone.ZoneClass.COMMERCIAL);
 				break;
 			case HOUSE:
@@ -103,6 +104,7 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.FOOD, 10, 0.9f));
+				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				this.buildingClass.add(Zone.ZoneClass.RESIDENTIAL);
 				break;
 			case HYDROLIC_STATION:
