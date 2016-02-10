@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.jsfml.graphics.Color;
-import org.jsfml.graphics.FloatRect;
 import org.jsfml.graphics.IntRect;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Time;
@@ -477,6 +476,43 @@ public class Sim {
 		}
 	}
 	
+	public void spawnRoad() {
+		boolean collisionFlag = false;
+		
+		// reach de map
+		for(int y = 0 ; y < this.zoneMap.getSize().y ; y++) {
+			
+			for(int x = 0 ; x < this.zoneMap.getSize().x ; x++) {
+				
+				// check if a zoneType is road
+				if(this.zoneMap.getZoneMap().get(y).get(x).getType().equals(ZoneClass.ROAD)) {
+					
+					// check if not building in this zone
+					for(int i = 0 ; i < this.buildings.size() ; i++) {
+						
+						// if building stop
+						if(this.buildings.get(i).getHitbox().contains(x, y)) {
+							collisionFlag = true;
+							break;
+						}
+						
+						// the position is suitable
+						else {
+							collisionFlag = false;
+						}
+					}
+					
+					// we spawn the road
+					if(!collisionFlag) {
+						this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(x,y)));
+						System.out.println("pop !");
+					}
+				}
+			}
+		}
+		this.zoneDrawingGui.setRoadFlag(false);
+	}
+	
 	/**
 	 * Updates all the simulation.
 	 * @param dt : frame of time to use
@@ -485,26 +521,11 @@ public class Sim {
 		// Update the simulation timer.
 		this.simulationSpeedTimer = Time.add(this.simulationSpeedTimer, Time.mul(dt, this.gameSpeedGui.getSpeedCoeff()));
 		
+		// Spawn road
 		if(!this.gameSpeedGui.isInPause() && this.simulationSpeedTimer.asSeconds() >= 1.f) {
-			boolean collisionFlag = false;
-			for(int y = 0 ; y < this.zoneMap.getSize().y ; y++) {
-				for(int x = 0 ; x < this.zoneMap.getSize().x ; x++) {
-					if(this.zoneMap.getZoneMap().get(y).get(x).getType().equals(ZoneClass.ROAD)) {
-						for(int i = 0 ; i < this.buildings.size() ; i++) {
-							IntRect hitbox = this.buildings.get(i).getHitbox();
-							System.out.println("-> {" + hitbox.left + ", " + hitbox.top + ", " + hitbox.width + ", " + hitbox.height + "}");
-							System.out.println("\t-> {" + x + ", " + y + "}");
-							if(this.buildings.get(i).getHitbox().contains(x, y)) {
-								collisionFlag = true;
-								break;
-							}
-						}
-						if(!collisionFlag) {
-							this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(x,y)));
-							System.out.println("pop !");
-						}
-					}
-				}
+			
+			if(this.zoneDrawingGui.getRoadFlag()) {
+				spawnRoad();
 			}
 			
 			// Reset the resources.
