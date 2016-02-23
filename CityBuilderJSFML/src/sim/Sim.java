@@ -223,7 +223,7 @@ public class Sim {
 	 * Returns the map entry with the most buildings counted.
 	 * 
 	 * @param buildingCounts : the map of the building counts (association of building's type and number of buildings in that category)
-	 * @return the max entry in the building counts map
+	 * @return The max entry in the building counts map.
 	 */
 	public Map.Entry<Building.BuildingType, Integer> getMostRequiredBuildingType(Map<Building.BuildingType, Integer> buildingCounts) {
 		Map.Entry<Building.BuildingType, Integer> maxEntry = null;
@@ -234,6 +234,44 @@ public class Sim {
 		}
 		
 		return maxEntry;
+	}
+	
+	/**
+	 * Computes the average position of all the buildings of the given type (limited to the given number of buildings).
+	 * 
+	 * @param buildings : the list of all the positions
+	 * @param buildingType : the building type to look for, for the average position
+	 * @param numberOfBuildingsToCount : the number of buildings to count for the average position
+	 * @return The average position in tile coordinates.
+	 */
+	public Vector2i getBuildingsAveragePosition(Map<Integer, Building.BuildingType> buildings, Building.BuildingType buildingType, int numberOfBuildingsToCount) {
+		Vector2i position = new Vector2i(0, 0);
+		
+		// Now sum the position of every building of the type specified.
+		for(Map.Entry<Integer, Building.BuildingType> entry : buildings.entrySet()) {
+			Building.BuildingType btype = entry.getValue();
+			
+			if(btype == buildingType) {
+				Building building = null;
+				
+				// Get the building.
+				for(Building b : this.buildings) {
+					if(b.getId() == entry.getKey()) {
+						building = b;
+						break;
+					}
+				}
+				
+				// Add its position.
+				if(building != null) {
+					Vector2i centerPosition = new Vector2i(building.getHitbox().left + building.getHitbox().width / 2, building.getHitbox().top + building.getHitbox().height / 2);
+					position = Vector2i.add(position, centerPosition);
+				}
+			}
+		}
+		
+		// Divide by the number of buildings counted to get the average position.
+		return new Vector2i((int)(position.x / numberOfBuildingsToCount), (int)(position.y / numberOfBuildingsToCount));
 	}
 	
 	/**
@@ -253,38 +291,12 @@ public class Sim {
 		Map<Building.BuildingType, Integer> buildingCounts = countBuildingsPerType(buildingsRequired);
 		
 		// Get the most required building type.
-		Map.Entry<Building.BuildingType, Integer> maxEntry = getMostRequiredBuildingType(buildingCounts);
+		Map.Entry<Building.BuildingType, Integer> mostRequiredBuildingTypeEntry = getMostRequiredBuildingType(buildingCounts);
 		
 		// We have a building type.
-		if(maxEntry != null) {
-			Building.BuildingType buildingType = maxEntry.getKey();
-			Vector2i position = new Vector2i(0, 0);
-			
-			// Now get the position of everyone asking for that building type.
-			for(Map.Entry<Integer, Building.BuildingType> entry : buildingsRequired.entrySet()) {
-				Building.BuildingType btype = entry.getValue();
-				
-				if(btype == buildingType) {
-					Building building = null;
-					
-					// Get the building.
-					for(Building b : this.buildings) {
-						if(b.getId() == entry.getKey()) {
-							building = b;
-							break;
-						}
-					}
-					
-					// Add its position.
-					if(building != null) {
-						Vector2i centerPosition = new Vector2i(building.getHitbox().left + building.getHitbox().width / 2, building.getHitbox().top + building.getHitbox().height / 2);
-						position = Vector2i.add(position, centerPosition);
-					}
-				}
-			}
-			
+		if(mostRequiredBuildingTypeEntry != null) {
 			// Compute the average position, aka the center of the search area.
-			Vector2i centerOfSearchArea = new Vector2i((int)(position.x / maxEntry.getValue()), (int)(position.y / maxEntry.getValue()));
+			Vector2i centerOfSearchArea = getBuildingsAveragePosition(buildingsRequired, mostRequiredBuildingTypeEntry.getKey(), mostRequiredBuildingTypeEntry.getValue());
 			
 			// Get the further building from the average position, to compute the radius of the search area.
 			float radius = 0.f;
@@ -315,7 +327,7 @@ public class Sim {
 			}
 			
 			// Create a fake building.
-			Building requiredBuilding = new Building(maxEntry.getKey(), new Vector2i(0, 0));
+			Building requiredBuilding = new Building(mostRequiredBuildingTypeEntry.getKey(), new Vector2i(0, 0));
 			
 			// We may need to expand the radius.
 			radius = Math.max(radius, requiredBuilding.getRange());
@@ -465,14 +477,14 @@ public class Sim {
 			
 			// Add the building to the position.
 			if(bestPosition != null) {
-				this.buildings.add(new Building(maxEntry.getKey(), bestPosition.getKey()));
+				this.buildings.add(new Building(mostRequiredBuildingTypeEntry.getKey(), bestPosition.getKey()));
 				
 				// We spawned the building, so get it out of the stack.
 				this.buildingStackRequired.pop();
 				
-				System.out.println("Spawning : " + maxEntry.getKey().toString() + " @ " + bestPosition.getKey().x + ", " + bestPosition.getKey().y);
+				System.out.println("Spawning : " + mostRequiredBuildingTypeEntry.getKey().toString() + " @ " + bestPosition.getKey().x + ", " + bestPosition.getKey().y);
 				System.out.println("\tdistance to CoSA: " + Distance.euclidean(bestPosition.getKey(), centerOfSearchArea));
-				System.out.println("\tefficiency: " + bestPosition.getValue() + "/" + maxEntry.getValue());
+				System.out.println("\tefficiency: " + bestPosition.getValue() + "/" + mostRequiredBuildingTypeEntry.getValue());
 			}
 			else {
 				// Get the most rare resource.
@@ -494,7 +506,7 @@ public class Sim {
 				
 				this.buildingStackRequired.push(prerequisiteBuildingMap);
 				
-				System.out.println("No suitable position found for : " + maxEntry.getKey().toString());
+				System.out.println("No suitable position found for : " + mostRequiredBuildingTypeEntry.getKey().toString());
 				System.out.println("Most rare resource : " + rareResource.toString());
 				System.out.println("Asking to spawn : " + Building.getBuildingTypeGenerating(rareResource).toString());
 			}
