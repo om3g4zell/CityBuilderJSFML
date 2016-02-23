@@ -191,7 +191,10 @@ public class Sim {
 	
 	/**
 	 * Counts the number of buildings per building type.
-	 * @param buildings : the map of the buildings (association of building's ID and building type).
+	 * Type NONE is not counted.
+	 * 
+	 * @param buildings : the map of the buildings (association of building's ID and building type)
+	 * @return the map of the building counts (association of building's type and number of buildings in that category)
 	 */
 	public Map<Building.BuildingType, Integer> countBuildingsPerType(Map<Integer, Building.BuildingType> buildings) {
 		Map<Building.BuildingType, Integer> buildingCounts = new HashMap<Building.BuildingType, Integer>();
@@ -217,6 +220,23 @@ public class Sim {
 	}
 	
 	/**
+	 * Returns the map entry with the most buildings counted.
+	 * 
+	 * @param buildingCounts : the map of the building counts (association of building's type and number of buildings in that category)
+	 * @return the max entry in the building counts map
+	 */
+	public Map.Entry<Building.BuildingType, Integer> getMostRequiredBuildingType(Map<Building.BuildingType, Integer> buildingCounts) {
+		Map.Entry<Building.BuildingType, Integer> maxEntry = null;
+		for(Map.Entry<Building.BuildingType, Integer> entry : buildingCounts.entrySet()) {
+			if(maxEntry == null || entry.getValue() > maxEntry.getValue()) {
+				maxEntry = entry;
+			}
+		}
+		
+		return maxEntry;
+	}
+	
+	/**
 	 * Spawns the new buildings.
 	 * 
 	 * TODO: Separate the algorithm in sub-functions.
@@ -232,13 +252,8 @@ public class Sim {
 		// First count the required buildings.
 		Map<Building.BuildingType, Integer> buildingCounts = countBuildingsPerType(buildingsRequired);
 		
-		// Get the most required.
-		Map.Entry<Building.BuildingType, Integer> maxEntry = null;
-		for(Map.Entry<Building.BuildingType, Integer> entry : buildingCounts.entrySet()) {
-			if(maxEntry == null || entry.getValue() > maxEntry.getValue()) {
-				maxEntry = entry;
-			}
-		}
+		// Get the most required building type.
+		Map.Entry<Building.BuildingType, Integer> maxEntry = getMostRequiredBuildingType(buildingCounts);
 		
 		// We have a building type.
 		if(maxEntry != null) {
