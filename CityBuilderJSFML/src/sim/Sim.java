@@ -516,7 +516,6 @@ public class Sim {
 					// we spawn the road
 					if(!collisionFlag) {
 						this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(x,y)));
-						System.out.println("pop !");
 					}
 				}
 			}
@@ -534,7 +533,7 @@ public class Sim {
 		
 		// Spawn road
 		if(!this.gameSpeedGui.isInPause() && this.simulationSpeedTimer.asSeconds() >= 1.f) {
-			
+			// If there has been new road zones added.
 			if(this.zoneDrawingGui.newRoadAdded()) {
 				spawnRoad();
 			}
@@ -546,7 +545,8 @@ public class Sim {
 			for(Building b : this.buildings) {
 				b.generateResources(this.resourcesMap);
 			}
-			// Clone the resourceMap
+
+			// Clone the resource map.
 			this.cachedResourceMap = this.resourcesMap.cloneResourcesMap();
 		}
 		
