@@ -239,8 +239,8 @@ public class Sim {
 	/**
 	 * Computes the average position of all the buildings of the given type (limited to the given number of buildings).
 	 * 
-	 * @param buildings : the list of all the positions
-	 * @param buildingType : the building type to look for, for the average position
+	 * @param buildings : the list of all the buildings
+	 * @param buildingType : the buildings' type to take in account
 	 * @param numberOfBuildingsToCount : the number of buildings to count for the average position
 	 * @return The average position in tile coordinates.
 	 */
@@ -275,6 +275,44 @@ public class Sim {
 	}
 	
 	/**
+	 * 
+	 * @param buildings : the list of all the buildings
+	 * @param buildingType : the buildings' type to take in account
+	 * @param point : the point to compute distance from
+	 * @return The distance between the furthest building of the given type to the given point.
+	 */
+	public float getFurthestBuildingTo(Map<Integer, Building.BuildingType> buildings, Building.BuildingType buildingType, Vector2i point) {
+		float radius = 0.f;
+		
+		for(Map.Entry<Integer, Building.BuildingType> entry : buildings.entrySet()) {
+			Building.BuildingType btype = entry.getValue();
+			
+			if(btype == buildingType) {
+				Building building = null;
+				
+				// Get the building.
+				for(Building b : this.buildings) {
+					if(b.getId() == entry.getKey()) {
+						building = b;
+						break;
+					}
+				}
+				
+				// Add its position.
+				if(building != null) {
+					Vector2i centerPosition = new Vector2i(building.getHitbox().left + building.getHitbox().width / 2, building.getHitbox().top + building.getHitbox().height / 2);
+					float distance = (float)Distance.euclidean(point, centerPosition);
+					
+					if(distance > radius)
+						radius = distance;
+				}
+			}
+		}
+		
+		return radius;
+	}
+	
+	/**
 	 * Spawns the new buildings.
 	 * 
 	 * TODO: Separate the algorithm in sub-functions.
@@ -298,33 +336,8 @@ public class Sim {
 			// Compute the average position, aka the center of the search area.
 			Vector2i centerOfSearchArea = getBuildingsAveragePosition(buildingsRequired, mostRequiredBuildingTypeEntry.getKey(), mostRequiredBuildingTypeEntry.getValue());
 			
-			// Get the further building from the average position, to compute the radius of the search area.
-			float radius = 0.f;
-			
-			for(Map.Entry<Integer, Building.BuildingType> entry : buildingsRequired.entrySet()) {
-				Building.BuildingType btype = entry.getValue();
-				
-				if(btype == buildingType) {
-					Building building = null;
-					
-					// Get the building.
-					for(Building b : this.buildings) {
-						if(b.getId() == entry.getKey()) {
-							building = b;
-							break;
-						}
-					}
-					
-					// Add its position.
-					if(building != null) {
-						Vector2i centerPosition = new Vector2i(building.getHitbox().left + building.getHitbox().width / 2, building.getHitbox().top + building.getHitbox().height / 2);
-						float distance = (float)Distance.euclidean(centerOfSearchArea, centerPosition);
-						
-						if(distance > radius)
-							radius = distance;
-					}
-				}
-			}
+			// Get the furthest building from the average position, to compute the radius of the search area.
+			float radius = getFurthestBuildingTo(buildingsRequired, mostRequiredBuildingTypeEntry.getKey(), centerOfSearchArea);
 			
 			// Create a fake building.
 			Building requiredBuilding = new Building(mostRequiredBuildingTypeEntry.getKey(), new Vector2i(0, 0));
