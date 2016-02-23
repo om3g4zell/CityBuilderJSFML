@@ -190,22 +190,13 @@ public class Sim {
 	}
 	
 	/**
-	 * Spawns the new buildings.
-	 * 
-	 * TODO: Separate the algorithm in sub-functions.
+	 * Counts the number of buildings per building type.
+	 * @param buildings : the map of the buildings (association of building's ID and building type).
 	 */
-	public void spawnBuildings() {
-		// Look into the required buildings stack.
-		if(this.buildingStackRequired.empty())
-			return;
-		
-		// The map collecting the required buildings.
-		Map<Integer, Building.BuildingType> buildingsRequired = this.buildingStackRequired.peek();
-		
-		// First count the required buildings.
+	public Map<Building.BuildingType, Integer> countBuildingsPerType(Map<Integer, Building.BuildingType> buildings) {
 		Map<Building.BuildingType, Integer> buildingCounts = new HashMap<Building.BuildingType, Integer>();
 		
-		for(Map.Entry<Integer, Building.BuildingType> entry : buildingsRequired.entrySet()) {
+		for(Map.Entry<Integer, Building.BuildingType> entry : buildings.entrySet()) {
 			Building.BuildingType buildingType = entry.getValue();
 			
 			// Do not count NONE.
@@ -221,6 +212,25 @@ public class Sim {
 				buildingCounts.put(buildingType, 1);
 			}
 		}
+		
+		return buildingCounts;
+	}
+	
+	/**
+	 * Spawns the new buildings.
+	 * 
+	 * TODO: Separate the algorithm in sub-functions.
+	 */
+	public void spawnBuildings() {
+		// Look into the required buildings stack.
+		if(this.buildingStackRequired.empty())
+			return;
+		
+		// The map collecting the required buildings.
+		Map<Integer, Building.BuildingType> buildingsRequired = this.buildingStackRequired.peek();
+		
+		// First count the required buildings.
+		Map<Building.BuildingType, Integer> buildingCounts = countBuildingsPerType(buildingsRequired);
 		
 		// Get the most required.
 		Map.Entry<Building.BuildingType, Integer> maxEntry = null;
