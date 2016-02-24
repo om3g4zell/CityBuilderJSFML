@@ -44,7 +44,7 @@ public class GameSpeedGui implements Drawable{
 	 */
 	public GameSpeedGui(TextureManager textures, FontManager fonts, int x, int y) {
 		this.position = new Vector2i(x, y);
-		setSpeedCoeff(GameSpeed.PAUSE);
+		setSpeedCoeff(GameSpeed.x1);
 		this.timer = Time.ZERO;
 		
 		this.sprite = new Sprite();
@@ -157,7 +157,12 @@ public class GameSpeedGui implements Drawable{
 	 */
 	public void handleEvent(Event e) {
 		if(e.type == Event.Type.KEY_RELEASED && e.asKeyEvent().key == Key.P) {
-			this.pauseFlag = !this.pauseFlag;
+			if(this.pauseFlag) {
+				this.pauseFlag = false;
+			}
+			else {
+				this.pauseFlag = true;
+			}
 		}
 		
 		if(e.type == Event.Type.KEY_RELEASED && e.asKeyEvent().key == Key.ADD) {
