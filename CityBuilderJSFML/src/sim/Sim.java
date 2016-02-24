@@ -275,6 +275,7 @@ public class Sim {
 	}
 	
 	/**
+	 * Returns the distance to the furthest building from the given point.
 	 * 
 	 * @param buildings : the list of all the buildings
 	 * @param buildingType : the buildings' type to take in account
