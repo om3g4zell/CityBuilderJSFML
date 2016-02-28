@@ -27,6 +27,7 @@ import graphics.TileMap;
 import graphics.ZoneMapLayer;
 import gui.CheckBox;
 import gui.GameSpeedGui;
+import gui.GraphStatsGui;
 import gui.StatsGui;
 import gui.TileInfoGui;
 import gui.TileSelector;
@@ -76,6 +77,7 @@ public class Sim {
 	protected Time simulationSpeedTimer;
 	protected View gameView;
 	protected View staticView;
+	protected GraphStatsGui graphStatsGui;
 	
 	/**
 	 * Constructor
@@ -130,6 +132,9 @@ public class Sim {
 		
 		// Create the city stats.
 		this.cityStats = new CityStats();
+		
+		// Create the city graph stats gui.
+		this.graphStatsGui = new GraphStatsGui(getWindow().getSize(), this.fontManager);
 		
 		// Create the zoneMap
 		this.zoneMap = new ZoneMap(TILEMAP_SIZE.x, TILEMAP_SIZE.y);
@@ -664,8 +669,11 @@ public class Sim {
 			// Project buildings on the tilemap.
 			BuildingProjector.project(this.buildings, this.tilemap);
 			
-			// Update CityStats
+			// Update the city stats.
 			this.cityStats.update(this.buildings);
+			
+			// Update the stats graphs (even if not displayed).
+			this.graphStatsGui.update(this.cityStats.getPopulation(), this.cityStats.getMoney(), this.buildings.size());
 		}
 		
 		// Do the time substraction here.
@@ -701,17 +709,25 @@ public class Sim {
 			this.window.draw(this.zoneMapLayer);
 		
 		this.window.draw(this.tileSelector);
-		
+
+		// Static elements.
 		setStaticView();
+
 		this.window.draw(this.statsGui);
-		this.window.draw(this.zoneDrawingCheckbox);
 		this.window.draw(this.gameSpeedGui);
+		
+		if(this.cityGraphStatsCheckbox.isChecked())
+			this.window.draw(this.graphStatsGui);
+		else
+			this.window.draw(this.zoneDrawingCheckbox);
 		
 		if(this.zoneDrawingCheckbox.isChecked())
 			this.window.draw(this.zoneDrawingGui);
 		else
 			this.window.draw(cityGraphStatsCheckbox);
+
 		setGameView();
+		// End of static elements.
 		
 		if(this.displayTileInfo)
 			this.window.draw(tileInfoGui);
@@ -768,7 +784,8 @@ public class Sim {
 			this.displayTileInfo = !this.displayTileInfo;
 		}
 		
-		this.zoneDrawingCheckbox.handleEvent(event);
+		if(!this.cityGraphStatsCheckbox.isChecked())
+			this.zoneDrawingCheckbox.handleEvent(event);
 		
 		if(this.zoneDrawingCheckbox.isChecked())
 			this.zoneDrawingGui.handleEvent(event);
