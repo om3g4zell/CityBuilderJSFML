@@ -68,6 +68,7 @@ public class Sim {
 	protected boolean displayTileInfo;
 	protected Stack<Map<Integer, Building.BuildingType>> buildingStackRequired;
 	protected CheckBox zoneDrawingCheckbox;
+	protected CheckBox cityGraphStatsCheckbox;
 	protected ZoneMap zoneMap;
 	protected ZoneMapLayer zoneMapLayer;
 	protected ZoneDrawingGui zoneDrawingGui;
@@ -123,8 +124,9 @@ public class Sim {
 		// Create the buildings list.
 		this.buildings = new ArrayList<Building>();
 		
-		// Create a checkbox
-		this.zoneDrawingCheckbox = new CheckBox(10, 100 , this.textureManager, this.fontManager , "Afficher les zones", 0);
+		// Create the checkboxes.
+		this.zoneDrawingCheckbox = new CheckBox(10, 100, this.textureManager, this.fontManager, "Afficher les zones", 0);
+		this.cityGraphStatsCheckbox = new CheckBox(10, 120, this.textureManager, this.fontManager, "Afficher les statistiques", 0);
 		
 		// Create the city stats.
 		this.cityStats = new CityStats();
@@ -199,6 +201,9 @@ public class Sim {
 		this.staticView.setCenter(getWindow().getView().getCenter());
 		
 		this.gameView = (View)getWindow().getView();
+		
+		// Project buildings on the tilemap at least one time.
+		BuildingProjector.project(this.buildings, this.tilemap);
 	}
 	
 	/**
@@ -675,7 +680,7 @@ public class Sim {
 			this.zoneDrawingGui.update(dt, this.window, this.zoneMap, this.tileSelector);
 			this.zoneMapLayer.update();
 		}
-		
+
 		//Update stats
 		this.gameSpeedGui.update(dt);
 		this.statsGui.setMoney(this.cityStats.getMoney());
@@ -704,6 +709,8 @@ public class Sim {
 		
 		if(this.zoneDrawingCheckbox.isChecked())
 			this.window.draw(this.zoneDrawingGui);
+		else
+			this.window.draw(cityGraphStatsCheckbox);
 		setGameView();
 		
 		if(this.displayTileInfo)
@@ -765,6 +772,8 @@ public class Sim {
 		
 		if(this.zoneDrawingCheckbox.isChecked())
 			this.zoneDrawingGui.handleEvent(event);
+		else
+			this.cityGraphStatsCheckbox.handleEvent(event);
 		
 		this.gameSpeedGui.handleEvent(event);
 	}
