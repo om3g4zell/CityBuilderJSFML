@@ -687,20 +687,23 @@ public class Sim {
 	 * Renders all the simulation.
 	 */
 	public void render() {
-		this.window.clear(Color.WHITE);
+		this.window.clear(Color.BLACK);
 		/////////////
 		
 		this.window.draw(this.tilemap);
-		if(this.zoneDrawingCheckbox.isChecked()) {
+		
+		if(this.zoneDrawingCheckbox.isChecked())
 			this.window.draw(this.zoneMapLayer);
-			this.window.draw(this.zoneDrawingGui);
-		}
+		
 		this.window.draw(this.tileSelector);
 		
 		setStaticView();
 		this.window.draw(this.statsGui);
 		this.window.draw(this.zoneDrawingCheckbox);
 		this.window.draw(this.gameSpeedGui);
+		
+		if(this.zoneDrawingCheckbox.isChecked())
+			this.window.draw(this.zoneDrawingGui);
 		setGameView();
 		
 		if(this.displayTileInfo)
