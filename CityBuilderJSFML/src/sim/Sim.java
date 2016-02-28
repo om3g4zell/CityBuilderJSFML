@@ -618,7 +618,8 @@ public class Sim {
 	 */
 	public void update(Time dt) {
 		// Update the simulation timer.
-		this.simulationSpeedTimer = Time.add(this.simulationSpeedTimer, Time.mul(dt, this.gameSpeedGui.getSpeedCoeff()));
+		if(!this.gameSpeedGui.isInPause())
+				this.simulationSpeedTimer = Time.add(this.simulationSpeedTimer, Time.mul(dt, this.gameSpeedGui.getSpeedCoeff()));
 		
 		// Take real-time input.
 		handleInput(dt);
