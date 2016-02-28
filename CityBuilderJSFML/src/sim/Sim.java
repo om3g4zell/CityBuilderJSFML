@@ -32,6 +32,7 @@ import gui.ZoneDrawingGui;
 import maths.Distance;
 import world.Building;
 import world.Building.BuildingType;
+import world.Resource.ResourceType;
 import world.CityStats;
 import world.Need;
 import world.Resource;
@@ -148,21 +149,21 @@ public class Sim {
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(31, 23)));
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(33, 23)));
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(35, 23)));
-		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(37, 23)));*/
+		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(37, 23)));
 		
 		// Generator.
-		//this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(39, 21)));
+		this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(39, 21)));
 		
 		// Water station.
-		//this.buildings.add(new Building(BuildingType.HYDROLIC_STATION, new Vector2i(39, 23)));
+		this.buildings.add(new Building(BuildingType.HYDROLIC_STATION, new Vector2i(39, 23)));
 		
 		// Grossery store
-		//this.buildings.add(new Building(BuildingType.GROCERY_STORE, new Vector2i(40, 21)));
+		this.buildings.add(new Building(BuildingType.GROCERY_STORE, new Vector2i(40, 21)));
 		
 		// Roads
 		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(30, 20)));
 		
-		this.buildings.add(new Building(BuildingType.ANTENNA_4G, new Vector2i(35, 20)));
+		this.buildings.add(new Building(BuildingType.ANTENNA_4G, new Vector2i(35, 20)));*/
 		
 		// Inits the tilemap.
 		this.tilemap = new TileMap(TILEMAP_SIZE, TILE_SIZE);
@@ -332,185 +333,189 @@ public class Sim {
 		// Get the most required building type.
 		Map.Entry<Building.BuildingType, Integer> mostRequiredBuildingTypeEntry = getMostRequiredBuildingType(buildingCounts);
 		
-		// We have a building type.
-		if(mostRequiredBuildingTypeEntry != null) {
-			// Compute the average position, aka the center of the search area.
-			Vector2i centerOfSearchArea = getBuildingsAveragePosition(buildingsRequired, mostRequiredBuildingTypeEntry.getKey(), mostRequiredBuildingTypeEntry.getValue());
-			
-			// Get the furthest building from the average position, to compute the radius of the search area.
-			float radius = getFurthestBuildingTo(buildingsRequired, mostRequiredBuildingTypeEntry.getKey(), centerOfSearchArea);
-			
-			// Create a fake building.
-			Building requiredBuilding = new Building(mostRequiredBuildingTypeEntry.getKey(), new Vector2i(0, 0));
-			
-			// We may need to expand the radius.
-			radius = Math.max(radius, requiredBuilding.getRange());
-			
-			// We use squared radius and squared euclidean distance for performance.
-			double squaredRadius = Math.pow(radius, 2);
-			
-			// Map of the considered positions with the number of requiring building in range.
-			HashMap<Vector2i, Integer> candidatesPositions = new HashMap<Vector2i, Integer>();
-			
-			// Map of the positions where it lacks resources only with the number of requiring building in range.
-			HashMap<Vector2i, Integer> candidatesPositionsLackingResources = new HashMap<Vector2i, Integer>();
-			
-			// Missing resources for the required building.
-			HashMap<Resource.ResourceType, Integer> missingResources = new HashMap<Resource.ResourceType, Integer>();
-			
-			// Initiates missing resources to 0.
-			for(Resource.ResourceType rtype : Resource.ResourceType.values())
-				missingResources.put(rtype, 0);
-			
-			// Check all resource map in square range.
-			for(int x = Math.max(0, centerOfSearchArea.x - (int)radius) ; x < Math.min(resourcesMap.getSize().x, centerOfSearchArea.x + radius + 1) ; ++x)
+		// If no building type has been requested, we leave.
+		if(mostRequiredBuildingTypeEntry == null)
+			return;
+
+		// Compute the average position, aka the center of the search area.
+		Vector2i centerOfSearchArea = getBuildingsAveragePosition(buildingsRequired, mostRequiredBuildingTypeEntry.getKey(), mostRequiredBuildingTypeEntry.getValue());
+		
+		// Get the furthest building from the average position, to compute the radius of the search area.
+		float radius = getFurthestBuildingTo(buildingsRequired, mostRequiredBuildingTypeEntry.getKey(), centerOfSearchArea);
+		
+		// Create a fake building.
+		Building requiredBuilding = new Building(mostRequiredBuildingTypeEntry.getKey(), new Vector2i(0, 0));
+		
+		// We may need to expand the radius.
+		radius = Math.max(radius, requiredBuilding.getRange());
+		
+		// We use squared radius and squared euclidean distance for performance.
+		double squaredRadius = Math.pow(radius, 2);
+		
+		// Map of the considered positions with the number of requiring building in range.
+		HashMap<Vector2i, Integer> candidatesPositions = new HashMap<Vector2i, Integer>();
+		
+		// Map of the positions where it lacks resources only with the number of requiring building in range.
+		HashMap<Vector2i, Integer> candidatesPositionsLackingResources = new HashMap<Vector2i, Integer>();
+		
+		// Missing resources for the required building.
+		HashMap<Resource.ResourceType, Integer> missingResources = new HashMap<Resource.ResourceType, Integer>();
+		
+		// Initiates missing resources to 0.
+		for(Resource.ResourceType rtype : Resource.ResourceType.values())
+			missingResources.put(rtype, 0);
+		
+		// Check all resource map in square range.
+		for(int x = Math.max(0, centerOfSearchArea.x - (int)radius) ; x < Math.min(resourcesMap.getSize().x, centerOfSearchArea.x + radius + 1) ; ++x)
+		{
+			for(int y = Math.max(0, centerOfSearchArea.y - (int)radius) ; y < Math.min(resourcesMap.getSize().y, centerOfSearchArea.y + radius + 1) ; ++y)
 			{
-				for(int y = Math.max(0, centerOfSearchArea.y - (int)radius) ; y < Math.min(resourcesMap.getSize().y, centerOfSearchArea.y + radius + 1) ; ++y)
+				// Check only in radius.
+				if(Distance.squaredEuclidean(centerOfSearchArea, new Vector2i(x, y)) <= squaredRadius)
 				{
-					// Check only in radius.
-					if(Distance.squaredEuclidean(centerOfSearchArea, new Vector2i(x, y)) <= squaredRadius)
-					{
-						// Check collision with other buildings.
-						boolean collide = false;
-						IntRect candidateHitbox = new IntRect(x, y, requiredBuilding.getHitbox().width, requiredBuilding.getHitbox().height);
-						
-						if(candidateHitbox.left < 0 || candidateHitbox.top < 0 || candidateHitbox.left + candidateHitbox.width >= TILEMAP_SIZE.x || candidateHitbox.top + candidateHitbox.height >= TILEMAP_SIZE.y)
+					// Check collision with other buildings.
+					boolean collide = false;
+					IntRect candidateHitbox = new IntRect(x, y, requiredBuilding.getHitbox().width, requiredBuilding.getHitbox().height);
+					
+					if(candidateHitbox.left < 0 || candidateHitbox.top < 0 || candidateHitbox.left + candidateHitbox.width >= TILEMAP_SIZE.x || candidateHitbox.top + candidateHitbox.height >= TILEMAP_SIZE.y)
+						collide = true;
+					
+					for(Building b : this.buildings) {
+						if(candidateHitbox.intersection(b.getHitbox()) != null)
 							collide = true;
-						
-						for(Building b : this.buildings) {
-							if(candidateHitbox.intersection(b.getHitbox()) != null)
-								collide = true;
-						}
-						
-						if(collide) {
-							// This position is not suitable.
-							continue;
-						}
-						
-						// Check zone compatibility.
-						boolean validZone = true;
-						for(int rx = x ; rx < Math.min(x + requiredBuilding.getHitbox().width, TILEMAP_SIZE.x) ; rx++) {
-							for(int ry = y ; ry < Math.min(y + requiredBuilding.getHitbox().height, TILEMAP_SIZE.y) ; ry++) {
-								Zone zone = this.zoneMap.getZoneMap().get(ry).get(rx);
-								// check if the zone is suitable
-								for(ZoneClass zoneBuilding : requiredBuilding.getZoneClasses()) {
-									if(!zone.getType().equals(zoneBuilding)) {
-										validZone = false;
-									}else {
-										validZone = true;
-										break;
-									}
-								}
-								// if the building contain the free zone it's ok
-								if(requiredBuilding.getZoneClasses().contains(ZoneClass.FREE)) {
+					}
+					
+					if(collide) {
+						// This position is not suitable.
+						continue;
+					}
+					
+					// Check zone compatibility.
+					boolean validZone = true;
+					for(int rx = x ; rx < Math.min(x + requiredBuilding.getHitbox().width, TILEMAP_SIZE.x) ; rx++) {
+						for(int ry = y ; ry < Math.min(y + requiredBuilding.getHitbox().height, TILEMAP_SIZE.y) ; ry++) {
+							Zone zone = this.zoneMap.getZoneMap().get(ry).get(rx);
+							// check if the zone is suitable
+							for(ZoneClass zoneBuilding : requiredBuilding.getZoneClasses()) {
+								if(!zone.getType().equals(zoneBuilding)) {
+									validZone = false;
+								}else {
 									validZone = true;
-								}
-								// if isn't a valid zone break
-								if(!validZone)
 									break;
+								}
+							}
+							// if the building contain the free zone it's ok
+							if(requiredBuilding.getZoneClasses().contains(ZoneClass.FREE)) {
+								validZone = true;
 							}
 							// if isn't a valid zone break
 							if(!validZone)
 								break;
 						}
-						
-						if(!validZone) {
-							// This zone is not suitable
-							continue;
-						}
+						// if isn't a valid zone break
+						if(!validZone)
+							break;
+					}
+					
+					if(!validZone) {
+						// This zone is not suitable
+						continue;
+					}
 
-						// Get the resources available for the building.
-						ResourcesStack rstack = resourcesMap.getResources(x, y);
-						
-						for(int rx = x ; rx < Math.min(x + requiredBuilding.getHitbox().width, TILEMAP_SIZE.x) ; rx++) {
-							for(int ry = y ; ry < Math.min(y + requiredBuilding.getHitbox().height, TILEMAP_SIZE.y) ; ry++) {
-								rstack.add(resourcesMap.getResources(rx, ry));
-							}
+					// Get the resources available for the building.
+					ResourcesStack rstack = resourcesMap.getResources(x, y);
+					
+					for(int rx = x ; rx < Math.min(x + requiredBuilding.getHitbox().width, TILEMAP_SIZE.x) ; rx++) {
+						for(int ry = y ; ry < Math.min(y + requiredBuilding.getHitbox().height, TILEMAP_SIZE.y) ; ry++) {
+							rstack.add(resourcesMap.getResources(rx, ry));
 						}
+					}
+					
+					// Check if they satisfy the needs.
+					boolean allNeedsSatisfied = true;
+					for(Need n : requiredBuilding.getNeeds()) {
+						float minAmount = n.amount * n.fillFactor;
 						
-						// Check if they satisfy the needs.
-						boolean allNeedsSatisfied = true;
-						for(Need n : requiredBuilding.getNeeds()) {
-							float minAmount = n.amount * n.fillFactor;
+						// If one need is not satisfied to its minimum, we quit.
+						if(rstack.get(n.type) < minAmount) {
+							allNeedsSatisfied = false;
+							int count = missingResources.get(n.type).intValue();
+							count += 1;
+							missingResources.put(n.type, count);
+						}
+					}
+					
+					// Check how many buildings (which required the building construction) are in range of the required building.
+					int inRange = 0;
+					for(Map.Entry<Integer, Building.BuildingType> buildingRequiredEntry : buildingsRequired.entrySet()) {
+						if(buildingRequiredEntry.getValue() == requiredBuilding.getType()) {
+							Building building = null;
 							
-							// If one need is not satisfied to its minimum, we quit.
-							if(rstack.get(n.type) < minAmount) {
-								allNeedsSatisfied = false;
-								int count = missingResources.get(n.type).intValue();
-								count += 1;
-								missingResources.put(n.type, count);
-							}
-						}
-						
-						// Check how many buildings (which required the building construction) are in range of the required building.
-						int inRange = 0;
-						for(Map.Entry<Integer, Building.BuildingType> buildingRequiredEntry : buildingsRequired.entrySet()) {
-							if(buildingRequiredEntry.getValue() == requiredBuilding.getType()) {
-								Building building = null;
-								
-								// Get the building.
-								for(Building b : this.buildings) {
-									if(b.getId() == buildingRequiredEntry.getKey()) {
-										building = b;
-										break;
-									}
+							// Get the building.
+							for(Building b : this.buildings) {
+								if(b.getId() == buildingRequiredEntry.getKey()) {
+									building = b;
+									break;
 								}
+							}
+							
+							// Check if in range.
+							if(building != null) {
+								Vector2i buildingCenter = new Vector2i(building.getHitbox().left + building.getHitbox().width / 2,
+																		building.getHitbox().top + building.getHitbox().height / 2);
+								int distance = (int)Distance.euclidean(buildingCenter, new Vector2i(x, y));
 								
-								// Check if in range.
-								if(building != null) {
-									Vector2i buildingCenter = new Vector2i(building.getHitbox().left + building.getHitbox().width / 2,
-																			building.getHitbox().top + building.getHitbox().height / 2);
-									int distance = (int)Distance.euclidean(buildingCenter, new Vector2i(x, y));
-									
-									if(distance < requiredBuilding.getRange()) {
-										inRange++;
-									}
+								if(distance < requiredBuilding.getRange()) {
+									inRange++;
 								}
 							}
 						}
-						
-						// Add to the candidates positions if all resources are available.
-						if(allNeedsSatisfied)
-							candidatesPositions.put(new Vector2i(x, y), inRange);
-						else
-							candidatesPositionsLackingResources.put(new Vector2i(x, y), inRange);
 					}
+					
+					// Add to the candidates positions if all resources are available.
+					if(allNeedsSatisfied)
+						candidatesPositions.put(new Vector2i(x, y), inRange);
+					else
+						candidatesPositionsLackingResources.put(new Vector2i(x, y), inRange);
+				}
+			}
+		}
+		
+		// Check the position which reach the most buildings AND is the closer to the center of the search area.
+		Map.Entry<Vector2i, Integer> bestPosition = null;
+		double mindistance = Double.MAX_VALUE;
+		
+		for(Map.Entry<Vector2i, Integer> entry : candidatesPositions.entrySet()) {
+			if((bestPosition == null) || (entry.getValue() >= bestPosition.getValue() && mindistance > Distance.euclidean(entry.getKey(), centerOfSearchArea))) {
+				bestPosition = entry;
+				mindistance = Distance.euclidean(bestPosition.getKey(), centerOfSearchArea);
+			}
+		}
+		
+		// Add the building to the position.
+		if(bestPosition != null) {
+			this.buildings.add(new Building(mostRequiredBuildingTypeEntry.getKey(), bestPosition.getKey()));
+			
+			// We spawned the building, so get it out of the stack.
+			this.buildingStackRequired.pop();
+			
+			System.out.println("Spawning : " + mostRequiredBuildingTypeEntry.getKey().toString() + " @ " + bestPosition.getKey().x + ", " + bestPosition.getKey().y);
+			System.out.println("\tdistance to CoSA: " + Distance.euclidean(bestPosition.getKey(), centerOfSearchArea));
+			System.out.println("\tefficiency: " + bestPosition.getValue() + "/" + mostRequiredBuildingTypeEntry.getValue());
+		}
+		else {
+			// Get the most rare resource.
+			Map.Entry<Resource.ResourceType, Integer> mostRareResourceEntry = null;
+			for(Map.Entry<Resource.ResourceType, Integer> entry : missingResources.entrySet()) {
+				if(mostRareResourceEntry == null || entry.getValue() > mostRareResourceEntry.getValue()) {
+					mostRareResourceEntry = entry;
 				}
 			}
 			
-			// Check the position which reach the most buildings AND is the closer to the center of the search area.
-			Map.Entry<Vector2i, Integer> bestPosition = null;
-			double mindistance = Double.MAX_VALUE;
+			Resource.ResourceType rareResource = mostRareResourceEntry.getKey();
 			
-			for(Map.Entry<Vector2i, Integer> entry : candidatesPositions.entrySet()) {
-				if((bestPosition == null) || (entry.getValue() >= bestPosition.getValue() && mindistance > Distance.euclidean(entry.getKey(), centerOfSearchArea))) {
-					bestPosition = entry;
-					mindistance = Distance.euclidean(bestPosition.getKey(), centerOfSearchArea);
-				}
-			}
-			
-			// Add the building to the position.
-			if(bestPosition != null) {
-				this.buildings.add(new Building(mostRequiredBuildingTypeEntry.getKey(), bestPosition.getKey()));
-				
-				// We spawned the building, so get it out of the stack.
-				this.buildingStackRequired.pop();
-				
-				System.out.println("Spawning : " + mostRequiredBuildingTypeEntry.getKey().toString() + " @ " + bestPosition.getKey().x + ", " + bestPosition.getKey().y);
-				System.out.println("\tdistance to CoSA: " + Distance.euclidean(bestPosition.getKey(), centerOfSearchArea));
-				System.out.println("\tefficiency: " + bestPosition.getValue() + "/" + mostRequiredBuildingTypeEntry.getValue());
-			}
-			else {
-				// Get the most rare resource.
-				Map.Entry<Resource.ResourceType, Integer> mostRareResourceEntry = null;
-				for(Map.Entry<Resource.ResourceType, Integer> entry : missingResources.entrySet()) {
-					if(mostRareResourceEntry == null || entry.getValue() > mostRareResourceEntry.getValue()) {
-						mostRareResourceEntry = entry;
-					}
-				}
-				
-				Resource.ResourceType rareResource = mostRareResourceEntry.getKey();
-				
+			// Since the roads are manually spawned by the player, we can't ask to spawn them.
+			if(rareResource != ResourceType.ROAD_PROXIMITY) {
 				// Every building asking for the current building type should ask for its pre-requisite.
 				Map<Integer, Building.BuildingType> prerequisiteBuildingMap = new HashMap<Integer, Building.BuildingType>();
 				for(Map.Entry<Integer, Building.BuildingType> entry : buildingsRequired.entrySet()) {
