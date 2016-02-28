@@ -9,9 +9,11 @@ import java.util.Stack;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.IntRect;
 import org.jsfml.graphics.RenderWindow;
+import org.jsfml.graphics.View;
 import org.jsfml.system.Time;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
+import org.jsfml.window.Keyboard;
 import org.jsfml.window.Mouse;
 import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
@@ -65,12 +67,14 @@ public class Sim {
 	protected TileInfoGui tileInfoGui;
 	protected boolean displayTileInfo;
 	protected Stack<Map<Integer, Building.BuildingType>> buildingStackRequired;
-	protected CheckBox checkbox1;
+	protected CheckBox zoneDrawingCheckbox;
 	protected ZoneMap zoneMap;
 	protected ZoneMapLayer zoneMapLayer;
 	protected ZoneDrawingGui zoneDrawingGui;
 	protected GameSpeedGui gameSpeedGui;
 	protected Time simulationSpeedTimer;
+	protected View gameView;
+	protected View staticView;
 	
 	/**
 	 * Constructor
@@ -120,7 +124,7 @@ public class Sim {
 		this.buildings = new ArrayList<Building>();
 		
 		// Create a checkbox
-		this.checkbox1 = new CheckBox(10, 100 , this.textureManager, this.fontManager , "Afficher les zones", 0);
+		this.zoneDrawingCheckbox = new CheckBox(10, 100 , this.textureManager, this.fontManager , "Afficher les zones", 0);
 		
 		// Create the city stats.
 		this.cityStats = new CityStats();
@@ -188,6 +192,13 @@ public class Sim {
 		
 		// Building spawn timer.
 		this.simulationSpeedTimer = Time.ZERO;
+		
+		// Views.
+		this.staticView = new View();
+		this.staticView.setSize(getWindow().getView().getSize());
+		this.staticView.setCenter(getWindow().getView().getCenter());
+		
+		this.gameView = (View)getWindow().getView();
 	}
 	
 	/**
@@ -523,6 +534,8 @@ public class Sim {
 						prerequisiteBuildingMap.put(entry.getKey(), Building.getBuildingTypeGenerating(rareResource));
 				}
 				
+				// We add a new building to build on top of the stack.
+				// This way, once the prerequiste building built, it will be poped off the stack and the original building will be built.
 				this.buildingStackRequired.push(prerequisiteBuildingMap);
 				
 				System.out.println("No suitable position found for : " + mostRequiredBuildingTypeEntry.getKey().toString());
@@ -570,12 +583,35 @@ public class Sim {
 	}
 	
 	/**
+	 * Sets the static view to draw GUI & static elements on screen.
+	 */
+	public void setStaticView() {
+		// Save the game view.
+		this.gameView = (View)getWindow().getView();
+		
+		// Set the static view.
+		getWindow().setView(this.staticView);
+	}
+	
+	/**
+	 * Sets the game view to draw the world.
+	 */
+	public void setGameView() {
+		// No need to save the static view, since it's always the same.
+		// Set the game view.
+		getWindow().setView(this.gameView);
+	}
+	
+	/**
 	 * Updates all the simulation.
 	 * @param dt : frame of time to use
 	 */
 	public void update(Time dt) {
 		// Update the simulation timer.
 		this.simulationSpeedTimer = Time.add(this.simulationSpeedTimer, Time.mul(dt, this.gameSpeedGui.getSpeedCoeff()));
+		
+		// Take real-time input.
+		handleInput(dt);
 		
 		// Spawn road
 		if(!this.gameSpeedGui.isInPause() && this.simulationSpeedTimer.asSeconds() >= 1.f) {
@@ -635,7 +671,7 @@ public class Sim {
 		// Update the tilemap.
 		this.tilemap.update();
 		
-		if(this.checkbox1.isChecked()) {
+		if(this.zoneDrawingCheckbox.isChecked()) {
 			this.zoneDrawingGui.update(dt, this.window, this.zoneMap, this.tileSelector);
 			this.zoneMapLayer.update();
 		}
@@ -653,17 +689,19 @@ public class Sim {
 	public void render() {
 		this.window.clear(Color.WHITE);
 		/////////////
-
+		
 		this.window.draw(this.tilemap);
-		if(this.checkbox1.isChecked()) {
+		if(this.zoneDrawingCheckbox.isChecked()) {
 			this.window.draw(this.zoneMapLayer);
 			this.window.draw(this.zoneDrawingGui);
 		}
-		
 		this.window.draw(this.tileSelector);
+		
+		setStaticView();
 		this.window.draw(this.statsGui);
-		this.window.draw(checkbox1);
-		this.window.draw(gameSpeedGui);
+		this.window.draw(this.zoneDrawingCheckbox);
+		this.window.draw(this.gameSpeedGui);
+		setGameView();
 		
 		if(this.displayTileInfo)
 			this.window.draw(tileInfoGui);
@@ -671,6 +709,36 @@ public class Sim {
 		/////////////
 		this.window.display();
 		
+	}
+	
+	/**
+	 * Handles the real-time input from the player.
+	 * @param dt : elapsed time since last tick
+	 */
+	public void handleInput(Time dt) {
+		// View movement.
+		View view = (View)getWindow().getView();
+		float viewMovementX = 0, viewMovementY = 0;
+		
+		if(Keyboard.isKeyPressed(Keyboard.Key.LEFT)) {
+			viewMovementX -= 400.f;
+		}
+		else if(Keyboard.isKeyPressed(Keyboard.Key.RIGHT)) {
+			viewMovementX += 400.f;
+		}
+		
+		if(Keyboard.isKeyPressed(Keyboard.Key.UP)) {
+			viewMovementY -= 400.f;
+		}
+		else if(Keyboard.isKeyPressed(Keyboard.Key.DOWN)) {
+			viewMovementY += 400.f;
+		}
+		
+		Vector2f viewMovement = new Vector2f(viewMovementX, viewMovementY);
+		viewMovement = Vector2f.mul(viewMovement, dt.asSeconds());
+		view.move(viewMovement);
+		
+		getWindow().setView(view);
 	}
 	
 	/**
@@ -690,9 +758,9 @@ public class Sim {
 			this.displayTileInfo = !this.displayTileInfo;
 		}
 		
-		this.checkbox1.handleEvent(event);
+		this.zoneDrawingCheckbox.handleEvent(event);
 		
-		if(this.checkbox1.isChecked())
+		if(this.zoneDrawingCheckbox.isChecked())
 			this.zoneDrawingGui.handleEvent(event);
 		
 		this.gameSpeedGui.handleEvent(event);
