@@ -542,9 +542,9 @@ public class Sim {
 			// We spawned the building, so get it out of the stack.
 			this.buildingStackRequired.pop();
 			
-			System.out.println("Spawning : " + mostRequiredBuildingTypeEntry.getKey().toString() + " @ " + bestPosition.getKey().x + ", " + bestPosition.getKey().y);
-			System.out.println("\tdistance to CoSA: " + Distance.euclidean(bestPosition.getKey(), centerOfSearchArea));
-			System.out.println("\tefficiency: " + bestPosition.getValue() + "/" + mostRequiredBuildingTypeEntry.getValue());
+			this.logGui.write("Spawning : " + mostRequiredBuildingTypeEntry.getKey().toString() + " @ " + bestPosition.getKey().x + ", " + bestPosition.getKey().y);
+			this.logGui.write("\tdistance to CoSA: " + Distance.euclidean(bestPosition.getKey(), centerOfSearchArea), false);
+			this.logGui.write("\tefficiency: " + bestPosition.getValue() + "/" + mostRequiredBuildingTypeEntry.getValue(), false);
 		}
 		else {
 			// Get the most rare resource.
@@ -570,9 +570,9 @@ public class Sim {
 				// This way, once the prerequiste building built, it will be poped off the stack and the original building will be built.
 				this.buildingStackRequired.push(prerequisiteBuildingMap);
 				
-				System.out.println("No suitable position found for : " + mostRequiredBuildingTypeEntry.getKey().toString());
-				System.out.println("Most rare resource : " + rareResource.toString());
-				System.out.println("Asking to spawn : " + Building.getBuildingTypeGenerating(rareResource).toString());
+				this.logGui.write("No suitable position found for : " + mostRequiredBuildingTypeEntry.getKey().toString());
+				this.logGui.write("Most rare resource : " + rareResource.toString(), false);
+				this.logGui.write("Asking to spawn : " + Building.getBuildingTypeGenerating(rareResource).toString(), false);
 			}
 		}
 	}
@@ -611,9 +611,8 @@ public class Sim {
 				}
 			}
 		}
+
 		this.zoneDrawingGui.setNewRoadAdded(false);
-		this.logGui.write("Spawn : Road");
-		this.logGui.write("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 	}
 	
 	/**
