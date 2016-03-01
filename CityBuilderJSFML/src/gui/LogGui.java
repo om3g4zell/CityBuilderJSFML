@@ -58,9 +58,18 @@ public class LogGui implements Drawable{
 	}
 	
 	public void write(String s) {
-		String prefix = "[" + this.timer.asSeconds() + "] ";
-		this.logs.add(prefix + s);
-		
+		write(s, true);
+	}
+	
+	public void write(String s, boolean timerPrefix) {
+		if(timerPrefix) {
+			String prefix = "[" + this.timer.asSeconds() + "] ";
+			this.logs.add(prefix + s);
+		}
+		else {
+			this.logs.add(s);
+		}
+
 		if(this.logText.size() > 0 && this.logText.get(this.logText.size() -1).getGlobalBounds().top + this.logText.get(this.logText.size()-1).getGlobalBounds().height > Main.HEIGHT ) {
 			pointer++;
 		}
