@@ -1,4 +1,5 @@
-/sim/
-/gui/
 /graphics/
+/gui/
+/maths/
+/sim/
 /world/

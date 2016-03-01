@@ -3,6 +3,7 @@ package world;
 import java.util.List;
 
 public class CityStats {
+	
 	protected int population;
 	protected int money;
 	
