@@ -28,6 +28,7 @@ import graphics.ZoneMapLayer;
 import gui.CheckBox;
 import gui.GameSpeedGui;
 import gui.GraphStatsGui;
+import gui.LogGui;
 import gui.StatsGui;
 import gui.TileInfoGui;
 import gui.TileSelector;
@@ -78,6 +79,7 @@ public class Sim {
 	protected View gameView;
 	protected View staticView;
 	protected GraphStatsGui graphStatsGui;
+	protected LogGui logGui;
 	
 	/**
 	 * Constructor
@@ -141,6 +143,9 @@ public class Sim {
 		
 		// Create the game speed GUI
 		this.gameSpeedGui = new GameSpeedGui(textureManager, fontManager, this.window.getSize().x - 80, 20);
+		
+		// Create the logGui
+		this.logGui = new LogGui(this.fontManager);
 		
 		// Create the zoneMapLayer
 		this.zoneMapLayer = new ZoneMapLayer(this.zoneMap);
@@ -597,6 +602,7 @@ public class Sim {
 			}
 		}
 		this.zoneDrawingGui.setNewRoadAdded(false);
+		this.logGui.write("Spawn : Road");
 	}
 	
 	/**
@@ -702,6 +708,7 @@ public class Sim {
 		this.statsGui.setMoney(this.cityStats.getMoney());
 		this.statsGui.setPopulation(this.cityStats.getPopulation());
 		this.tileSelector.update();
+		this.logGui.update(dt);
 	}
 	
 	/**
@@ -733,7 +740,7 @@ public class Sim {
 			this.window.draw(this.zoneDrawingGui);
 		else
 			this.window.draw(cityGraphStatsCheckbox);
-
+		this.window.draw(logGui);
 		setGameView();
 		// End of static elements.
 		

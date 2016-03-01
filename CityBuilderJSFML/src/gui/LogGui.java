@@ -38,10 +38,10 @@ public class LogGui implements Drawable{
 		this.background = new RectangleShape();
 		this.background.setSize(new Vector2f(400, Main.HEIGHT));
 		this.background.setFillColor(new Color(0, 0, 0, 125));
-		this.background.setPosition(new Vector2f(1880, 0));
+		this.background.setPosition(new Vector2f(880, 0));
 		
 		this.title = initText();
-		this.title.setPosition(1980, 50);
+		this.title.setPosition(980, 50);
 		this.title.setString("Messages :");
 		
 	}
@@ -58,15 +58,16 @@ public class LogGui implements Drawable{
 		String prefix = "[+" + this.timer.asSeconds() + "] ";
 		this.logs.add(prefix + s);
 		
-		if(this.logs.size() - pointer > 10) {
+		if(this.logs.size() - pointer > 30) {
 			pointer++;
 		}
 		
 		this.logText.clear();
 		
-		for(int i = pointer ; i < this.logs.size() ; i++) {
+		int nb = 0;
+		for(int i = pointer ; i < this.logs.size() ; i++ , nb++) {
 			Text text = initText();
-			text.setPosition(new Vector2f(2000, i*20));
+			text.setPosition(new Vector2f(900, nb*20 + 100));
 			if(this.logs.get(i).length() > 80) {
 				String str = this.logs.get(i);
 				for(int j = 1 ; j <= str.length()%80 ; j++) {
@@ -75,6 +76,7 @@ public class LogGui implements Drawable{
 				this.logs.set(i, str);
 			}
 			text.setString(this.logs.get(i));
+			this.logText.add(text);
 		}
 	}
 	
