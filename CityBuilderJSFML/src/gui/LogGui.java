@@ -44,7 +44,7 @@ public class LogGui implements Drawable{
 		this.title.setCharacterSize(16);
 		this.title.setColor(Color.WHITE);
 		this.title.setFont(this.fonts.get(FontID.BEBAS));
-		this.title.setPosition(900, 50);
+		this.title.setPosition(900, 75);
 		this.title.setString("Messages :");
 		
 	}
@@ -57,11 +57,11 @@ public class LogGui implements Drawable{
 		this.timer = Time.add(dt, timer);
 	}
 	
-	public void write(String s) {
-		write(s, true);
+	public void write(String s, Color color) {
+		write(s, true, color);
 	}
 	
-	public void write(String s, boolean timerPrefix) {
+	public void write(String s, boolean timerPrefix,Color color) {
 		if(timerPrefix) {
 			String prefix = "[" + this.timer.asSeconds() + "] ";
 			this.logs.add(prefix + s);
@@ -79,21 +79,21 @@ public class LogGui implements Drawable{
 		int nb = 0;
 		for(int i = pointer ; i < this.logs.size() ; i++, nb++) {
 			
-			Text text = initText();
+			Text text = initText(color);
 			String str = this.logs.get(i);
 			
-			if(this.logs.get(i).length() >= 80) {
-				for(int j = 1 ; j <= (int)(str.length()/80); j++) {
-					str = new StringBuilder(str).insert(j*80, "\n").toString();
+			if(this.logs.get(i).length() >= 60) {
+				for(int j = 1 ; j <= (int)(str.length()/60); j++) {
+					str = new StringBuilder(str).insert(j*60, "\n").toString();
 				}
 			}
 			
 			text.setString(str);
 			
 			if(nb == 0)
-				text.setPosition(new Vector2f(920, 100));
+				text.setPosition(new Vector2f(900, 100));
 			else
-				text.setPosition(new Vector2f(920, this.logText.get(nb-1).getGlobalBounds().top + this.logText.get(nb-1).getGlobalBounds().height +5));
+				text.setPosition(new Vector2f(900, this.logText.get(nb-1).getGlobalBounds().top + this.logText.get(nb-1).getGlobalBounds().height +5));
 			this.logText.add(text);
 		}
 	}
@@ -118,10 +118,10 @@ public class LogGui implements Drawable{
 	 * initiate text
 	 * @return text : the text with our norm
 	 */
-	public Text initText() {
+	public Text initText(Color color) {
 		Text text = new Text();
 		text.setCharacterSize(12);
-		text.setColor(Color.WHITE);
+		text.setColor(color);
 		text.setFont(this.fonts.get(FontID.POINTFREE));
 		
 		return text;
