@@ -341,6 +341,25 @@ public class Sim {
 	}
 	
 	/**
+	 * Returns true if there is a collision with another building (or is outside the map).
+	 * 
+	 * @param hitbox : the hitbox to test
+	 * @return true in case of collision, false otherwise
+	 */
+	public boolean collideWithOtherBuildings(IntRect hitbox) {
+		// Must be fully inside the map.
+		if(hitbox.left < 0 || hitbox.top < 0 || hitbox.left + hitbox.width >= TILEMAP_SIZE.x || hitbox.top + hitbox.height >= TILEMAP_SIZE.y)
+			return true;
+		
+		for(Building b : this.buildings) {
+			if(hitbox.intersection(b.getHitbox()) != null)
+				return true;
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * Spawns the new buildings.
 	 * 
 	 * TODO: Separate the algorithm in sub-functions.
@@ -400,18 +419,9 @@ public class Sim {
 				if(Distance.squaredEuclidean(centerOfSearchArea, new Vector2i(x, y)) <= squaredRadius)
 				{
 					// Check collision with other buildings.
-					boolean collide = false;
 					IntRect candidateHitbox = new IntRect(x, y, requiredBuilding.getHitbox().width, requiredBuilding.getHitbox().height);
 					
-					if(candidateHitbox.left < 0 || candidateHitbox.top < 0 || candidateHitbox.left + candidateHitbox.width >= TILEMAP_SIZE.x || candidateHitbox.top + candidateHitbox.height >= TILEMAP_SIZE.y)
-						collide = true;
-					
-					for(Building b : this.buildings) {
-						if(candidateHitbox.intersection(b.getHitbox()) != null)
-							collide = true;
-					}
-					
-					if(collide) {
+					if(collideWithOtherBuildings(candidateHitbox)) {
 						// This position is not suitable.
 						continue;
 					}
