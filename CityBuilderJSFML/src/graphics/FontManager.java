@@ -11,7 +11,8 @@ public class FontManager {
 	
 	public static enum FontID {
 		VCR_MONO,
-		CAVIAR_DREAM
+		CAVIAR_DREAM,
+		BEBAS
 	}
 	
 	protected Map<FontID, Font> fonts;
@@ -23,6 +24,7 @@ public class FontManager {
 		this.fonts = new HashMap<FontID, Font>();
 		this.fonts.put(FontID.VCR_MONO, load("res/font/VCR_MONO.ttf"));
 		this.fonts.put(FontID.CAVIAR_DREAM, load("res/font/CaviarDreams.ttf"));
+		this.fonts.put(FontID.BEBAS, load("res/font/BEBAS.ttf"));
 	}
 	
 	/**
