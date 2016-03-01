@@ -55,7 +55,7 @@ public class LogGui implements Drawable{
 	}
 	
 	public void write(String s) {
-		String prefix = "[+" + this.timer.asSeconds() + "] ";
+		String prefix = "[" + this.timer.asSeconds() + "] ";
 		this.logs.add(prefix + s);
 		
 		if(this.logs.size() - pointer > 30) {
