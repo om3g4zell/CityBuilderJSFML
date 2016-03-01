@@ -40,8 +40,11 @@ public class LogGui implements Drawable{
 		this.background.setFillColor(new Color(0, 0, 0, 125));
 		this.background.setPosition(new Vector2f(880, 0));
 		
-		this.title = initText();
-		this.title.setPosition(980, 50);
+		this.title = new Text();
+		this.title.setCharacterSize(16);
+		this.title.setColor(Color.WHITE);
+		this.title.setFont(this.fonts.get(FontID.VCR_MONO));
+		this.title.setPosition(900, 50);
 		this.title.setString("Messages :");
 		
 	}
@@ -67,7 +70,7 @@ public class LogGui implements Drawable{
 		int nb = 0;
 		for(int i = pointer ; i < this.logs.size() ; i++ , nb++) {
 			Text text = initText();
-			text.setPosition(new Vector2f(900, nb*20 + 100));
+			text.setPosition(new Vector2f(920, nb*20 + 100));
 			if(this.logs.get(i).length() > 80) {
 				String str = this.logs.get(i);
 				for(int j = 1 ; j <= str.length()%80 ; j++) {
@@ -86,7 +89,7 @@ public class LogGui implements Drawable{
 	 */
 	public Text initText() {
 		Text text = new Text();
-		text.setCharacterSize(16);
+		text.setCharacterSize(12);
 		text.setColor(Color.WHITE);
 		text.setFont(this.fonts.get(FontID.VCR_MONO));
 		
