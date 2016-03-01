@@ -61,26 +61,29 @@ public class LogGui implements Drawable{
 		String prefix = "[" + this.timer.asSeconds() + "] ";
 		this.logs.add(prefix + s);
 		
-		if(this.logs.size() - pointer > 30) {
+		if(this.logText.size() > 0 && this.logText.get(this.logText.size() -1).getGlobalBounds().top + this.logText.get(this.logText.size()-1).getGlobalBounds().height > Main.HEIGHT ) {
 			pointer++;
 		}
 		
 		this.logText.clear();
 		
 		for(int i = pointer ; i < this.logs.size() ; i++) {
+			
 			Text text = initText();
+			String str = this.logs.get(i);
+			
 			if(this.logs.get(i).length() >= 40) {
-				String str = this.logs.get(i);
 				for(int j = 1 ; j <= (int)(str.length()/40); j++) {
 					str = new StringBuilder(str).insert(j*40, "\n").toString();
-					System.out.println("why ?");
 				}
-				this.logs.set(i, str);
 			}
-			int line = getLineNumber(this.logs.get(i));
-			text.setPosition(new Vector2f(920, line*20 + 100));
-			System.out.println(this.logs.get(i));
-			text.setString(this.logs.get(i));
+			
+			text.setString(str);
+			
+			if(i > 0)
+				text.setPosition(new Vector2f(920, this.logText.get(i-1).getGlobalBounds().top + this.logText.get(i-1).getGlobalBounds().height +5));
+			else
+				text.setPosition(new Vector2f(920, 100));
 			this.logText.add(text);
 		}
 	}
