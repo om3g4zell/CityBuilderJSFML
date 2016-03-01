@@ -71,10 +71,11 @@ public class LogGui implements Drawable{
 		for(int i = pointer ; i < this.logs.size() ; i++ , nb++) {
 			Text text = initText();
 			text.setPosition(new Vector2f(920, nb*20 + 100));
-			if(this.logs.get(i).length() > 80) {
+			if(this.logs.get(i).length() >= 40) {
 				String str = this.logs.get(i);
-				for(int j = 1 ; j <= str.length()%80 ; j++) {
-					str = new StringBuilder(this.logs.get(i)).insert(j*80, "\n").toString();
+				for(int j = 1 ; j <= (int)(str.length()/40); j++) {
+					str = new StringBuilder(str).insert(j*40, "\n").toString();
+					System.out.println(str);
 				}
 				this.logs.set(i, str);
 			}
