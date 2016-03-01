@@ -67,7 +67,8 @@ public class LogGui implements Drawable{
 		
 		this.logText.clear();
 		
-		for(int i = pointer ; i < this.logs.size() ; i++) {
+		int nb = 0;
+		for(int i = pointer ; i < this.logs.size() ; i++, nb++) {
 			
 			Text text = initText();
 			String str = this.logs.get(i);
@@ -80,10 +81,10 @@ public class LogGui implements Drawable{
 			
 			text.setString(str);
 			
-			if(i > 0)
-				text.setPosition(new Vector2f(920, this.logText.get(i-1).getGlobalBounds().top + this.logText.get(i-1).getGlobalBounds().height +5));
-			else
+			if(nb == 0)
 				text.setPosition(new Vector2f(920, 100));
+			else
+				text.setPosition(new Vector2f(920, this.logText.get(nb-1).getGlobalBounds().top + this.logText.get(nb-1).getGlobalBounds().height +5));
 			this.logText.add(text);
 		}
 	}
