@@ -27,7 +27,7 @@ public class LogGui implements Drawable{
 	
 	/**
 	 * Constructor
-	 * @param FontManager : all the font
+	 * @param fonts : all the font
 	 */
 	public LogGui(FontManager fonts) {
 		this.fonts = fonts;
@@ -51,7 +51,7 @@ public class LogGui implements Drawable{
 	
 	/**
 	 * update the logGui
-	 * @param Time dt
+	 * @param dt : elapsed time
 	 */
 	public void update(Time dt) {
 		this.timer = Time.add(dt, timer);
@@ -67,26 +67,43 @@ public class LogGui implements Drawable{
 		
 		this.logText.clear();
 		
-		int nb = 0;
-		for(int i = pointer ; i < this.logs.size() ; i++ , nb++) {
+		for(int i = pointer ; i < this.logs.size() ; i++) {
 			Text text = initText();
-			text.setPosition(new Vector2f(920, nb*20 + 100));
 			if(this.logs.get(i).length() >= 40) {
 				String str = this.logs.get(i);
 				for(int j = 1 ; j <= (int)(str.length()/40); j++) {
 					str = new StringBuilder(str).insert(j*40, "\n").toString();
-					System.out.println(str);
+					System.out.println("why ?");
 				}
 				this.logs.set(i, str);
 			}
+			int line = getLineNumber(this.logs.get(i));
+			text.setPosition(new Vector2f(920, line*20 + 100));
+			System.out.println(this.logs.get(i));
 			text.setString(this.logs.get(i));
 			this.logText.add(text);
 		}
 	}
 	
 	/**
+	 * Count line number of a string
+	 * @param str : String
+	 * @return nb : number of lines
+	 */
+	public int getLineNumber(String str) {
+		int nb = 1;
+		for(char c : str.toCharArray()) {
+			if(c == '\n') {
+				nb++;
+			}
+		}
+		System.out.println(nb);
+		return nb;
+	}
+	
+	/**
 	 * initiate text
-	 * @return Text : the text with our norm
+	 * @return text : the text with our norm
 	 */
 	public Text initText() {
 		Text text = new Text();
