@@ -78,9 +78,9 @@ public class LogGui implements Drawable{
 		
 		String str = this.logs.get(this.logs.size() -1);
 				
-		if(str.length() >= 55) {
-			for(int j = 1 ; j <= (int)(str.length()/55); j++) {
-				str = new StringBuilder(str).insert(j*55, "\n").toString();
+		if(str.length() >= 50) {
+			for(int j = 1 ; j <= (int)(str.length()/50); j++) {
+				str = new StringBuilder(str).insert(j*50, "\n").toString();
 			}
 		}
 		
