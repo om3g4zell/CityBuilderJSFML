@@ -426,6 +426,51 @@ public class Sim {
 	}
 	
 	/**
+	 * Starts from the given left top position and check if the whole hitbox is in allowed zone classes.
+	 * 
+	 * @param leftTop : the position to start checking from
+	 * @param hitbox : the hitbox (only width and heigth are used)
+	 * @param zoneClasses : the list of the zones allowed
+	 * @return true if the hitbox is in allowed zone classes, false otherwise
+	 */
+	public boolean checkZoneCompatibility(Vector2i leftTop, IntRect hitbox, List<Zone.ZoneClass> zoneClasses) {
+		boolean validZone = true;
+		
+		for(int rx = leftTop.x ; rx < Math.min(leftTop.x + hitbox.width, TILEMAP_SIZE.x) ; rx++) {
+			for(int ry = leftTop.y ; ry < Math.min(leftTop.y + hitbox.height, TILEMAP_SIZE.y) ; ry++) {
+				// Get the zone.
+				Zone zone = this.zoneMap.getZoneMap().get(ry).get(rx);
+				
+				// check if the zone is suitable
+				for(ZoneClass zoneBuilding : zoneClasses) {
+					if(!zone.getType().equals(zoneBuilding)) {
+						validZone = false;
+					}
+					else {
+						validZone = true;
+						break;
+					}
+				}
+				
+				// if the building contain the free zone it's ok
+				if(zoneClasses.contains(ZoneClass.FREE)) {
+					validZone = true;
+				}
+				
+				// if isn't a valid zone break
+				if(!validZone)
+					break;
+				
+			}
+			// if isn't a valid zone break
+			if(!validZone)
+				break;
+		}
+		
+		return validZone;
+	}
+	
+	/**
 	 * Spawns the new buildings.
 	 * 
 	 * TODO: Separate the algorithm in sub-functions.
@@ -493,40 +538,7 @@ public class Sim {
 					}
 					
 					// Check zone compatibility.
-					boolean validZone = true;
-					
-					for(int rx = x ; rx < Math.min(x + requiredBuilding.getHitbox().width, TILEMAP_SIZE.x) ; rx++) {
-						for(int ry = y ; ry < Math.min(y + requiredBuilding.getHitbox().height, TILEMAP_SIZE.y) ; ry++) {
-							// Get the zone.
-							Zone zone = this.zoneMap.getZoneMap().get(ry).get(rx);
-							
-							// check if the zone is suitable
-							for(ZoneClass zoneBuilding : requiredBuilding.getZoneClasses()) {
-								if(!zone.getType().equals(zoneBuilding)) {
-									validZone = false;
-								}
-								else {
-									validZone = true;
-									break;
-								}
-							}
-							
-							// if the building contain the free zone it's ok
-							if(requiredBuilding.getZoneClasses().contains(ZoneClass.FREE)) {
-								validZone = true;
-							}
-							
-							// if isn't a valid zone break
-							if(!validZone)
-								break;
-							
-						}
-						// if isn't a valid zone break
-						if(!validZone)
-							break;
-					}
-					
-					if(!validZone) {
+					if(!checkZoneCompatibility(new Vector2i(x, y), requiredBuilding.getHitbox(), requiredBuilding.getZoneClasses()))
 						// This zone is not suitable
 						continue;
 					}
@@ -588,7 +600,6 @@ public class Sim {
 						candidatesPositionsLackingResources.put(new Vector2i(x, y), inRange);
 				}
 			}
-		}
 		
 		// Check the position which reach the most buildings AND is the closer to the center of the search area.
 		Map.Entry<Vector2i, Integer> bestPosition = null;
