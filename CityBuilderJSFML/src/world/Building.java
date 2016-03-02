@@ -86,8 +86,6 @@ public class Building {
 				this.range = 18;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				this.buildingClass.add(Zone.ZoneClass.INDUSTRY);
-				this.buildingClass.add(Zone.ZoneClass.RESIDENTIAL);
-				this.buildingClass.add(Zone.ZoneClass.COMMERCIAL);
 				break;
 			case GROCERY_STORE:
 				this.range = 28;
@@ -112,8 +110,6 @@ public class Building {
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.buildingClass.add(Zone.ZoneClass.INDUSTRY);
-				this.buildingClass.add(Zone.ZoneClass.RESIDENTIAL);
-				this.buildingClass.add(Zone.ZoneClass.COMMERCIAL);
 				break;
 			case ROAD:
 				this.range = 1;
