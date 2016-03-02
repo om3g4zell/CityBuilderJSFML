@@ -61,42 +61,45 @@ public class LogGui implements Drawable{
 		write(s, true, color);
 	}
 	
-	public void write(String s, boolean timerPrefix,Color color) {
+	public void write(String message, boolean timerPrefix, Color color) {
 		if(timerPrefix) {
 			String prefix = "[" + this.timer.asSeconds() + "] ";
-			this.logs.add(prefix + s);
+			this.logs.add(prefix + message);
 		}
 		else {
-			this.logs.add(s);
-		}
-
-		if(this.logText.size() > 0 && this.logText.get(this.logText.size() -1).getGlobalBounds().top + this.logText.get(this.logText.size()-1).getGlobalBounds().height > Main.HEIGHT ) {
-			pointer++;
+			this.logs.add(message);
 		}
 		
-		this.logText.clear();
+		Text text = new Text();
+		if(this.logText.size() > 0)
+			text.setPosition(900, this.logText.get((this.logText.size()-1)).getGlobalBounds().left + this.logText.get((this.logText.size()-1)).getGlobalBounds().left + 5);
+		else
+			text.setPosition(900, 100);
 		
-		int nb = 0;
-		for(int i = pointer ; i < this.logs.size() ; i++, nb++) {
-			
-			Text text = initText(color);
-			String str = this.logs.get(i);
-			
-			if(this.logs.get(i).length() >= 60) {
-				for(int j = 1 ; j <= (int)(str.length()/60); j++) {
-					str = new StringBuilder(str).insert(j*60, "\n").toString();
-				}
+		String str = this.logs.get(this.logs.size() -1 );
+				
+		if(this.logs.get(this.logs.size() -1 ).length() >= 60) {
+			for(int j = 1 ; j <= (int)(str.length()/60); j++) {
+				str = new StringBuilder(str).insert(j*60, "\n").toString();
 			}
+		}
+		
+		text.setString(str);
+		text.setColor(color);
+		this.logText.add(text);
+		while(text.getGlobalBounds().top + text.getGlobalBounds().height > Main.HEIGHT) {
+			up(this.logText.get(0).getGlobalBounds().height, this.logText);
+			this.logText.remove(this.logText.get(0));
+		}
 			
-			text.setString(str);
-			
-			if(nb == 0)
-				text.setPosition(new Vector2f(900, 100));
-			else
-				text.setPosition(new Vector2f(900, this.logText.get(nb-1).getGlobalBounds().top + this.logText.get(nb-1).getGlobalBounds().height +5));
-			this.logText.add(text);
+	}
+
+	public void up(float height, ArrayList<Text> texts) {
+		for(Text text : texts) {
+			text.setPosition(text.getPosition().x, text.getPosition().y - height);
 		}
 	}
+
 	
 	/**
 	 * Count line number of a string
