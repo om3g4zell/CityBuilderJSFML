@@ -69,8 +69,6 @@ public class Sim {
 	protected TileInfoGui tileInfoGui;
 	protected boolean displayTileInfo;
 	protected Stack<Map<Integer, Building.BuildingType>> buildingStackRequired;
-	protected CheckBox zoneDrawingCheckbox;
-	protected CheckBox cityGraphStatsCheckbox;
 	protected ZoneMap zoneMap;
 	protected ZoneMapLayer zoneMapLayer;
 	protected ZoneDrawingGui zoneDrawingGui;
@@ -80,6 +78,10 @@ public class Sim {
 	protected View staticView;
 	protected GraphStatsGui graphStatsGui;
 	protected LogGui logGui;
+	protected List<CheckBox> checkboxes;
+	protected int zoneDrawingCheckboxID;
+	protected int cityGraphStatsCheckboxID;
+	protected int logGuiCheckboxID;
 	
 	/**
 	 * Constructor
@@ -129,8 +131,18 @@ public class Sim {
 		this.buildings = new ArrayList<Building>();
 		
 		// Create the checkboxes.
-		this.zoneDrawingCheckbox = new CheckBox(10, 100, this.textureManager, this.fontManager, "Afficher les zones", 0);
-		this.cityGraphStatsCheckbox = new CheckBox(10, 120, this.textureManager, this.fontManager, "Afficher les statistiques", 0);
+		int checkboxID = 0;
+		this.checkboxes = new ArrayList<CheckBox>();
+		this.zoneDrawingCheckboxID = checkboxID;
+		this.checkboxes.add(new CheckBox(10, 100, this.textureManager, this.fontManager, "Afficher les zones", zoneDrawingCheckboxID));
+		
+		checkboxID++;
+		this.cityGraphStatsCheckboxID = checkboxID;
+		this.checkboxes.add(new CheckBox(10, 120, this.textureManager, this.fontManager, "Afficher les statistiques", cityGraphStatsCheckboxID));
+		
+		checkboxID++;
+		this.logGuiCheckboxID = checkboxID;
+		this.checkboxes.add(new CheckBox(10, 140, this.textureManager, this.fontManager, "Afficher les messages", logGuiCheckboxID));
 		
 		// Create the city stats.
 		this.cityStats = new CityStats();
@@ -214,6 +226,58 @@ public class Sim {
 		
 		// Project buildings on the tilemap at least one time.
 		BuildingProjector.project(this.buildings, this.tilemap);
+	}
+	
+	/**
+	 * Returns a reference to the checkbox.
+	 * 
+	 * @param id : the id of the checkbox
+	 * @return the checkbox
+	 */
+	public CheckBox getCheckBox(int id) {
+		for(CheckBox cb : this.checkboxes) {
+			if(cb.getValue() == id)
+				return cb;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Returns true if the checkbox is checked.
+	 * 
+	 * @param id : the id of the checkbox
+	 * @return true if checked, fasle otherwise
+	 */
+	public boolean isCheckBoxChecked(int id) {
+		return getCheckBox(id).isChecked();
+	}
+	
+	/**
+	 * Returns true if no checkbox is checked.
+	 * 
+	 * @return true if no checkbox is checked, false otherwise
+	 */
+	public boolean noCheckBoxChecked() {
+		for(CheckBox cb : this.checkboxes)
+			if(cb.isChecked())
+				return false;
+			
+		return true;
+	}
+	
+	/**
+	 * Returns true if no checkbox except the given ID is checked.
+	 * 
+	 * @return true if the specified checkbox is the only one checked
+	 */
+	public boolean isOnlyChecked(int id) {
+		for(CheckBox cb : this.checkboxes) {
+			if(cb.isChecked() && cb.getValue() != id)
+				return false;
+		}
+		
+		return isCheckBoxChecked(id);
 	}
 	
 	/**
@@ -708,7 +772,7 @@ public class Sim {
 		// Update the tilemap.
 		this.tilemap.update();
 		
-		if(this.zoneDrawingCheckbox.isChecked()) {
+		if(isCheckBoxChecked(this.zoneDrawingCheckboxID)) {
 			this.zoneDrawingGui.update(dt, this.window, this.zoneMap, this.tileSelector);
 			this.zoneMapLayer.update();
 		}
@@ -730,7 +794,7 @@ public class Sim {
 		
 		this.window.draw(this.tilemap);
 		
-		if(this.zoneDrawingCheckbox.isChecked())
+		if(isCheckBoxChecked(this.zoneDrawingCheckboxID))
 			this.window.draw(this.zoneMapLayer);
 		
 		this.window.draw(this.tileSelector);
@@ -741,16 +805,24 @@ public class Sim {
 		this.window.draw(this.statsGui);
 		this.window.draw(this.gameSpeedGui);
 		
-		if(this.cityGraphStatsCheckbox.isChecked())
+		if(isOnlyChecked(this.cityGraphStatsCheckboxID)) {
 			this.window.draw(this.graphStatsGui);
-		else
-			this.window.draw(this.zoneDrawingCheckbox);
-		
-		if(this.zoneDrawingCheckbox.isChecked())
+			this.window.draw(getCheckBox(cityGraphStatsCheckboxID));
+		}
+		else if(isOnlyChecked(this.zoneDrawingCheckboxID)) {
 			this.window.draw(this.zoneDrawingGui);
-		else
-			this.window.draw(cityGraphStatsCheckbox);
-		this.window.draw(logGui);
+			this.window.draw(getCheckBox(zoneDrawingCheckboxID));
+		}
+		else if(isOnlyChecked(this.logGuiCheckboxID)) {
+			this.window.draw(this.logGui);
+			this.window.draw(getCheckBox(logGuiCheckboxID));
+		}
+		else {
+			for(CheckBox cb : this.checkboxes) {
+				this.window.draw(cb);
+			}
+		}
+
 		setGameView();
 		// End of static elements.
 		
@@ -809,13 +881,20 @@ public class Sim {
 			this.displayTileInfo = !this.displayTileInfo;
 		}
 		
-		if(!this.cityGraphStatsCheckbox.isChecked())
-			this.zoneDrawingCheckbox.handleEvent(event);
-		
-		if(this.zoneDrawingCheckbox.isChecked())
-			this.zoneDrawingGui.handleEvent(event);
-		else
-			this.cityGraphStatsCheckbox.handleEvent(event);
+		if(isOnlyChecked(this.cityGraphStatsCheckboxID)) {
+			getCheckBox(this.cityGraphStatsCheckboxID).handleEvent(event);
+		}
+		else if(isOnlyChecked(this.zoneDrawingCheckboxID)) {
+			getCheckBox(this.zoneDrawingCheckboxID).handleEvent(event);
+		}
+		else if(isOnlyChecked(this.logGuiCheckboxID)) {
+			getCheckBox(this.logGuiCheckboxID).handleEvent(event);
+		}
+		else {
+			for(CheckBox cb : this.checkboxes) {
+				cb.handleEvent(event);
+			}
+		}
 		
 		this.gameSpeedGui.handleEvent(event);
 	}
