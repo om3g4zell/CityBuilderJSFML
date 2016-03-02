@@ -70,26 +70,25 @@ public class LogGui implements Drawable{
 			this.logs.add(message);
 		}
 		
-		Text text = new Text();
+		Text text = initText(color);
 		if(this.logText.size() > 0)
-			text.setPosition(900, this.logText.get((this.logText.size()-1)).getGlobalBounds().left + this.logText.get((this.logText.size()-1)).getGlobalBounds().left + 5);
+			text.setPosition(900, this.logText.get((this.logText.size()-1)).getGlobalBounds().top + this.logText.get((this.logText.size()-1)).getGlobalBounds().height + 5.f);
 		else
 			text.setPosition(900, 100);
 		
-		String str = this.logs.get(this.logs.size() -1 );
+		String str = this.logs.get(this.logs.size() -1);
 				
-		if(this.logs.get(this.logs.size() -1 ).length() >= 60) {
+		if(str.length() >= 60) {
 			for(int j = 1 ; j <= (int)(str.length()/60); j++) {
 				str = new StringBuilder(str).insert(j*60, "\n").toString();
 			}
 		}
 		
 		text.setString(str);
-		text.setColor(color);
 		this.logText.add(text);
 		while(text.getGlobalBounds().top + text.getGlobalBounds().height > Main.HEIGHT) {
-			up(this.logText.get(0).getGlobalBounds().height, this.logText);
 			this.logText.remove(this.logText.get(0));
+			up(this.logText.get(0).getPosition().y - 100, this.logText); 
 		}
 			
 	}
