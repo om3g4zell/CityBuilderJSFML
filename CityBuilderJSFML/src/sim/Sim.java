@@ -1,5 +1,7 @@
 package sim;
 
+
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -832,6 +834,10 @@ public class Sim {
 		/////////////
 		this.window.display();
 		
+	}
+	
+	public void saveLog() {
+		this.logGui.saveToFile();
 	}
 	
 	/**

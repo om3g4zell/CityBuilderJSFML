@@ -1,5 +1,8 @@
 package gui;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.jsfml.graphics.Color;
@@ -127,6 +130,21 @@ public class LogGui implements Drawable{
 		text.setFont(this.fonts.get(FontID.POINTFREE));
 		
 		return text;
+	}
+	
+	public void saveToFile() {
+		FileWriter fw;
+		 try {
+			fw = new FileWriter(new File(""+ System.currentTimeMillis()+".txt"));
+			for(String str : this.logs) {
+				fw.write(str + "\r\n");
+			}
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		 
+		 
 	}
 	
 	@Override

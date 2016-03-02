@@ -79,5 +79,7 @@ public class Main {
 			}
 		}
 		
+		//simulation.saveLog();
+		
 	}
 }
