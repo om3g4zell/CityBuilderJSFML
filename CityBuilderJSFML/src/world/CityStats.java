@@ -34,8 +34,9 @@ public class CityStats {
 			}
 			int unemployment = 0;
 			int citizenNumber = 0;
-			for(Citizen c : b.getCitizens()) {
+			for(Citizen c : b.getInhabitants()) {
 				citizenNumber++;
+
 				if(c.getWorkBuildingId() == -1) {
 					unemployment++;
 				}

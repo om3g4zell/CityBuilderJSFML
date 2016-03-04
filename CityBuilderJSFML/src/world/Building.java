@@ -100,7 +100,9 @@ public class Building {
 	protected List<Zone.ZoneClass> buildingClass;
 	protected boolean halted;
 	protected boolean haltWarning;
-	protected List<Citizen> citizens;
+	protected List<Citizen> inhabitants;
+	protected List<Citizen> clients;
+	protected List<Citizen> employees;
 	
 	/**
 	 * Constructor
@@ -111,7 +113,9 @@ public class Building {
 		this.id = lastId;
 		lastId++;
 		
-		this.citizens = new ArrayList<Citizen>();
+		this.inhabitants = new ArrayList<Citizen>();
+		this.clients = new ArrayList<Citizen>();
+		this.employees = new ArrayList<Citizen>();
 		this.type = type;
 		this.needs = new ArrayList<Need>();
 		this.buildingClass = new ArrayList<Zone.ZoneClass>();
@@ -141,9 +145,11 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.FOOD, 10, 0.9f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				this.buildingClass.add(Zone.ZoneClass.RESIDENTIAL);
+
 				for(int i = 0; i < 4; i++) {
-					this.citizens.add(new Citizen(this.id));
+					this.inhabitants.add(new Citizen(this.id));
 				}
+
 				break;
 			case HYDROLIC_STATION:
 				this.range = 18;
@@ -226,11 +232,27 @@ public class Building {
 	}
 	
 	/**
-	 * Get the list of citizens.
-	 * @return ArrayList<Citizen> : the list of citizens
+	 * Returns the list of inhabitants.
+	 * @return the list of inhabitants
 	 */
-	public List<Citizen> getCitizens() {
-		return this.citizens;
+	public List<Citizen> getInhabitants() {
+		return this.inhabitants;
+	}
+	
+	/**
+	 * Returns the list of clients.
+	 * @return the list of clients
+	 */
+	public List<Citizen> getClients() {
+		return this.clients;
+	}
+	
+	/**
+	 * Returns the list of employees.
+	 * @return the list of employees
+	 */
+	public List<Citizen> getEmployees() {
+		return this.employees;
 	}
 	
 	/**
