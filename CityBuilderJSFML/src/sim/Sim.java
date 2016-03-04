@@ -434,10 +434,23 @@ public class Sim {
 	 * @return true if the hitbox is in allowed zone classes, false otherwise
 	 */
 	public boolean checkZoneCompatibility(Vector2i leftTop, IntRect hitbox, List<Zone.ZoneClass> zoneClasses) {
+		return checkZoneCompatibility(leftTop.x, leftTop.y, hitbox, zoneClasses);
+	}
+	
+	/**
+	 * Starts from the given left top position and check if the whole hitbox is in allowed zone classes.
+	 * 
+	 * @param x : the x component of the position to start checking from
+	 * @param y : the y component of the position to start checking from
+	 * @param hitbox : the hitbox (only width and heigth are used)
+	 * @param zoneClasses : the list of the zones allowed
+	 * @return true if the hitbox is in allowed zone classes, false otherwise
+	 */
+	public boolean checkZoneCompatibility(int x, int y, IntRect hitbox, List<Zone.ZoneClass> zoneClasses) {
 		boolean validZone = true;
 		
-		for(int rx = leftTop.x ; rx < Math.min(leftTop.x + hitbox.width, TILEMAP_SIZE.x) ; rx++) {
-			for(int ry = leftTop.y ; ry < Math.min(leftTop.y + hitbox.height, TILEMAP_SIZE.y) ; ry++) {
+		for(int rx = x ; rx < Math.min(x + hitbox.width, TILEMAP_SIZE.x) ; rx++) {
+			for(int ry = y ; ry < Math.min(y + hitbox.height, TILEMAP_SIZE.y) ; ry++) {
 				// Get the zone.
 				Zone zone = this.zoneMap.getZoneMap().get(ry).get(rx);
 				
@@ -468,6 +481,37 @@ public class Sim {
 		}
 		
 		return validZone;
+	}
+	
+	/**
+	 * Sums the resources available under the whole hitbox.
+	 * 
+	 * @param leftTop : the position to start checking from
+	 * @param hitbox : the hitbox (only width and heigth are used)
+	 * @return the resources available under the hitbox
+	 */
+	public ResourcesStack getResourcesUnderHitbox(Vector2i leftTop, IntRect hitbox) {
+		return getResourcesUnderHitbox(leftTop.x, leftTop.y, hitbox);
+	}
+	
+	/**
+	 * Sums the resources available under the whole hitbox.
+	 * 
+	 * @param x : the x component of the position to start checking from
+	 * @param y : the y component of the position to start checking from
+	 * @param hitbox : the hitbox (only width and heigth are used)
+	 * @return he resources available under the hitbox
+	 */
+	public ResourcesStack getResourcesUnderHitbox(int x, int y, IntRect hitbox) {
+		ResourcesStack rstack = resourcesMap.getResources(x, y);
+		
+		for(int rx = x ; rx < Math.min(x + hitbox.width, TILEMAP_SIZE.x) ; rx++) {
+			for(int ry = y ; ry < Math.min(y + hitbox.height, TILEMAP_SIZE.y) ; ry++) {
+				rstack.add(resourcesMap.getResources(rx, ry));
+			}
+		}
+		
+		return rstack;
 	}
 	
 	/**
@@ -538,19 +582,13 @@ public class Sim {
 					}
 					
 					// Check zone compatibility.
-					if(!checkZoneCompatibility(new Vector2i(x, y), requiredBuilding.getHitbox(), requiredBuilding.getZoneClasses()))
+					if(!checkZoneCompatibility(x, y, requiredBuilding.getHitbox(), requiredBuilding.getZoneClasses()))
 						// This zone is not suitable
 						continue;
 					}
 
 					// Get the resources available for the building.
-					ResourcesStack rstack = resourcesMap.getResources(x, y);
-					
-					for(int rx = x ; rx < Math.min(x + requiredBuilding.getHitbox().width, TILEMAP_SIZE.x) ; rx++) {
-						for(int ry = y ; ry < Math.min(y + requiredBuilding.getHitbox().height, TILEMAP_SIZE.y) ; ry++) {
-							rstack.add(resourcesMap.getResources(rx, ry));
-						}
-					}
+					ResourcesStack rstack = getResourcesUnderHitbox(x, y, requiredBuilding.getHitbox());
 					
 					// Check if they satisfy the needs.
 					boolean allNeedsSatisfied = true;
