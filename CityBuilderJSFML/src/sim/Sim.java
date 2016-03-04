@@ -429,7 +429,7 @@ public class Sim {
 	 * Starts from the given left top position and check if the whole hitbox is in allowed zone classes.
 	 * 
 	 * @param leftTop : the position to start checking from
-	 * @param hitbox : the hitbox (only width and heigth are used)
+	 * @param hitbox : the hitbox (only width and height are used)
 	 * @param zoneClasses : the list of the zones allowed
 	 * @return true if the hitbox is in allowed zone classes, false otherwise
 	 */
@@ -442,7 +442,7 @@ public class Sim {
 	 * 
 	 * @param x : the x component of the position to start checking from
 	 * @param y : the y component of the position to start checking from
-	 * @param hitbox : the hitbox (only width and heigth are used)
+	 * @param hitbox : the hitbox (only width and height are used)
 	 * @param zoneClasses : the list of the zones allowed
 	 * @return true if the hitbox is in allowed zone classes, false otherwise
 	 */
@@ -473,8 +473,8 @@ public class Sim {
 				// if isn't a valid zone break
 				if(!validZone)
 					break;
-				
 			}
+			
 			// if isn't a valid zone break
 			if(!validZone)
 				break;
@@ -487,7 +487,7 @@ public class Sim {
 	 * Sums the resources available under the whole hitbox.
 	 * 
 	 * @param leftTop : the position to start checking from
-	 * @param hitbox : the hitbox (only width and heigth are used)
+	 * @param hitbox : the hitbox (only width and height are used)
 	 * @return the resources available under the hitbox
 	 */
 	public ResourcesStack getResourcesUnderHitbox(Vector2i leftTop, IntRect hitbox) {
@@ -499,7 +499,7 @@ public class Sim {
 	 * 
 	 * @param x : the x component of the position to start checking from
 	 * @param y : the y component of the position to start checking from
-	 * @param hitbox : the hitbox (only width and heigth are used)
+	 * @param hitbox : the hitbox (only width and height are used)
 	 * @return he resources available under the hitbox
 	 */
 	public ResourcesStack getResourcesUnderHitbox(int x, int y, IntRect hitbox) {
@@ -575,12 +575,12 @@ public class Sim {
 				{
 					// Check collision with other buildings.
 					IntRect candidateHitbox = new IntRect(x, y, requiredBuilding.getHitbox().width, requiredBuilding.getHitbox().height);
-					
+
 					if(collideWithOtherBuildings(candidateHitbox)) {
 						// This position is not suitable.
 						continue;
 					}
-					
+
 					// Check zone compatibility.
 					if(!checkZoneCompatibility(x, y, requiredBuilding.getHitbox(), requiredBuilding.getZoneClasses()))
 						// This zone is not suitable
@@ -589,12 +589,12 @@ public class Sim {
 
 					// Get the resources available for the building.
 					ResourcesStack rstack = getResourcesUnderHitbox(x, y, requiredBuilding.getHitbox());
-					
+
 					// Check if they satisfy the needs.
 					boolean allNeedsSatisfied = true;
 					for(Need n : requiredBuilding.getNeeds()) {
 						float minAmount = n.amount * n.fillFactor;
-						
+
 						// If one need is not satisfied to its minimum, we quit.
 						if(rstack.get(n.type) < minAmount) {
 							allNeedsSatisfied = false;
@@ -603,13 +603,13 @@ public class Sim {
 							missingResources.put(n.type, count);
 						}
 					}
-					
+
 					// Check how many buildings (which required the building construction) are in range of the required building.
 					int inRange = 0;
 					for(Map.Entry<Integer, Building.BuildingType> buildingRequiredEntry : buildingsRequired.entrySet()) {
 						if(buildingRequiredEntry.getValue() == requiredBuilding.getType()) {
 							Building building = null;
-							
+
 							// Get the building.
 							for(Building b : this.buildings) {
 								if(b.getId() == buildingRequiredEntry.getKey()) {
@@ -617,13 +617,13 @@ public class Sim {
 									break;
 								}
 							}
-							
+
 							// Check if in range.
 							if(building != null) {
 								Vector2i buildingCenter = new Vector2i(building.getHitbox().left + building.getHitbox().width / 2,
 																		building.getHitbox().top + building.getHitbox().height / 2);
 								int distance = (int)Distance.euclidean(buildingCenter, new Vector2i(x, y));
-								
+
 								if(distance < requiredBuilding.getRange()) {
 									inRange++;
 								}
