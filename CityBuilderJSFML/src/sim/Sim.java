@@ -988,6 +988,7 @@ public class Sim {
 				}
 			}
 		}
+		BuildingProjector.project(this.buildings, this.tilemap);
 	}
 	
 	/**
