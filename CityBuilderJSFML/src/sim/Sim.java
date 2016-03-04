@@ -616,13 +616,10 @@ public class Sim {
 			missingResources.put(rtype, 0);
 		
 		// Check all resource map in square range.
-		for(int x = Math.max(0, centerOfSearchArea.x - (int)radius) ; x < Math.min(resourcesMap.getSize().x, centerOfSearchArea.x + radius + 1) ; ++x)
-		{
-			for(int y = Math.max(0, centerOfSearchArea.y - (int)radius) ; y < Math.min(resourcesMap.getSize().y, centerOfSearchArea.y + radius + 1) ; ++y)
-			{
+		for(int x = Math.max(0, centerOfSearchArea.x - (int)radius) ; x < Math.min(resourcesMap.getSize().x, centerOfSearchArea.x + radius + 1) ; ++x) {
+			for(int y = Math.max(0, centerOfSearchArea.y - (int)radius) ; y < Math.min(resourcesMap.getSize().y, centerOfSearchArea.y + radius + 1) ; ++y) {
 				// Check only in radius.
-				if(Distance.squaredEuclidean(centerOfSearchArea, new Vector2i(x, y)) <= squaredRadius)
-				{
+				if(Distance.squaredEuclidean(centerOfSearchArea, new Vector2i(x, y)) <= squaredRadius) {
 					// Check collision with other buildings.
 					IntRect candidateHitbox = new IntRect(x, y, requiredBuilding.getHitbox().width, requiredBuilding.getHitbox().height);
 
@@ -737,33 +734,27 @@ public class Sim {
 	 * Spawn road with the zone map
 	 */
 	public void spawnRoad() {
-		
 		// run the map
 		for(int y = 0 ; y < this.zoneMap.getSize().y ; y++) {
-			
 			for(int x = 0 ; x < this.zoneMap.getSize().x ; x++) {
-				
-				// check if a zoneType is road
+				// check if a zone type is road
 				if(this.zoneMap.getZoneMap().get(y).get(x).getType().equals(ZoneClass.ROAD)) {
-					
-					// check if not building in this zone
+					// check if no building in this zone
 					for(int i = 0 ; i < this.buildings.size() ; i++) {
-						
-						// if building remove it
-						if(this.buildings.get(i).getHitbox().contains(x, y)) {
-							this.logGui.write("Removed Building :" + this.buildings.get(i).getId(), LogGui.SUCCESS);
+						// if building remove it (ONLY if not a ROAD)
+						if(this.buildings.get(i).getType() != Building.BuildingType.ROAD && this.buildings.get(i).getHitbox().contains(x, y)) {
+							this.logGui.write("Removed building : " + this.buildings.get(i).getId(), LogGui.SUCCESS);
 							this.buildings.remove(this.buildings.get(i));
-							BuildingProjector.project(this.buildings, this.tilemap);
 						}
 					}
 					
 					// we spawn the road
-					this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(x,y)));
-					
+					this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(x, y)));
 				}
 			}
 		}
-		this.logGui.write("New road(s) added", true, LogGui.SUCCESS);
+		
+		this.logGui.write("New road(s) added.", true, LogGui.SUCCESS);
 		this.zoneDrawingGui.setNewRoadAdded(false);
 	}
 	

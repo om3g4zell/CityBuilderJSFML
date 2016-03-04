@@ -43,6 +43,12 @@ public class BuildingProjector {
 	 * @param tilemap : the world tile map
 	 */
 	public static void project(List<Building> buildings, TileMap tilemap) {
+		for(int i = 0 ; i < tilemap.size.x ; i++) {
+			for(int j = 0 ; j < tilemap.size.y ; j++) {
+				tilemap.setTile(new Vector2i(i, j), Tile.TileType.TERRAIN_GRASS);
+			}
+		}
+		
 		for(Building b : buildings) {
 			// Take the size.
 			IntRect hitbox = b.getHitbox();
