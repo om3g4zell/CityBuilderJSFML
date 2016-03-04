@@ -843,7 +843,7 @@ public class Sim {
 			
 			// Generate resources.
 			for(Building b : this.buildings) {
-				b.generateResources(this.resourcesMap);
+				b.generateResources(this.resourcesMap, this.buildings);
 			}
 
 			// Clone the resource map.
@@ -855,11 +855,18 @@ public class Sim {
 			this.tileInfoGui.update(this.cachedResourceMap, this.tileSelector, this.buildings);
 			
 		if(!this.gameSpeedGui.isInPause() && this.simulationSpeedTimer.asSeconds() >= 1.f) {
+			// Get the list of the houses (to check clients and employees).
+			List<Building> houses = getBuildingsOfType(this.buildings, Building.BuildingType.HOUSE);
+			
 			// Consume resources and get required buildings.
 			Map<Integer, Building.BuildingType> buildingsRequired = new HashMap<Integer, Building.BuildingType>();
 			
 			for(Building b : this.buildings) {
 				BuildingType requiredBuilding = b.consumeResources(this.resourcesMap);
+				
+				// Check the clients and employees.
+				b.checkClients(houses);
+				b.checkEmployees(houses);
 				
 				// Don't do anything if none required.
 				if(requiredBuilding != BuildingType.NONE) {
@@ -867,6 +874,7 @@ public class Sim {
 				}
 			}
 			
+			// We only push a requirement for a new building if there is none waiting.
 			if(this.buildingStackRequired.isEmpty()) {
 				this.buildingStackRequired.push(buildingsRequired);
 			}

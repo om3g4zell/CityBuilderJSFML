@@ -9,7 +9,6 @@ public class Resource {
 		WATER,
 		ELECTRICITY,
 		FOOD,
-		PEOPLE,
 		ROAD_PROXIMITY,
 		NETWORK_4G,
 		

@@ -46,9 +46,9 @@ public class TileInfoGui implements Drawable {
 		
 		// we instanciate the RectangleShape
 		this.rectangleShape = new RectangleShape();
-		this.rectangleShape.setFillColor(new Color(0,0,25,100));
-		
+		this.rectangleShape.setFillColor(new Color(0, 0, 25, 100));		
 	}
+
 	/**
 	 * set the string of resources on the tile or batiment
 	 * @param resourcemap : to get resources on the tile or batiment
@@ -64,46 +64,56 @@ public class TileInfoGui implements Drawable {
 		this.actualTile = this.tileMap.get(position.y).get(position.x);
 		
 		// show Tile info
-			this.infoString += "Tile position : {" + position.x + ", " + position.y + "}\n";
-			this.infoString += "TILE_TYPE : " + this.actualTile.getTileType().toString() + "\n";
-			for(Resource.ResourceType resource : Resource.ResourceType.values()) {
-				if(resourcemap.getResources(this.position.x, this.position.y).get(resource) > 0) {
-					this.infoString += "\t" + resource.toString() + " : " + resourcemap.getResources(this.position.x, this.position.y).get(resource) + "\n";
-				}
+		this.infoString += "Tile position : {" + position.x + ", " + position.y + "}\n";
+		this.infoString += "TILE_TYPE : " + this.actualTile.getTileType().toString() + "\n";
+		for(Resource.ResourceType resource : Resource.ResourceType.values()) {
+			if(resourcemap.getResources(this.position.x, this.position.y).get(resource) > 0) {
+				this.infoString += "\t" + resource.toString() + " : " + resourcemap.getResources(this.position.x, this.position.y).get(resource) + "\n";
 			}
+		}
 		
 		// show Building info
-			for(Building b : buildings) {
-				if(b.getHitbox().contains(position)) {
-					this.building = b;
-					break;
+		for(Building b : buildings) {
+			if(b.getHitbox().contains(position)) {
+				this.building = b;
+				break;
+			}
+		}
+
+		if(this.building != null) {
+			this.infoString += "BUILDING_NAME : " + this.building.getType().toString() + "[" + this.building.getId() + "] \n";
+			
+			// Get the resources available for the building.
+			ResourcesStack availableResources = new ResourcesStack();
+			
+			for(int x = this.building.getHitbox().left ; x < this.building.getHitbox().left + this.building.getHitbox().width ; ++x) {
+				for(int y = this.building.getHitbox().top ; y < this.building.getHitbox().top + this.building.getHitbox().height ; ++y) {
+					availableResources.add(resourcemap.getResources(new Vector2i(x, y)));
 				}
 			}
-			if(this.building != null) {
-				this.infoString += "BUILDING_NAME : " + this.building.getType().toString() + "[" + this.building.getId() + "] \n";
-				
-				// Get the resources available for the building.
-				ResourcesStack availableResources = new ResourcesStack();
-				
-				for(int x = this.building.getHitbox().left ; x < this.building.getHitbox().left + this.building.getHitbox().width ; ++x) {
-					for(int y = this.building.getHitbox().top ; y < this.building.getHitbox().top + this.building.getHitbox().height ; ++y) {
-						availableResources.add(resourcemap.getResources(new Vector2i(x, y)));
+			
+			for(Resource.ResourceType resource : Resource.ResourceType.values()) {
+				// show %
+				for(Need need : this.building.getNeeds()) {
+					if(need.type.equals(resource)){
+						this.infoString += "\t" + resource.toString() + " : " + availableResources.get(resource);
+						this.infoString += " : " + (int)((availableResources.get(resource) / need.amount) * 100) + " %";
+						this.infoString += "\n";
 					}
 				}
-				
-				for(Resource.ResourceType resource : Resource.ResourceType.values()) {
-					// show %
-					for(Need need : this.building.getNeeds()) {
-						if(need.type.equals(resource)){
-							this.infoString += "\t" + resource.toString() + " : " + availableResources.get(resource);
-							this.infoString += " : " + (int)((availableResources.get(resource) / need.amount) * 100) + " %";
-							this.infoString += "\n";
-						}
-					}
-				}
-				
-				this.infoString += "Halted : " + this.building.isHalted();
 			}
+			
+			this.infoString += "Halted : " + this.building.isHalted() + "\n";
+			
+			this.infoString += "Inhabitants : " + this.building.getInhabitants().size();
+			if(this.building.getUnemployedInhabitantCount() != -1)
+				this.infoString += " (" + this.building.getUnemployedInhabitantCount() + " unemployed)";
+			this.infoString += "\n";
+			
+			this.infoString += "Clients : " + this.building.getClients().size() + "\n";
+			this.infoString += "Employees : " + this.building.getEmployees().size() + "\n";
+		}
+		
 		// we set the text
 		this.infoText.setString(infoString);
 		this.infoText.setPosition(this.position.x*16 +20, this.position.y*16 +20);

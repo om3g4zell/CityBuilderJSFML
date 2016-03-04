@@ -35,8 +35,6 @@ public class Building {
 	 */
 	public static BuildingType getBuildingTypeGenerating(ResourceType type) {
 		switch(type) {
-			case PEOPLE:
-				return BuildingType.HOUSE;
 			case ELECTRICITY:
 				return BuildingType.GENERATOR;
 			case WATER:
@@ -103,6 +101,10 @@ public class Building {
 	protected List<Citizen> inhabitants;
 	protected List<Citizen> clients;
 	protected List<Citizen> employees;
+	protected int minClients;
+	protected int maxClients;
+	protected int minEmployees;
+	protected int maxEmployees;
 	
 	/**
 	 * Constructor
@@ -113,6 +115,10 @@ public class Building {
 		this.id = lastId;
 		lastId++;
 		
+		this.minClients = 0;
+		this.maxClients = 0;
+		this.minEmployees = 0;
+		this.maxEmployees = 0;
 		this.inhabitants = new ArrayList<Citizen>();
 		this.clients = new ArrayList<Citizen>();
 		this.employees = new ArrayList<Citizen>();
@@ -131,42 +137,56 @@ public class Building {
 			case GROCERY_STORE:
 				this.range = 28;
 				this.hitbox = new IntRect(position.x, position.y, 4, 2);
-				this.needs.add(new Need(Resource.ResourceType.PEOPLE, 400, 0.f));
+				
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
+				
+				this.minClients = 4;
+				this.maxClients = 40;
+				this.minEmployees = 1;
+				this.maxEmployees = 1;
+				
 				this.buildingClass.add(Zone.ZoneClass.COMMERCIAL);
 				break;
 			case HOUSE:
 				this.range = 99;
 				this.hitbox = new IntRect(position.x, position.y, 2, 2);
+				
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
-				this.needs.add(new Need(Resource.ResourceType.FOOD, 10, 0.9f));
+				this.needs.add(new Need(Resource.ResourceType.FOOD, 40, 0.9f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
-				this.buildingClass.add(Zone.ZoneClass.RESIDENTIAL);
-
+				
 				for(int i = 0; i < 4; i++) {
 					this.inhabitants.add(new Citizen(this.id));
 				}
+				
+				this.buildingClass.add(Zone.ZoneClass.RESIDENTIAL);
 
 				break;
 			case HYDROLIC_STATION:
 				this.range = 18;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
+				
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
+				
 				this.buildingClass.add(Zone.ZoneClass.INDUSTRY);
 				break;
 			case ROAD:
 				this.range = 1;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
+				
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
+				
 				this.buildingClass.add(Zone.ZoneClass.ROAD);
 				break;
 			case ANTENNA_4G:
 				this.range = 50;
 				this.hitbox = new IntRect(position.x, position.y, 1, 1);
+				
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
+				
 				this.buildingClass.add(ZoneClass.FREE);
 				break;
 			default:
@@ -256,10 +276,23 @@ public class Building {
 	}
 	
 	/**
+	 * Returns the number of unemployed inhabitants of this building.
+	 * 
+	 * @return the number of unemployed inhabitants
+	 */
+	public int getUnemployedInhabitantCount() {
+		if(this.employees.size() == 0)
+			return -1;
+		
+		return this.inhabitants.size() / this.employees.size();
+	}
+	
+	/**
 	 * Generates resources.
 	 * @param resourcesMap : the resources map to place resources on
+	 * @param buildings : the list of buildings
 	 */
-	public void generateResources(ResourcesMap resourcesMap) {
+	public void generateResources(ResourcesMap resourcesMap, List<Building> buildings) {
 		// Do not generate if halted.
 		if(this.halted)
 			return;
@@ -275,24 +308,14 @@ public class Building {
 				// Check only in range.
 				if(Distance.squaredEuclidean(new Vector2i(this.hitbox.left + this.hitbox.width / 2, this.hitbox.top + this.hitbox.height / 2), new Vector2i(x, y)) <= squaredRange)
 				{
+					ResourcesStack rStack = new ResourcesStack();
+
 					// Generate resources depending on the building type.
 					switch(this.type) {
 						case GENERATOR:
 							// Generate 220V of electricity
-							ResourcesStack rStack = resourcesMap.getResources(new Vector2i(x, y));
+							rStack = resourcesMap.getResources(new Vector2i(x, y));
 							rStack.add(ResourceType.ELECTRICITY, 220);
-							resourcesMap.setResources(new Vector2i(x, y), rStack);
-							break;
-						case GROCERY_STORE:
-							// Generate water and food
-							rStack = resourcesMap.getResources(new Vector2i(x, y));
-							rStack.add(ResourceType.FOOD, 10);
-							resourcesMap.setResources(new Vector2i(x, y), rStack);
-							break;
-						case HOUSE:
-							// Generate people
-							rStack = resourcesMap.getResources(new Vector2i(x, y));
-							rStack.add(ResourceType.PEOPLE, 4);
 							resourcesMap.setResources(new Vector2i(x, y), rStack);
 							break;
 						case HYDROLIC_STATION:
@@ -316,6 +339,27 @@ public class Building {
 					}
 				}
 			}
+		}
+		
+		// The grocery store generates food for each of its client.
+		for(Citizen client : this.clients) {
+			// Find the house related to the citizen.
+			Building house = null;
+			for(Building b : buildings) {
+				if(b.getId() == client.getHouseId()) {
+					house = b;
+					break;
+				}
+			}
+			
+			// The house has not been found.
+			if(house == null)
+				continue;
+			
+			// Depose food at their door (the top left tile).
+			ResourcesStack rStack = resourcesMap.getResources(new Vector2i(house.getHitbox().left, house.getHitbox().top));
+			rStack.add(ResourceType.FOOD, 10);
+			resourcesMap.setResources(new Vector2i(house.getHitbox().left, house.getHitbox().top), rStack);
 		}
 	}
 	
@@ -352,6 +396,75 @@ public class Building {
 				
 				// Sets the resources back on the map.
 				resourcesMap.setResources(new Vector2i(x, y), resourcesOnThisTile);
+			}
+		}
+	}
+	
+	/**
+	 * Check the number of clients and tries to get more clients if needed.
+	 * 
+	 * @param houses : list of the houses
+	 */
+	public void checkClients(List<Building> houses) {
+		// Do we need any client ?
+		if(this.clients.size() >= this.maxClients)
+			return;
+		
+		// How many clients do we need ?
+		int clientsNeeded = this.maxClients - this.clients.size();
+		
+		for(Building house : houses) {
+			// Check if the house is in the range of the grocery store.
+			double squaredDistanceToHouse = Distance.squaredEuclidean(new Vector2i(house.getHitbox().left,  house.getHitbox().top), new Vector2i(this.getHitbox().left,  this.getHitbox().top));
+			if(squaredDistanceToHouse > Math.pow(range, 2))
+				continue;
+			
+			// Check if it has any inhabitant without grocery store attached to it.
+			for(Citizen c : house.getInhabitants()) {
+				if(c.getSmallFurnitureBuildingId() == -1) {
+					// We found a new client !
+					c.setSmallFurnitureBuildingId(this.getId());
+					this.clients.add(c);
+					clientsNeeded--;
+				}
+				
+				// Did we got enough new clients ?
+				if(clientsNeeded <= 0)
+					break;
+			}
+		}
+	}
+	
+	/**
+	 * Check the number of employees and tries to employ more people if needed.
+	 * 
+	 * @param houses : list of the houses
+	 */
+	public void checkEmployees(List<Building> houses) {
+		// Do we need any employees ?
+		if(this.employees.size() >= this.maxEmployees)
+			return;
+		
+		// How many employees do we need ?
+		int employeesNeeded = this.maxEmployees - this.employees.size();
+		
+		for(Building house : houses) {
+			// Check if there is inhabitants unemployed in this house.
+			if(house.getUnemployedInhabitantCount() == 0)
+				continue;
+			
+			// Check if it has any inhabitant without job attached to it.
+			for(Citizen c : house.getInhabitants()) {
+				if(c.getWorkBuildingId() == -1) {
+					// We found a new employee !
+					c.setWorkBuildingId(this.getId());
+					this.employees.add(c);
+					employeesNeeded--;
+				}
+				
+				// Did we got enough new employees ?
+				if(employeesNeeded <= 0)
+					break;
 			}
 		}
 	}

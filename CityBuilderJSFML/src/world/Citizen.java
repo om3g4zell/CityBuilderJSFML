@@ -14,8 +14,16 @@ public class Citizen {
 	}
 	
 	/**
+	 * Returns the id of the house.
+	 * @return the id of the work building
+	 */
+	public int getHouseId() {
+		return this.houseId;
+	}
+	
+	/**
 	 * Sets the id of the work building.
-	 * @param workBuildingId : the id of the workBuilding
+	 * @param workBuildingId : the id of the workb building
 	 */
 	public void setWorkBuildingId(int workBuildingId) {
 		this.workBuildingId = id;
@@ -23,7 +31,7 @@ public class Citizen {
 	
 	/**
 	 * Returns the id of the work building.
-	 * @return the id of the workBuilding
+	 * @return the id of the work building
 	 */
 	public int getWorkBuildingId() {
 		return this.workBuildingId;

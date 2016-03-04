@@ -32,8 +32,10 @@ public class CityStats {
 					attractivity.put(zc, attractivity.get(zc) + 1);
 				}
 			}
+			
 			int unemployment = 0;
 			int citizenNumber = 0;
+
 			for(Citizen c : b.getInhabitants()) {
 				citizenNumber++;
 
@@ -41,6 +43,7 @@ public class CityStats {
 					unemployment++;
 				}
 			}
+			
 			if(citizenNumber > 0)
 				this.unemploymentRate = unemployment / citizenNumber;
 		}
