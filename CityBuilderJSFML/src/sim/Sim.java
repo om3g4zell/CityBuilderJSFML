@@ -737,15 +737,11 @@ public class Sim {
 	 * Spawn road with the zone map
 	 */
 	public void spawnRoad() {
-		boolean collisionFlag = false;
 		
 		// run the map
 		for(int y = 0 ; y < this.zoneMap.getSize().y ; y++) {
 			
 			for(int x = 0 ; x < this.zoneMap.getSize().x ; x++) {
-				
-				// reset the collision flag
-				collisionFlag = false;
 				
 				// check if a zoneType is road
 				if(this.zoneMap.getZoneMap().get(y).get(x).getType().equals(ZoneClass.ROAD)) {
@@ -753,17 +749,17 @@ public class Sim {
 					// check if not building in this zone
 					for(int i = 0 ; i < this.buildings.size() ; i++) {
 						
-						// if building stop
+						// if building remove it
 						if(this.buildings.get(i).getHitbox().contains(x, y)) {
-							collisionFlag = true;
-							break;
+							this.logGui.write("Removed Building :" + this.buildings.get(i).getId(), LogGui.SUCCESS);
+							this.buildings.remove(this.buildings.get(i));
+							BuildingProjector.project(this.buildings, this.tilemap);
 						}
 					}
 					
 					// we spawn the road
-					if(!collisionFlag) {
-						this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(x,y)));
-					}
+					this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(x,y)));
+					
 				}
 			}
 		}
