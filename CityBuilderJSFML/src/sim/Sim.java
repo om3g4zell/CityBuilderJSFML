@@ -283,6 +283,22 @@ public class Sim {
 	}
 	
 	/**
+	 * Returns the building object with the given id.
+	 * 
+	 * @param buildingId : id to look for
+	 * @param buildingList : list to search in
+	 * @return the building object, null if not found
+	 */
+	public Building getBuilding(int buildingId, List<Building> buildingList) {
+		for(Building b : buildingList) {
+			if(b.getId() == buildingId)
+				return b;
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * Counts the number of buildings per building type.
 	 * Type NONE is not counted.
 	 * 
@@ -565,6 +581,37 @@ public class Sim {
 	}
 	
 	/**
+	 * Returns the list of the buildings of the given type.
+	 * 
+	 * @param buildingList : the building list to filter
+	 * @param buildingType : the type of buildings to keep
+	 * @return the list filtered
+	 */
+	public List<Building> getBuildingsOfType(List<Building> buildingList, Building.BuildingType buildingType) {
+		List<Building> buildingsOfGivenType = new ArrayList<Building>();
+		
+		for(Building b : buildingList) {
+			if(b.getType() == buildingType)
+				buildingsOfGivenType.add(b);
+		}
+		
+		return buildingsOfGivenType;
+	}
+	
+	public List<Building> getBuildingsOfType(Map<Integer, Building.BuildingType> buildingMap, List<Building> buildingList, Building.BuildingType buildingType) {
+		List<Building> buildingsOfGivenType = new ArrayList<Building>();
+		
+		for(Map.Entry<Integer, Building.BuildingType> entry : buildingMap.entrySet()) {
+			Building b = getBuilding(entry.getKey(), buildingList);
+			
+			if(b.getType() == buildingType)
+				buildingsOfGivenType.add(b);
+		}
+		
+		return buildingsOfGivenType;
+	}
+	
+	/**
 	 * Spawns the new buildings.
 	 * 
 	 * TODO: Separate the algorithm in sub-functions.
@@ -575,12 +622,15 @@ public class Sim {
 			return;
 		
 		// The map collecting the required buildings.
+		// ID <-> Required building type.
 		Map<Integer, Building.BuildingType> buildingsRequired = this.buildingStackRequired.peek();
 		
 		// First count the required buildings.
+		// Building type <-> how many times required
 		Map<Building.BuildingType, Integer> buildingCounts = countBuildingsPerType(buildingsRequired);
 		
 		// Get the most required building type.
+		// Building type <-> how many times required
 		Map.Entry<Building.BuildingType, Integer> mostRequiredBuildingTypeEntry = getMostRequiredBuildingType(buildingCounts);
 		
 		// If no building type has been requested, we leave.
@@ -603,12 +653,15 @@ public class Sim {
 		double squaredRadius = Math.pow(radius, 2);
 		
 		// Map of the considered positions with the number of requiring building in range.
+		// Position <-> number of buildings in range
 		Map<Vector2i, Integer> candidatesPositions = new HashMap<Vector2i, Integer>();
 		
 		// Map of the positions where it lacks resources only with the number of requiring building in range.
+		// Position <-> number of buildings in range
 		Map<Vector2i, Integer> candidatesPositionsLackingResources = new HashMap<Vector2i, Integer>();
 		
 		// Missing resources for the required building.
+		// Resource type <-> how many missing
 		Map<Resource.ResourceType, Integer> missingResources = new HashMap<Resource.ResourceType, Integer>();
 		
 		// Initiates missing resources to 0.
@@ -641,32 +694,8 @@ public class Sim {
 					boolean allNeedsSatisfied = checkNeeds(requiredBuilding.getNeeds(), rstack, missingResources);
 
 					// Check how many buildings (which required the building construction) are in range of the required building.
-					//int inRange = countBuildingsInArea(Vector2i centerOfArea, int range, List<Building> buildingList);
-					int inRange = 0;
-					for(Map.Entry<Integer, Building.BuildingType> buildingRequiredEntry : buildingsRequired.entrySet()) {
-						if(buildingRequiredEntry.getValue() == requiredBuilding.getType()) {
-							Building building = null;
-
-							// Get the building.
-							for(Building b : this.buildings) {
-								if(b.getId() == buildingRequiredEntry.getKey()) {
-									building = b;
-									break;
-								}
-							}
-
-							// Check if in range.
-							if(building != null) {
-								Vector2i buildingCenter = new Vector2i(building.getHitbox().left + building.getHitbox().width / 2,
-																		building.getHitbox().top + building.getHitbox().height / 2);
-								int distance = (int)Distance.euclidean(buildingCenter, new Vector2i(x, y));
-
-								if(distance < requiredBuilding.getRange()) {
-									inRange++;
-								}
-							}
-						}
-					}
+					List<Building> buildingsRequiring = getBuildingsOfType(buildingsRequired, this.buildings, requiredBuilding.getType());
+					int inRange = countBuildingsInArea(centerOfSearchArea, requiredBuilding.getRange(), buildingsRequiring);
 					
 					// Add to the candidates positions if all resources are available.
 					if(allNeedsSatisfied)
