@@ -643,6 +643,10 @@ public class Sim {
 		// Position <-> number of buildings in range
 		Map<Vector2i, Integer> candidatesPositionsLackingResources = new HashMap<Vector2i, Integer>();
 		
+		// Map of the positions (which are in valid zone) with the number of requiring building in range.
+		// Position <-> number of buildings in range
+		Map<Vector2i, Integer> candidatesPositionsWithValidZone = new HashMap<Vector2i, Integer>();
+		
 		// Missing resources for the required building.
 		// Resource type <-> how many missing
 		Map<Resource.ResourceType, Integer> missingResources = new HashMap<Resource.ResourceType, Integer>();
@@ -669,24 +673,46 @@ public class Sim {
 						// This zone is not suitable
 						continue;
 					}
-
-					// Get the resources available for the building.
-					ResourcesStack rstack = getResourcesUnderHitbox(x, y, requiredBuilding.getHitbox());
-
-					// Check if they satisfy the needs.
-					boolean allNeedsSatisfied = checkNeeds(requiredBuilding.getNeeds(), rstack, missingResources);
-
+					
 					// Check how many buildings (which required the building construction) are in range of the required building.
 					List<Building> buildingsRequiring = getBuildingsOfType(buildingsRequired, this.buildings, requiredBuilding.getType());
 					int inRange = countBuildingsInArea(centerOfSearchArea, requiredBuilding.getRange(), buildingsRequiring);
 					
-					// Add to the candidates positions if all resources are available.
-					if(allNeedsSatisfied)
-						candidatesPositions.put(new Vector2i(x, y), inRange);
-					else
-						candidatesPositionsLackingResources.put(new Vector2i(x, y), inRange);
+					candidatesPositionsWithValidZone.put(new Vector2i(x, y), inRange);
 				}
 			}
+		}
+
+		// If we don't find any suitable zone, we need to notify the player.
+		if(candidatesPositionsWithValidZone.isEmpty()) {
+			this.logGui.write("No suitable position found for : " + mostRequiredBuildingTypeEntry.getKey().toString(), LogGui.WARNING);
+			this.logGui.write("You should create one of the following zone(s), (near position {" + centerOfSearchArea.x + ", " + centerOfSearchArea.y + "}) :", LogGui.NORMAL);
+
+			List<Zone.ZoneClass> suitableZonesForRequiredBuilding = Building.getSuitableZones(mostRequiredBuildingTypeEntry.getKey());
+			for(Zone.ZoneClass z : suitableZonesForRequiredBuilding)
+				this.logGui.write("\t- " + z.toString(), false, LogGui.NORMAL);
+
+			// We stop here.
+			return;
+		}
+		
+		for(Map.Entry<Vector2i, Integer> entry : candidatesPositionsWithValidZone.entrySet()) {
+			// Decompose the map's entry.
+			int x = entry.getKey().x;
+			int y = entry.getKey().y;
+			int inRange = entry.getValue();
+			
+			// Get the resources available for the building.
+			ResourcesStack rstack = getResourcesUnderHitbox(x, y, requiredBuilding.getHitbox());
+
+			// Check if they satisfy the needs.
+			boolean allNeedsSatisfied = checkNeeds(requiredBuilding.getNeeds(), rstack, missingResources);
+			
+			// Add to the candidates positions if all resources are available.
+			if(allNeedsSatisfied)
+				candidatesPositions.put(new Vector2i(x, y), inRange);
+			else
+				candidatesPositionsLackingResources.put(new Vector2i(x, y), inRange);
 		}
 		
 		// Check the position which reach the most buildings AND is the closer to the center of the search area.

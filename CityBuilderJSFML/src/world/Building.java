@@ -52,6 +52,41 @@ public class Building {
 		}
 	}
 	
+	/**
+	 * Returns the suitables zones for the given building type.
+	 * 
+	 * @param btype : the building type
+	 * @return the suitable zones for the building type
+	 */
+	public static List<Zone.ZoneClass> getSuitableZones(Building.BuildingType btype) {
+		List<Zone.ZoneClass> suitableZones = new ArrayList<Zone.ZoneClass>();
+		
+		switch(btype) {
+			case GENERATOR:
+				suitableZones.add(Zone.ZoneClass.INDUSTRY);
+				break;
+			case GROCERY_STORE:
+				suitableZones.add(Zone.ZoneClass.COMMERCIAL);
+				break;
+			case HOUSE:
+				suitableZones.add(Zone.ZoneClass.RESIDENTIAL);
+				break;
+			case HYDROLIC_STATION:
+				suitableZones.add(Zone.ZoneClass.INDUSTRY);
+				break;
+			case ROAD:
+				suitableZones.add(Zone.ZoneClass.ROAD);
+				break;
+			case ANTENNA_4G:
+				suitableZones.add(ZoneClass.FREE);
+				break;
+			default:
+				break;
+		}
+		
+		return suitableZones;
+	}
+	
 	/** Last building id. */
 	protected static int lastId = 1;
 	
