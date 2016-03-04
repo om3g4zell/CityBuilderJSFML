@@ -191,6 +191,14 @@ public class Building {
 	}
 	
 	/**
+	 * Get the list of citizens.
+	 * @return ArrayList<Citizen> : the list of citizens
+	 */
+	public List<Citizen> getCitizens() {
+		return this.citizens;
+	}
+	
+	/**
 	 * Generates resources.
 	 * @param resourcesMap : the resources map to place resources on
 	 */

@@ -10,6 +10,7 @@ public class CityStats {
 	
 	protected int population;
 	protected int money;
+	protected float unemploymentRate;
 	protected Map<ZoneClass, Float> attractivity = new HashMap<ZoneClass, Float>();
 	
 	/**
@@ -26,15 +27,22 @@ public class CityStats {
 			if(b.getType().equals(Building.BuildingType.HOUSE)) {
 				this.population += 4;
 			}
-		}
-		
-		for(Building building : buildings) {
 			for(ZoneClass zc : ZoneClass.values()) {
-				if(building.getZoneClasses().equals(zc)) {
+				if(b.getZoneClasses().equals(zc)) {
 					attractivity.put(zc, attractivity.get(zc) + 1);
 				}
 			}
+			int unemployment = 0;
+			int citizenNumber = 0;
+			for(Citizen c : b.getCitizens()) {
+				citizenNumber++;
+				if(c.getWorkBuildingId() == -1) {
+					unemployment++;
+				}
+			}
+			this.unemploymentRate = unemployment / citizenNumber;
 		}
+		
 	}
 	
 	/**
@@ -60,5 +68,13 @@ public class CityStats {
 	 */
 	public int getMoney() {
 		return this.money;
+	}
+	
+	/**
+	 * Get the unemployment rate.
+	 * @return float : the unemployment rate
+	 */
+	public float getUnemploymentRate() {
+		return this.unemploymentRate;
 	}
 }	

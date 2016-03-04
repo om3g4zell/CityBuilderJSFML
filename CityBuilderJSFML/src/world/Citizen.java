@@ -13,8 +13,20 @@ public class Citizen {
 		this.id = Citizen.actualID ++;
 	}
 	
+	/**
+	 * Set the id of his workBuilding.
+	 * @param workBuildingId : the id of his workBuilding
+	 */
 	public void setWorkBuildingId(int workBuildingId) {
 		this.workBuildingId = id;
+	}
+	
+	/**
+	 * Get the id of his workBuilding
+	 * @return int : the id of his workBuilding
+	 */
+	public int getWorkBuildingId() {
+		return this.workBuildingId;
 	}
 	
 	
