@@ -467,7 +467,7 @@ public class Sim {
 				
 				// if the building contain the free zone it's ok
 				if(zoneClasses.contains(ZoneClass.FREE)) {
-					validZone = true;
+					validZone = false;
 				}
 				
 				// if isn't a valid zone break
@@ -582,7 +582,7 @@ public class Sim {
 					}
 
 					// Check zone compatibility.
-					if(!checkZoneCompatibility(x, y, requiredBuilding.getHitbox(), requiredBuilding.getZoneClasses()))
+					if(!checkZoneCompatibility(x, y, requiredBuilding.getHitbox(), requiredBuilding.getZoneClasses())) {
 						// This zone is not suitable
 						continue;
 					}
@@ -638,6 +638,7 @@ public class Sim {
 						candidatesPositionsLackingResources.put(new Vector2i(x, y), inRange);
 				}
 			}
+		}
 		
 		// Check the position which reach the most buildings AND is the closer to the center of the search area.
 		Map.Entry<Vector2i, Integer> bestPosition = null;
