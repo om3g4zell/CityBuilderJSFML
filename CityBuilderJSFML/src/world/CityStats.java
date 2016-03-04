@@ -40,7 +40,8 @@ public class CityStats {
 					unemployment++;
 				}
 			}
-			this.unemploymentRate = unemployment / citizenNumber;
+			if(citizenNumber > 0)
+				this.unemploymentRate = unemployment / citizenNumber;
 		}
 		
 	}
