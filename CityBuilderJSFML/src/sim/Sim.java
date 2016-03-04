@@ -515,6 +515,56 @@ public class Sim {
 	}
 	
 	/**
+	 * Checks the needs and precise the missing resources if any.
+	 * 
+	 * @param needs : the list of the needs to check
+	 * @param rstack : the resources stack of the available resources
+	 * @param missingResources : reference to return the map of the missing resources
+	 * @return true if all the needs are satisfied, else otherwise
+	 */
+	public boolean checkNeeds(List<Need> needs, ResourcesStack rstack, Map<Resource.ResourceType, Integer> missingResources) {
+		boolean allNeedsSatisfied = true;
+		
+		for(Need n : needs) {
+			float minAmount = n.amount * n.fillFactor;
+
+			// If one need is not satisfied to its minimum, we quit.
+			if(rstack.get(n.type) < minAmount) {
+				allNeedsSatisfied = false;
+				int count = missingResources.get(n.type).intValue();
+				count += 1;
+				missingResources.put(n.type, count);
+			}
+		}
+		
+		return allNeedsSatisfied;
+	}
+	
+	/**
+	 * Counts the number of buildings in the given area.
+	 * 
+	 * @param centerOfArea : the center of the area
+	 * @param range : the radius of the area
+	 * @param buildingList : the list of buildings to consider
+	 * @return the number of buildings in the area
+	 */
+	public int countBuildingsInArea(Vector2i centerOfArea, int range, List<Building> buildingList) {
+		int inRange = 0;
+		
+		for(Building building : buildingList) {
+			Vector2i buildingCenter = new Vector2i(building.getHitbox().left + building.getHitbox().width / 2,
+												   building.getHitbox().top + building.getHitbox().height / 2);
+
+			int distance = (int)Distance.euclidean(buildingCenter, centerOfArea);
+			if(distance < range) {
+				inRange++;
+			}
+		}
+		
+		return inRange;
+	}
+	
+	/**
 	 * Spawns the new buildings.
 	 * 
 	 * TODO: Separate the algorithm in sub-functions.
@@ -553,13 +603,13 @@ public class Sim {
 		double squaredRadius = Math.pow(radius, 2);
 		
 		// Map of the considered positions with the number of requiring building in range.
-		HashMap<Vector2i, Integer> candidatesPositions = new HashMap<Vector2i, Integer>();
+		Map<Vector2i, Integer> candidatesPositions = new HashMap<Vector2i, Integer>();
 		
 		// Map of the positions where it lacks resources only with the number of requiring building in range.
-		HashMap<Vector2i, Integer> candidatesPositionsLackingResources = new HashMap<Vector2i, Integer>();
+		Map<Vector2i, Integer> candidatesPositionsLackingResources = new HashMap<Vector2i, Integer>();
 		
 		// Missing resources for the required building.
-		HashMap<Resource.ResourceType, Integer> missingResources = new HashMap<Resource.ResourceType, Integer>();
+		Map<Resource.ResourceType, Integer> missingResources = new HashMap<Resource.ResourceType, Integer>();
 		
 		// Initiates missing resources to 0.
 		for(Resource.ResourceType rtype : Resource.ResourceType.values())
@@ -591,20 +641,10 @@ public class Sim {
 					ResourcesStack rstack = getResourcesUnderHitbox(x, y, requiredBuilding.getHitbox());
 
 					// Check if they satisfy the needs.
-					boolean allNeedsSatisfied = true;
-					for(Need n : requiredBuilding.getNeeds()) {
-						float minAmount = n.amount * n.fillFactor;
-
-						// If one need is not satisfied to its minimum, we quit.
-						if(rstack.get(n.type) < minAmount) {
-							allNeedsSatisfied = false;
-							int count = missingResources.get(n.type).intValue();
-							count += 1;
-							missingResources.put(n.type, count);
-						}
-					}
+					boolean allNeedsSatisfied = checkNeeds(requiredBuilding.getNeeds(), rstack, missingResources);
 
 					// Check how many buildings (which required the building construction) are in range of the required building.
+					//int inRange = countBuildingsInArea(Vector2i centerOfArea, int range, List<Building> buildingList);
 					int inRange = 0;
 					for(Map.Entry<Integer, Building.BuildingType> buildingRequiredEntry : buildingsRequired.entrySet()) {
 						if(buildingRequiredEntry.getValue() == requiredBuilding.getType()) {
