@@ -13,6 +13,7 @@ import org.jsfml.graphics.RenderTarget;
 import org.jsfml.graphics.Text;
 import org.jsfml.system.Time;
 import org.jsfml.system.Vector2f;
+import org.jsfml.window.event.Event;
 
 import graphics.FontManager;
 import graphics.FontManager.FontID;
@@ -56,17 +57,20 @@ public class LogGui implements Drawable{
 		this.title.setPosition(900, 75);
 		this.title.setString("Messages :");
 		
-		this.saveLogButton = new Button("Save Log", new Color(127, 36, 255), new Color(76, 81, 153), Color.WHITE, Color.WHITE, fonts.get(FontID.BEBAS));
-		this.saveLogButton.setPosition(915, 45);
+		this.saveLogButton = new Button("Save Log", new Color(128, 128, 128), new Color(48, 48, 48), Color.WHITE, Color.WHITE, fonts.get(FontID.BEBAS), 12);
+		this.saveLogButton.setPosition(900, 35);
 	}
 	
 	/**
 	 * update the logGui
 	 * @param dt : elapsed time
 	 */
-	public void update(Time dt, Vector2f mousePosition) {
+	public void update(Time dt) {
 		this.timer = Time.add(dt, timer);
-		this.saveLogButton.update(mousePosition);
+	}
+	
+	public void handleEvent(Vector2f mousePosition, Event event) {
+		this.saveLogButton.update(mousePosition, event);
 		if(this.saveLogButton.isCLicked()) {
 			saveToFile();
 		}
@@ -147,10 +151,12 @@ public class LogGui implements Drawable{
 	public void saveToFile() {
 		FileWriter fw;
 		 try {
-			fw = new FileWriter(new File(""+ System.currentTimeMillis()+".txt"));
+			String path = ""+ System.currentTimeMillis()+".txt";
+			fw = new FileWriter(new File(path));
 			for(String str : this.logs) {
 				fw.write(str + "\r\n");
 			}
+			write("Saved : " + path, LogGui.SUCCESS);
 			fw.close();
 		} catch (IOException e) {
 			e.printStackTrace();

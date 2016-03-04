@@ -992,7 +992,7 @@ public class Sim {
 				cb.handleEvent(event);
 			}
 		}
-		
+		this.logGui.handleEvent(this.window.mapPixelToCoords(Mouse.getPosition(this.window)), event);
 		this.gameSpeedGui.handleEvent(event);
 	}
 }

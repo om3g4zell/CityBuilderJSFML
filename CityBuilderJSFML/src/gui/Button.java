@@ -12,6 +12,7 @@ import org.jsfml.graphics.Text;
 import org.jsfml.graphics.Transform;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Mouse;
+import org.jsfml.window.event.Event;
 
 
 public class Button extends BasicTransformable implements Drawable{
@@ -25,7 +26,7 @@ public class Button extends BasicTransformable implements Drawable{
 	private Font font;
 	private boolean clickedFlag;
 	
-	public Button(String text, Color backgroundColor, Color backgroundHoverColor,Color textColor, Color textHoverColor, Font font) {
+	public Button(String text, Color backgroundColor, Color backgroundHoverColor,Color textColor, Color textHoverColor, Font font, int size) {
 		this.backgroundColor = backgroundColor;
 		this.backgroundHoverColor = backgroundHoverColor;
 		this.textColor = textColor;
@@ -37,9 +38,10 @@ public class Button extends BasicTransformable implements Drawable{
 		this.text.setPosition(new Vector2f(10, 10));
 		this.text.setString(text);
 		this.text.setColor(textColor);
+		this.text.setCharacterSize(size);
 		
 		this.background = new RectangleShape();
-		this.background.setSize(new Vector2f(this.text.getGlobalBounds().width, this.text.getGlobalBounds().height));
+		this.background.setSize(new Vector2f(this.text.getGlobalBounds().width + 20, this.text.getGlobalBounds().height + 20));
 		this.background.setFillColor(this.backgroundColor);
 	}
 	
@@ -47,7 +49,7 @@ public class Button extends BasicTransformable implements Drawable{
 	 * update the button
 	 * @param mousePosition : the world position of the mouse
 	 */
-	public void update(Vector2f mousePosition) {
+	public void update(Vector2f mousePosition, Event e) {
 		this.clickedFlag = false;
 		FloatRect localHitbox = this.background.getGlobalBounds();
 		FloatRect hitbox = getTransform().transformRect(localHitbox);
@@ -55,7 +57,7 @@ public class Button extends BasicTransformable implements Drawable{
 		if(hitbox.contains(mousePosition)) {
 			this.background.setFillColor(backgroundHoverColor);
 			this.text.setColor(textHoverColor);
-			if(Mouse.isButtonPressed(Mouse.Button.LEFT)) {
+			if(e.type == Event.Type.MOUSE_BUTTON_RELEASED && e.asMouseButtonEvent().button == Mouse.Button.LEFT) {
 				this.clickedFlag = true;
 			}
 		}
