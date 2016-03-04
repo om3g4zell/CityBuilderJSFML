@@ -27,6 +27,7 @@ public class LogGui implements Drawable{
 	protected RectangleShape background;
 	protected Time timer = Time.ZERO;
 	protected int pointer = 0;
+	protected Button saveLogButton;
 	
 	public static final Color WARNING = new Color(255, 106, 0);
 	public static final Color ERROR = new Color(255, 0, 0);
@@ -54,14 +55,21 @@ public class LogGui implements Drawable{
 		this.title.setFont(this.fonts.get(FontID.BEBAS));
 		this.title.setPosition(900, 75);
 		this.title.setString("Messages :");
+		
+		this.saveLogButton = new Button("Save Log", new Color(127, 36, 255), new Color(76, 81, 153), Color.WHITE, Color.WHITE, fonts.get(FontID.BEBAS));
+		this.saveLogButton.setPosition(915, 45);
 	}
 	
 	/**
 	 * update the logGui
 	 * @param dt : elapsed time
 	 */
-	public void update(Time dt) {
+	public void update(Time dt, Vector2f mousePosition) {
 		this.timer = Time.add(dt, timer);
+		this.saveLogButton.update(mousePosition);
+		if(this.saveLogButton.isCLicked()) {
+			saveToFile();
+		}
 	}
 	
 	public void write(String s, Color color) {
@@ -158,6 +166,7 @@ public class LogGui implements Drawable{
 		for(Text lt : this.logText) {
 			target.draw(lt);
 		}
+		target.draw(saveLogButton);
 		
 	}
 }
