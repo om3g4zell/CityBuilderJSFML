@@ -657,9 +657,9 @@ public class Sim {
 			// We spawned the building, so get it out of the stack.
 			this.buildingStackRequired.pop();
 			
-			this.logGui.write("Spawning : " + mostRequiredBuildingTypeEntry.getKey().toString() + " @ " + bestPosition.getKey().x + ", " + bestPosition.getKey().y, Color.GREEN);
-			this.logGui.write("\tdistance to CoSA: " + Distance.euclidean(bestPosition.getKey(), centerOfSearchArea), false, Color.GREEN);
-			this.logGui.write("\tefficiency: " + bestPosition.getValue() + "/" + mostRequiredBuildingTypeEntry.getValue(), false, Color.GREEN);
+			this.logGui.write("Spawning : " + mostRequiredBuildingTypeEntry.getKey().toString() + " @ " + bestPosition.getKey().x + ", " + bestPosition.getKey().y, LogGui.SUCCESS);
+			this.logGui.write("\tdistance to CoSA: " + Distance.euclidean(bestPosition.getKey(), centerOfSearchArea), false, LogGui.SUCCESS);
+			this.logGui.write("\tefficiency: " + bestPosition.getValue() + "/" + mostRequiredBuildingTypeEntry.getValue(), false, LogGui.SUCCESS);
 		}
 		else {
 			// Get the most rare resource.
@@ -685,9 +685,9 @@ public class Sim {
 				// This way, once the prerequiste building built, it will be poped off the stack and the original building will be built.
 				this.buildingStackRequired.push(prerequisiteBuildingMap);
 				
-				this.logGui.write("No suitable position found for : " + mostRequiredBuildingTypeEntry.getKey().toString(), Color.RED);
-				this.logGui.write("Most rare resource : " + rareResource.toString(), false, Color.RED);
-				this.logGui.write("Asking to spawn : " + Building.getBuildingTypeGenerating(rareResource).toString(), false, Color.RED);
+				this.logGui.write("No suitable position found for : " + mostRequiredBuildingTypeEntry.getKey().toString(), LogGui.WARNING);
+				this.logGui.write("Most rare resource : " + rareResource.toString(), false, LogGui.WARNING);
+				this.logGui.write("Asking to spawn : " + Building.getBuildingTypeGenerating(rareResource).toString(), false, LogGui.WARNING);
 			}
 		}
 	}
@@ -726,7 +726,7 @@ public class Sim {
 				}
 			}
 		}
-
+		this.logGui.write("New road(s) added", true, LogGui.SUCCESS);
 		this.zoneDrawingGui.setNewRoadAdded(false);
 	}
 	
