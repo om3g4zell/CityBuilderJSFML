@@ -172,28 +172,10 @@ public class Sim {
 		
 		// Houses.
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(31, 20)));
-		/*this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(33, 20)));
-		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(35, 20)));
-		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(37, 20)));
-		
-		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(31, 23)));
-		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(33, 23)));
-		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(35, 23)));
-		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(37, 23)));
-		
-		// Generator.
-		this.buildings.add(new Building(BuildingType.GENERATOR, new Vector2i(39, 21)));
-		
-		// Water station.
-		this.buildings.add(new Building(BuildingType.HYDROLIC_STATION, new Vector2i(39, 23)));
-		
-		// Grossery store
-		this.buildings.add(new Building(BuildingType.GROCERY_STORE, new Vector2i(40, 21)));
 		
 		// Roads
-		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(30, 20)));
-		
-		this.buildings.add(new Building(BuildingType.ANTENNA_4G, new Vector2i(35, 20)));*/
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(31, 19)));
+		this.buildings.add(new Building(BuildingType.ROAD, new Vector2i(32, 19)));
 		
 		// Inits the tilemap.
 		this.tilemap = new TileMap(TILEMAP_SIZE, TILE_SIZE);
