@@ -28,6 +28,11 @@ public class LogGui implements Drawable{
 	protected Time timer = Time.ZERO;
 	protected int pointer = 0;
 	
+	public static final Color WARNING = new Color(255, 106, 0);
+	public static final Color ERROR = new Color(255, 0, 0);
+	public static final Color SUCCESS = new Color(0, 255, 0);
+	public static final Color NORMAL = new Color(255, 255, 255);
+	
 	/**
 	 * Constructor
 	 * @param fonts : all the font
@@ -49,7 +54,6 @@ public class LogGui implements Drawable{
 		this.title.setFont(this.fonts.get(FontID.BEBAS));
 		this.title.setPosition(900, 75);
 		this.title.setString("Messages :");
-		
 	}
 	
 	/**
