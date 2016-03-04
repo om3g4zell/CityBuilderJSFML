@@ -21,11 +21,13 @@ public class CityStats {
 	public void update(List<Building> buildings) {
 		this.population = 0;
 		this.money = 0;
+		
 		for(Building b :  buildings) {
 			if(b.getType().equals(Building.BuildingType.HOUSE)) {
 				this.population += 4;
 			}
 		}
+		
 		for(Building building : buildings) {
 			for(ZoneClass zc : ZoneClass.values()) {
 				if(building.getZoneClasses().equals(zc)) {
