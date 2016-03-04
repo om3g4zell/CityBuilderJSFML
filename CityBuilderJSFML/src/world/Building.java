@@ -65,6 +65,7 @@ public class Building {
 	protected List<Zone.ZoneClass> buildingClass;
 	protected boolean halted;
 	protected boolean haltWarning;
+	protected List<Citizen> citizens;
 	
 	/**
 	 * Constructor
@@ -75,6 +76,7 @@ public class Building {
 		this.id = lastId;
 		lastId++;
 		
+		this.citizens = new ArrayList<Citizen>();
 		this.type = type;
 		this.needs = new ArrayList<Need>();
 		this.buildingClass = new ArrayList<Zone.ZoneClass>();
@@ -104,6 +106,9 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.FOOD, 10, 0.9f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				this.buildingClass.add(Zone.ZoneClass.RESIDENTIAL);
+				for(int i = 0; i < 4; i++) {
+					this.citizens.add(new Citizen(this.id));
+				}
 				break;
 			case HYDROLIC_STATION:
 				this.range = 18;
