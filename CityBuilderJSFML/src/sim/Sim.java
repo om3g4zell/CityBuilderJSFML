@@ -16,6 +16,7 @@ import org.jsfml.system.Time;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.Keyboard;
+import org.jsfml.window.Keyboard.Key;
 import org.jsfml.window.Mouse;
 import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
@@ -751,11 +752,14 @@ public class Sim {
 				// check if a zone type is road
 				if(this.zoneMap.getZoneMap().get(y).get(x).getType().equals(ZoneClass.ROAD)) {
 					// check if no building in this zone
-					for(int i = 0 ; i < this.buildings.size() ; i++) {
+					for(int i = 0 ; i < this.buildings.size() ;) {
 						// if building remove it (ONLY if not a ROAD)
 						if(this.buildings.get(i).getType() != Building.BuildingType.ROAD && this.buildings.get(i).getHitbox().contains(x, y)) {
 							this.logGui.write("Removed building : " + this.buildings.get(i).getId(), LogGui.SUCCESS);
 							this.buildings.remove(this.buildings.get(i));
+						}
+						else {
+							i++;
 						}
 					}
 					
@@ -965,7 +969,27 @@ public class Sim {
 	public RenderWindow getWindow() {
 		return this.window;
 	}
-
+	
+	/**
+	 * Remove building if we left click and pressed d
+	 * @param e : Event
+	 */
+	public void handleBuildingRemoval(Event e) {
+		if(Keyboard.isKeyPressed(Key.D)) {
+			if(e.type == Event.Type.MOUSE_BUTTON_RELEASED && e.asMouseButtonEvent().button == Mouse.Button.RIGHT) {
+				for(int i = 0; i < this.buildings.size();){
+					if(this.buildings.get(i).getHitbox().contains(this.tileSelector.getSelectedTile())) {
+						this.logGui.write("Removed building : Id : " + this.buildings.get(i).getId(), LogGui.SUCCESS);
+						this.buildings.remove(this.buildings.get(i));
+					}
+					else {
+						i++;
+					}
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Handles the event.
 	 * @param event : the JSFML event to handle
@@ -990,6 +1014,7 @@ public class Sim {
 				cb.handleEvent(event);
 			}
 		}
+		handleBuildingRemoval(event);
 		this.logGui.handleEvent(this.window.mapPixelToCoords(Mouse.getPosition(this.window)), event);
 		this.gameSpeedGui.handleEvent(event);
 	}
