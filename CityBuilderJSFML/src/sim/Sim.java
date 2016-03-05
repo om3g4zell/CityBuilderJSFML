@@ -503,13 +503,13 @@ public class Sim {
 	 */
 	public ResourcesStack getResourcesUnderHitbox(int x, int y, IntRect hitbox) {
 		ResourcesStack rstack = resourcesMap.getResources(x, y);
-		
+
 		for(int rx = x ; rx < Math.min(x + hitbox.width, TILEMAP_SIZE.x) ; rx++) {
 			for(int ry = y ; ry < Math.min(y + hitbox.height, TILEMAP_SIZE.y) ; ry++) {
 				rstack.add(resourcesMap.getResources(rx, ry));
 			}
 		}
-		
+
 		return rstack;
 	}
 	
@@ -859,23 +859,8 @@ public class Sim {
 			// Get the resources available for the building.
 			ResourcesStack rstack = getResourcesUnderHitbox(x, y, fakehouse.getHitbox());
 
-			// Check if they satisfy the needs.
-			List<Need> roadNeed = new ArrayList<Need>();
-			Need road = new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f);
-			roadNeed.add(road);
-			
-			// Missing resources for the required building.
-			// Resource type <-> how many missing
-			Map<Resource.ResourceType, Integer> missingResources = new HashMap<Resource.ResourceType, Integer>();
-			
-			// Initiates missing resources to 0.
-			for(Resource.ResourceType rtype : Resource.ResourceType.values())
-				missingResources.put(rtype, 0);
-			
-			boolean allNeedsSatisfied = checkNeeds(roadNeed, rstack, missingResources);
-			
-			// Add to the candidates positions if all resources are available.
-			if(allNeedsSatisfied)
+			// Add to the candidates positions if roads are available.
+			if(rstack.get(Resource.ResourceType.ROAD_PROXIMITY) > 0.f)
 				candidatesPositions.put(new Vector2i(x, y), distance);
 		}
 		
