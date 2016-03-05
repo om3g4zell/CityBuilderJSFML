@@ -673,11 +673,11 @@ public class Sim {
 						// This zone is not suitable
 						continue;
 					}
-					
+
 					// Check how many buildings (which required the building construction) are in range of the required building.
 					List<Building> buildingsRequiring = getBuildingsOfType(buildingsRequired, this.buildings, requiredBuilding.getType());
 					int inRange = countBuildingsInArea(centerOfSearchArea, requiredBuilding.getRange(), buildingsRequiring);
-					
+
 					candidatesPositionsWithValidZone.put(new Vector2i(x, y), inRange);
 				}
 			}
@@ -800,6 +800,105 @@ public class Sim {
 	}
 	
 	/**
+	 * Spawns new houses depending on the attractivity.
+	 */
+	public void spawnNewcomers() {
+		// Check attractivity.
+		if(this.cityStats.getAttractivity(Zone.ZoneClass.COMMERCIAL) < 1.f) {
+			this.logGui.write("Attractivity too small.", LogGui.ERROR);
+			return;
+		}
+
+		// Find a new valid zone, searching from the center of the city.
+		Vector2f citycenterf = new Vector2f(0.f, 0.f);
+
+		for(Building b : this.buildings) {
+			citycenterf = Vector2f.add(citycenterf, new Vector2f(b.getHitbox().left, b.getHitbox().top));
+		}
+
+		citycenterf = Vector2f.mul(citycenterf, 1.f / this.buildings.size());
+		Vector2i citycenter = new Vector2i((int)citycenterf.x, (int)citycenterf.y);
+
+		// Create a fake building.
+		Building fakehouse = new Building(Building.BuildingType.HOUSE, new Vector2i(0, 0));
+		
+		Map<Vector2i, Integer> candidatesPositionsWithValidZone = new HashMap<Vector2i, Integer>();
+		
+		// Look for valid zones.
+		for(int x = 0 ; x < resourcesMap.getSize().x ; ++x) {
+			for(int y = 0 ; y < resourcesMap.getSize().y ; ++y) {
+				// Check collision with other buildings.
+				IntRect candidateHitbox = new IntRect(x, y, fakehouse.getHitbox().width, fakehouse.getHitbox().height);
+
+				if(collideWithOtherBuildings(candidateHitbox)) {
+					// This position is not suitable.
+					continue;
+				}
+
+				// Check zone compatibility.
+				if(!checkZoneCompatibility(x, y, fakehouse.getHitbox(), fakehouse.getZoneClasses())) {
+					// This zone is not suitable
+					continue;
+				}
+
+				// Computes the distance to the center of the city.
+				int distance = (int)(Distance.euclidean(citycenter, new Vector2i(x, y)));
+				candidatesPositionsWithValidZone.put(new Vector2i(x, y), distance);
+			}
+		}
+		
+		Map<Vector2i, Integer> candidatesPositions = new HashMap<Vector2i, Integer>();
+		
+		// Check for AT LEAST roads.
+		for(Map.Entry<Vector2i, Integer> entry : candidatesPositionsWithValidZone.entrySet()) {
+			// Decompose the map's entry.
+			int x = entry.getKey().x;
+			int y = entry.getKey().y;
+			int distance = entry.getValue();
+			
+			// Get the resources available for the building.
+			ResourcesStack rstack = getResourcesUnderHitbox(x, y, fakehouse.getHitbox());
+
+			// Check if they satisfy the needs.
+			List<Need> roadNeed = new ArrayList<Need>();
+			Need road = new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f);
+			roadNeed.add(road);
+			
+			// Missing resources for the required building.
+			// Resource type <-> how many missing
+			Map<Resource.ResourceType, Integer> missingResources = new HashMap<Resource.ResourceType, Integer>();
+			
+			// Initiates missing resources to 0.
+			for(Resource.ResourceType rtype : Resource.ResourceType.values())
+				missingResources.put(rtype, 0);
+			
+			boolean allNeedsSatisfied = checkNeeds(roadNeed, rstack, missingResources);
+			
+			// Add to the candidates positions if all resources are available.
+			if(allNeedsSatisfied)
+				candidatesPositions.put(new Vector2i(x, y), distance);
+		}
+		
+		// Find the closest position.
+		Map.Entry<Vector2i, Integer> closestPositionEntry = null;
+		for(Map.Entry<Vector2i, Integer> entry : candidatesPositions.entrySet()) {
+			if(closestPositionEntry == null || entry.getValue() < closestPositionEntry.getValue()) {
+				closestPositionEntry = entry;
+			}
+		}
+		
+		if(closestPositionEntry != null) {
+			Vector2i bestPosition = closestPositionEntry.getKey();
+			
+			Building house = new Building(Building.BuildingType.HOUSE, bestPosition);
+	
+			// Spawn the building.
+			this.buildings.add(house);
+			this.logGui.write("A new house has come, implemented at position {" + bestPosition.x + ", " + bestPosition.y + "}.", LogGui.SUCCESS);
+		}
+	}
+
+	/**
 	 * Sets the static view to draw GUI & static elements on screen.
 	 */
 	public void setStaticView() {
@@ -837,6 +936,9 @@ public class Sim {
 			if(this.zoneDrawingGui.newRoadAdded()) {
 				spawnRoad();
 			}
+			
+			// Spawn the newcomers.
+			spawnNewcomers();
 			
 			// Reset the resources.
 			this.resourcesMap.reset();
@@ -883,8 +985,10 @@ public class Sim {
 			spawnBuildings();
 			
 			// Display the building stack size if > 0.
-			if(this.buildingStackRequired.size() > 0)
+			if(this.buildingStackRequired.size() > 0) {
 				this.logGui.write("" + this.buildingStackRequired.size() + " building(s) waiting to be built.", LogGui.NORMAL);
+				this.logGui.write("Stack dump : " + this.buildingStackRequired.toString(), LogGui.NORMAL);
+			}
 			
 			// Project buildings on the tilemap.
 			BuildingProjector.project(this.buildings, this.tilemap);

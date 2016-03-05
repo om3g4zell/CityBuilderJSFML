@@ -7,11 +7,18 @@ import java.util.Map;
 import world.Zone.ZoneClass;
 
 public class CityStats {
-	
 	protected int population;
 	protected int money;
 	protected float unemploymentRate;
-	protected Map<ZoneClass, Float> attractivity = new HashMap<ZoneClass, Float>();
+	protected Map<ZoneClass, Float> attractivity;
+	
+	public CityStats() {
+		this.attractivity = new HashMap<ZoneClass, Float>();
+		
+		for(ZoneClass z : ZoneClass.values()) {
+			attractivity.put(z, 0.f);
+		}
+	}
 	
 	/**
 	 * Update the population number.
@@ -23,12 +30,23 @@ public class CityStats {
 		this.population = 0;
 		this.money = 0;
 		
+		for(ZoneClass z : ZoneClass.values()) {
+			attractivity.put(z, 0.f);
+		}
+		
 		for(Building b :  buildings) {
 			if(b.getType().equals(Building.BuildingType.HOUSE)) {
 				this.population += 4;
 			}
+			
 			for(ZoneClass zc : ZoneClass.values()) {
-				if(b.getZoneClasses().equals(zc)) {
+				boolean containsZone = false;
+				
+				for(ZoneClass currentZone : b.getZoneClasses())
+					if(zc.equals(currentZone))
+						containsZone = true;
+				
+				if(containsZone) {
 					attractivity.put(zc, attractivity.get(zc) + 1);
 				}
 			}
