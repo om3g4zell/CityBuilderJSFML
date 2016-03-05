@@ -841,8 +841,15 @@ public class Sim {
 			// Reset the resources.
 			this.resourcesMap.reset();
 			
+			// Get the list of the houses (to check clients and employees).
+			List<Building> houses = getBuildingsOfType(this.buildings, Building.BuildingType.HOUSE);
+			
 			// Generate resources.
 			for(Building b : this.buildings) {
+				// Check the clients and employees.
+				b.checkClients(houses);
+				b.checkEmployees(houses);
+				
 				b.generateResources(this.resourcesMap, this.buildings);
 			}
 
@@ -855,18 +862,11 @@ public class Sim {
 			this.tileInfoGui.update(this.cachedResourceMap, this.tileSelector, this.buildings);
 			
 		if(!this.gameSpeedGui.isInPause() && this.simulationSpeedTimer.asSeconds() >= 1.f) {
-			// Get the list of the houses (to check clients and employees).
-			List<Building> houses = getBuildingsOfType(this.buildings, Building.BuildingType.HOUSE);
-			
 			// Consume resources and get required buildings.
 			Map<Integer, Building.BuildingType> buildingsRequired = new HashMap<Integer, Building.BuildingType>();
 			
 			for(Building b : this.buildings) {
 				BuildingType requiredBuilding = b.consumeResources(this.resourcesMap);
-				
-				// Check the clients and employees.
-				b.checkClients(houses);
-				b.checkEmployees(houses);
 				
 				// Don't do anything if none required.
 				if(requiredBuilding != BuildingType.NONE) {
@@ -875,12 +875,16 @@ public class Sim {
 			}
 			
 			// We only push a requirement for a new building if there is none waiting.
-			if(this.buildingStackRequired.isEmpty()) {
+			if(this.buildingStackRequired.isEmpty() && !buildingsRequired.isEmpty()) {
 				this.buildingStackRequired.push(buildingsRequired);
 			}
 			
 			// Spawn buildings.
 			spawnBuildings();
+			
+			// Display the building stack size if > 0.
+			if(this.buildingStackRequired.size() > 0)
+				this.logGui.write("" + this.buildingStackRequired.size() + " building(s) waiting to be built.", LogGui.NORMAL);
 			
 			// Project buildings on the tilemap.
 			BuildingProjector.project(this.buildings, this.tilemap);

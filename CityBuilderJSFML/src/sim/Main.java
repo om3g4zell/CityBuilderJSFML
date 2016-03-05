@@ -50,8 +50,11 @@ public class Main {
 			    for(Event event : simulation.getWindow().pollEvents()) {
 			        if(event.type == Event.Type.CLOSED)
 			        	simulation.getWindow().close();
-			        else if(event.type == Event.Type.KEY_PRESSED && event.asKeyEvent().key == Keyboard.Key.ESCAPE)
+			        else if(event.type == Event.Type.KEY_PRESSED && event.asKeyEvent().key == Keyboard.Key.ESCAPE) {
 			        	simulation.getWindow().close();
+			        	simulation = new Sim(WIDTH, HEIGHT, TITLE);
+			        	simulation.init();
+			        }
 			        else
 			        	simulation.handleEvent(event);
 			    }

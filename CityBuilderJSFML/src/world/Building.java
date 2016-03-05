@@ -281,10 +281,16 @@ public class Building {
 	 * @return the number of unemployed inhabitants
 	 */
 	public int getUnemployedInhabitantCount() {
-		if(this.employees.size() == 0)
+		int inhabitantsWorking = 0;
+		
+		for(Citizen c : this.inhabitants)
+			if(c.getWorkBuildingId() != -1)
+				inhabitantsWorking++;
+		
+		if(inhabitantsWorking == 0)
 			return -1;
 		
-		return this.inhabitants.size() / this.employees.size();
+		return this.inhabitants.size() - inhabitantsWorking;
 	}
 	
 	/**
