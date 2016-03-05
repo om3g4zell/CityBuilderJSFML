@@ -971,7 +971,7 @@ public class Sim {
 				BuildingType requiredBuilding = b.consumeResources(this.resourcesMap);
 				
 				// Don't do anything if none required.
-				if(requiredBuilding != BuildingType.NONE) {
+				if(requiredBuilding != BuildingType.NONE && requiredBuilding != BuildingType.ROAD) {
 					buildingsRequired.put(b.getId(), requiredBuilding);
 				}
 			}
