@@ -502,7 +502,7 @@ public class Sim {
 	 * @return he resources available under the hitbox
 	 */
 	public ResourcesStack getResourcesUnderHitbox(int x, int y, IntRect hitbox) {
-		ResourcesStack rstack = resourcesMap.getResources(x, y);
+		ResourcesStack rstack = new ResourcesStack();
 
 		for(int rx = x ; rx < Math.min(x + hitbox.width, TILEMAP_SIZE.x) ; rx++) {
 			for(int ry = y ; ry < Math.min(y + hitbox.height, TILEMAP_SIZE.y) ; ry++) {
@@ -860,8 +860,9 @@ public class Sim {
 			ResourcesStack rstack = getResourcesUnderHitbox(x, y, fakehouse.getHitbox());
 
 			// Add to the candidates positions if roads are available.
-			if(rstack.get(Resource.ResourceType.ROAD_PROXIMITY) > 0.f)
+			if(rstack.get(Resource.ResourceType.ROAD_PROXIMITY) > 0.f) {
 				candidatesPositions.put(new Vector2i(x, y), distance);
+			}
 		}
 		
 		// Find the closest position.
