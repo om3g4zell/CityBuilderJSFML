@@ -218,6 +218,7 @@ public class Sim {
 		// Light layer.
 		try {
 			this.lightLayer = new LightLayer(new Vector2i((int)(TILEMAP_SIZE.x * TILE_SIZE.x), (int)(TILEMAP_SIZE.y * TILE_SIZE.y)));
+			this.lightLayer.virtualDraw();
 		}
 		catch (TextureCreationException e) {
 			this.logGui.write("Error: could not create the light layer.\n", LogGui.ERROR);
