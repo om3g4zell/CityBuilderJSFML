@@ -11,6 +11,7 @@ import java.util.Stack;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.IntRect;
 import org.jsfml.graphics.RenderWindow;
+import org.jsfml.graphics.TextureCreationException;
 import org.jsfml.graphics.View;
 import org.jsfml.system.Time;
 import org.jsfml.system.Vector2f;
@@ -24,6 +25,7 @@ import org.jsfml.window.event.Event;
 import graphics.Tile.TileType;
 import graphics.BuildingProjector;
 import graphics.FontManager;
+import graphics.LightLayer;
 import graphics.TextureManager;
 import graphics.Tile;
 import graphics.TileMap;
@@ -85,6 +87,7 @@ public class Sim {
 	protected int zoneDrawingCheckboxID;
 	protected int cityGraphStatsCheckboxID;
 	protected int logGuiCheckboxID;
+	protected LightLayer lightLayer;
 	
 	/**
 	 * Constructor
@@ -211,6 +214,14 @@ public class Sim {
 		
 		// Project buildings on the tilemap at least one time.
 		BuildingProjector.project(this.buildings, this.tilemap);
+		
+		// Light layer.
+		try {
+			this.lightLayer = new LightLayer(new Vector2i((int)(TILEMAP_SIZE.x * TILE_SIZE.x), (int)(TILEMAP_SIZE.y * TILE_SIZE.y)));
+		}
+		catch (TextureCreationException e) {
+			this.logGui.write("Error: could not create the light layer.\n", LogGui.ERROR);
+		}
 	}
 	
 	/**
@@ -596,8 +607,6 @@ public class Sim {
 	
 	/**
 	 * Spawns the new buildings.
-	 * 
-	 * TODO: Separate the algorithm in sub-functions.
 	 */
 	public void spawnBuildings() {
 		// Look into the required buildings stack.
@@ -984,6 +993,19 @@ public class Sim {
 			
 			// Update the stats graphs (even if not displayed).
 			this.graphStatsGui.update(this.cityStats.getPopulation(), this.cityStats.getMoney(), this.buildings.size());
+			
+			// Update the lights.
+			this.lightLayer.clearLights();
+			for(Building b : this.buildings) {
+				Vector2f center = new Vector2f((b.getHitbox().left  + b.getHitbox().width / 2.f) * TILE_SIZE.x, (b.getHitbox().top + b.getHitbox().height / 2.f) * TILE_SIZE.y);
+				this.lightLayer.addLight(center, b.getHitbox().width * TILE_SIZE.x, new Color(255, 255, 255, 250), new Color(255, 255, 255, 50));
+			}
+			try {
+				this.lightLayer.virtualDraw();
+			}
+			catch(TextureCreationException e) {
+				this.logGui.write("Error: could not create a texture in the light layer.\n", LogGui.ERROR);
+			}
 		}
 		
 		// Do the time substraction here.
@@ -1015,6 +1037,7 @@ public class Sim {
 		/////////////
 		
 		this.window.draw(this.tilemap);
+		this.window.draw(this.lightLayer);
 		
 		if(isCheckBoxChecked(this.zoneDrawingCheckboxID))
 			this.window.draw(this.zoneMapLayer);
