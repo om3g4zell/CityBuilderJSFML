@@ -434,7 +434,7 @@ public class Building {
 				
 				// Did we got enough new clients ?
 				if(clientsNeeded <= 0)
-					break;
+					return;
 			}
 		}
 	}
