@@ -287,8 +287,6 @@ public class Building {
 			if(c.getWorkBuildingId() != -1)
 				inhabitantsWorking++;
 		
-		if(inhabitantsWorking == 0)
-			return -1;
 		
 		return this.inhabitants.size() - inhabitantsWorking;
 	}
@@ -470,7 +468,7 @@ public class Building {
 				
 				// Did we got enough new employees ?
 				if(employeesNeeded <= 0)
-					break;
+					return;
 			}
 		}
 	}
