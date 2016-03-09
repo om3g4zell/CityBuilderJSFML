@@ -2,6 +2,7 @@ package sim;
 
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Stack;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.IntRect;
 import org.jsfml.graphics.RenderWindow;
+import org.jsfml.graphics.ShaderSourceException;
 import org.jsfml.graphics.TextureCreationException;
 import org.jsfml.graphics.View;
 import org.jsfml.system.Time;
@@ -88,6 +90,8 @@ public class Sim {
 	protected int cityGraphStatsCheckboxID;
 	protected int logGuiCheckboxID;
 	protected LightLayer lightLayer;
+	protected int dayhour;
+	protected int daycount;
 	
 	/**
 	 * Constructor
@@ -220,9 +224,13 @@ public class Sim {
 			this.lightLayer = new LightLayer(new Vector2i((int)(TILEMAP_SIZE.x * TILE_SIZE.x), (int)(TILEMAP_SIZE.y * TILE_SIZE.y)));
 			this.lightLayer.virtualDraw();
 		}
-		catch (TextureCreationException e) {
+		catch (TextureCreationException | IOException | ShaderSourceException e) {
 			this.logGui.write("Error: could not create the light layer.\n", LogGui.ERROR);
 		}
+		
+		// Day/night cycle.
+		this.dayhour = 0;
+		this.daycount = 0;
 	}
 	
 	/**
@@ -915,6 +923,24 @@ public class Sim {
 	}
 	
 	/**
+	 * Updates the day/night.
+	 */
+	public void updateDayNight() {
+		this.dayhour += 3;
+		this.dayhour %= 24;
+		
+		if(this.dayhour == 0)
+			this.daycount++;
+		
+		if(this.dayhour > 6 && this.dayhour <= 18) {
+			this.lightLayer.setAlpha(255);
+		}
+		else {
+			this.lightLayer.setAlpha(0);
+		}
+	}
+	
+	/**
 	 * Updates all the simulation.
 	 * @param dt : frame of time to use
 	 */
@@ -995,11 +1021,11 @@ public class Sim {
 			// Update the stats graphs (even if not displayed).
 			this.graphStatsGui.update(this.cityStats.getPopulation(), this.cityStats.getMoney(), this.buildings.size());
 			
-			// Update the lights.
+			// Update the lights positions.
 			this.lightLayer.clearLights();
 			for(Building b : this.buildings) {
 				Vector2f center = new Vector2f((b.getHitbox().left  + b.getHitbox().width / 2.f) * TILE_SIZE.x, (b.getHitbox().top + b.getHitbox().height / 2.f) * TILE_SIZE.y);
-				this.lightLayer.addLight(center, b.getHitbox().width * TILE_SIZE.x, new Color(255, 255, 255, 250), new Color(255, 255, 255, 50));
+				this.lightLayer.addLight(center, 1.25f * b.getHitbox().width * TILE_SIZE.x, new Color(255, 255, 255, 250), new Color(255, 255, 255, 50));
 			}
 			try {
 				this.lightLayer.virtualDraw();
@@ -1007,6 +1033,9 @@ public class Sim {
 			catch(TextureCreationException e) {
 				this.logGui.write("Error: could not create a texture in the light layer.\n", LogGui.ERROR);
 			}
+			
+			// Update day/night.
+			updateDayNight();
 		}
 		
 		// Do the time substraction here.
@@ -1017,6 +1046,7 @@ public class Sim {
 		// Update the tilemap.
 		this.tilemap.update();
 		
+		// Update GUI.
 		if(isCheckBoxChecked(this.zoneDrawingCheckboxID)) {
 			this.zoneDrawingGui.update(dt, this.window, this.zoneMap, this.tileSelector);
 			this.zoneMapLayer.update();
@@ -1038,11 +1068,12 @@ public class Sim {
 		/////////////
 		
 		this.window.draw(this.tilemap);
-		this.window.draw(this.lightLayer);
 		
 		if(isCheckBoxChecked(this.zoneDrawingCheckboxID))
 			this.window.draw(this.zoneMapLayer);
-		
+		else
+			this.window.draw(this.lightLayer);
+
 		this.window.draw(this.tileSelector);
 
 		// Static elements.
@@ -1140,6 +1171,7 @@ public class Sim {
 				}
 			}
 		}
+
 		BuildingProjector.project(this.buildings, this.tilemap);
 	}
 	

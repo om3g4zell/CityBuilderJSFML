@@ -1,5 +1,7 @@
 package graphics;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,18 +14,28 @@ public class LightLayer implements Drawable {
 	protected Vector2i layerSize;
 	protected RenderTexture internalTexture;
 	protected Map<Integer, VertexArray> lightsVertexArrays;
+	protected Shader shader;
+	protected int alpha;
 	
 	/**
 	 * Constructor.
 	 * 
 	 * @throws TextureCreationException 
+	 * @throws ShaderSourceException 
+	 * @throws IOException 
 	 */
-	public LightLayer(Vector2i size) throws TextureCreationException {
+	public LightLayer(Vector2i size) throws TextureCreationException, IOException, ShaderSourceException {
 		this.lastLightId = 0;
 		this.layerSize = size;
 		this.internalTexture = new RenderTexture();
 		this.internalTexture.create(size.x, size.y);
 		this.lightsVertexArrays = new HashMap<Integer, VertexArray>();
+		
+		this.shader = new Shader();
+		this.shader.loadFromFile(Paths.get("res/shaders/blur.frag"), Shader.Type.FRAGMENT);
+		this.shader.setParameter("blur_radius", (float)0.005f);
+		
+		this.alpha = 0;
 	}
 	
 	/**
@@ -94,7 +106,7 @@ public class LightLayer implements Drawable {
 	 */
 	public void virtualDraw() throws TextureCreationException {
 		this.internalTexture.create(this.layerSize.x, this.layerSize.y);
-		this.internalTexture.clear(new Color(32, 32, 32, 200));
+		this.internalTexture.clear(new Color(32, 32, 32, this.alpha));
 		
 		RenderStates states = new RenderStates(BlendMode.ADD);
 
@@ -112,7 +124,20 @@ public class LightLayer implements Drawable {
 	@Override
 	public void draw(RenderTarget target, RenderStates states) {
 		RenderStates newStates = new RenderStates(states, BlendMode.MULTIPLY);
+		newStates = new RenderStates(newStates, this.shader);
 		
-		target.draw(new Sprite(this.internalTexture.getTexture()), newStates);
+		Sprite sprite = new Sprite(this.internalTexture.getTexture());
+		//sprite.setColor(new Color(255, 255, 255, this.alpha));
+		
+		target.draw(sprite, newStates);
+	}
+	
+	/**
+	 * Changes the rendering alpha.
+	 * 
+	 * @param alpha : the alpha to use
+	 */
+	public void setAlpha(int alpha) {
+		this.alpha = alpha;
 	}
 }
