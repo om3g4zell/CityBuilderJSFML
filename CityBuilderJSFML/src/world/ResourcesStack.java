@@ -17,6 +17,7 @@ public class ResourcesStack {
 	}
 	
 	// Resets all the resources to 0.
+	// Provoque un enorme lag.
 	public void reset() {
 		// Constructor of Resource puts amount to 0.
 		for(Resource.ResourceType rtype : Resource.ResourceType.values())
