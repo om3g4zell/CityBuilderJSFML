@@ -19,11 +19,28 @@ public class Building {
 	 */
 	public static enum BuildingType {
 		HOUSE,
+		
 		GROCERY_STORE,
+		MALL,
+		PUB,
+		RESTAURANT,
+		
+		
+		
 		GENERATOR,
 		HYDROLIC_STATION,
-		ROAD,
 		ANTENNA_4G,
+		
+		ROAD,
+		
+		POLICE_STATION,
+		HOSPITAL,
+		FIRE_STATION,
+		
+		SCHOOL,
+		CINEMA,
+		STADIUM,
+		CASINOS,
 		
 		NONE
 	}
@@ -45,6 +62,30 @@ public class Building {
 				return BuildingType.ROAD;
 			case NETWORK_4G :
 				return BuildingType.ANTENNA_4G;
+			case ALCOHOL:
+				return BuildingType.PUB;
+			case BIG_FURNITURE:
+				return BuildingType.MALL;
+			case EDUCATION:
+				return BuildingType.SCHOOL;
+			case FIRE_PROTECTION:
+				return BuildingType.FIRE_STATION;
+			case HOBBIES:
+				int rng = (int)(Math.random()*100);
+				if(rng > 50) {
+					return BuildingType.CINEMA;
+				}
+				else {
+					return BuildingType.CASINOS;
+				}
+			case LUXURY_FOOD:
+				return BuildingType.RESTAURANT;
+			case MEDICAL_CARE:
+				return BuildingType.HOSPITAL;
+			case SECURITY:
+				return BuildingType.POLICE_STATION;
+			case SPORT:
+				return BuildingType.STADIUM;
 			default:
 				return BuildingType.NONE;
 		}
@@ -76,11 +117,41 @@ public class Building {
 				suitableZones.add(Zone.ZoneClass.ROAD);
 				break;
 			case ANTENNA_4G:
-				suitableZones.add(ZoneClass.FREE);
+				suitableZones.add(ZoneClass.INDUSTRY);
+				break;
+			case CASINOS:
+				suitableZones.add(Zone.ZoneClass.CULTURAL);
+				break;
+			case CINEMA:
+				suitableZones.add(Zone.ZoneClass.CULTURAL);
+				break;
+			case FIRE_STATION:
+				suitableZones.add(Zone.ZoneClass.PUBLIC_SERVICE);
+				break;
+			case HOSPITAL:
+				suitableZones.add(Zone.ZoneClass.PUBLIC_SERVICE);
+				break;
+			case MALL:
+				suitableZones.add(Zone.ZoneClass.COMMERCIAL);
+				break;
+			case POLICE_STATION:
+				suitableZones.add(Zone.ZoneClass.PUBLIC_SERVICE);
+				break;
+			case PUB:
+				suitableZones.add(Zone.ZoneClass.CULTURAL);
+				break;
+			case RESTAURANT:
+				suitableZones.add(Zone.ZoneClass.COMMERCIAL);
+				break;
+			case SCHOOL:
+				suitableZones.add(Zone.ZoneClass.CULTURAL);
+				break;
+			case STADIUM:
+				suitableZones.add(Zone.ZoneClass.CULTURAL);
 				break;
 			default:
 				break;
-		}
+			}
 		
 		return suitableZones;
 	}
@@ -147,7 +218,7 @@ public class Building {
 				this.minEmployees = 1;
 				this.maxEmployees = 1;
 				
-				this.buildingClass.add(Zone.ZoneClass.COMMERCIAL);
+				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
 			case HOUSE:
 				this.range = 99;
@@ -157,12 +228,16 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.FOOD, 40, 0.9f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
+				this.needs.add(new Need(Resource.ResourceType.SECURITY, 100, 1.f));
+				this.needs.add(new Need(Resource.ResourceType.MEDICAL_CARE, 1, 1.f));
+				this.needs.add(new Need(Resource.ResourceType.FIRE_PROTECTION, 1, 1.f));
+				this.needs.add(new Need(Resource.ResourceType.SPORT, 1, 1.f));
 				
 				for(int i = 0; i < 4; i++) {
 					this.inhabitants.add(new Citizen(this.id));
 				}
 				
-				this.buildingClass.add(Zone.ZoneClass.RESIDENTIAL);
+				this.buildingClass = Building.getSuitableZones(this.type);
 
 				break;
 			case HYDROLIC_STATION:
@@ -171,7 +246,7 @@ public class Building {
 				
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				
-				this.buildingClass.add(Zone.ZoneClass.INDUSTRY);
+				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
 			case ROAD:
 				this.range = 1;
@@ -179,7 +254,7 @@ public class Building {
 				
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				
-				this.buildingClass.add(Zone.ZoneClass.ROAD);
+				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
 			case ANTENNA_4G:
 				this.range = 50;
@@ -187,11 +262,156 @@ public class Building {
 				
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				
-				this.buildingClass.add(ZoneClass.FREE);
+				this.buildingClass = Building.getSuitableZones(this.type);
+				break;
+			case CASINOS:
+				this.range = 50;
+				this.hitbox = new IntRect(position.x, position.y, 4, 4);
+				
+				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
+				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
+				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
+				
+				this.minClients = 50;
+				this.maxClients = 200;
+				this.minEmployees = 15;
+				this.maxEmployees = 30;
+				
+				this.buildingClass = Building.getSuitableZones(this.type);
+				break;
+			case CINEMA:
+				this.range = 50;
+				this.hitbox = new IntRect(position.x, position.y, 4, 4);
+				
+				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
+				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
+				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
+				
+				this.minClients = 50;
+				this.maxClients = 300;
+				this.minEmployees = 3;
+				this.maxEmployees = 10;
+				
+				this.buildingClass = Building.getSuitableZones(this.type);
+				break;
+			case FIRE_STATION:
+				this.range = 30;
+				this.hitbox = new IntRect(position.x, position.y, 3, 4);
+				
+				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
+				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
+				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
+				
+				this.minEmployees = 15;
+				this.maxEmployees = 30;
+				
+				this.buildingClass = Building.getSuitableZones(this.type);
+				break;
+			case HOSPITAL:
+				this.range = 30;
+				this.hitbox = new IntRect(position.x, position.y, 3, 4);
+				
+				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
+				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
+				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
+				
+				this.minEmployees = 15;
+				this.maxEmployees = 30;
+				
+				this.buildingClass = Building.getSuitableZones(this.type);
+				break;
+			case MALL:
+				this.range = 40;
+				this.hitbox = new IntRect(position.x, position.y, 5, 5);
+				
+				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
+				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
+				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
+				
+				
+				this.minClients = 100;
+				this.maxClients = 300;
+				this.minEmployees = 15;
+				this.maxEmployees = 30;
+				
+				this.buildingClass = Building.getSuitableZones(this.type);
+				break;
+			case POLICE_STATION:
+				this.range = 30;
+				this.hitbox = new IntRect(position.x, position.y, 4, 4);
+				
+				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
+				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
+				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
+				
+				
+				this.minEmployees = 15;
+				this.maxEmployees = 30;
+				
+				this.buildingClass = Building.getSuitableZones(this.type);
+				break;
+			case PUB:
+				this.range = 25;
+				this.hitbox = new IntRect(position.x, position.y, 2, 3);
+				
+				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
+				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
+				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
+				
+				this.minClients = 10;
+				this.maxClients = 60;
+				this.minEmployees = 1;
+				this.maxEmployees = 4;
+				
+				this.buildingClass = Building.getSuitableZones(this.type);
+				
+				break;
+			case RESTAURANT:
+				this.range = 45;
+				this.hitbox = new IntRect(position.x, position.y, 3, 3);
+				
+				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
+				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
+				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
+				
+				this.minClients = 15;
+				this.maxClients = 60;
+				this.minEmployees = 3;
+				this.maxEmployees = 10;
+				
+				this.buildingClass = Building.getSuitableZones(this.type);
+				break;
+			case SCHOOL:
+				this.range = 50;
+				this.hitbox = new IntRect(position.x, position.y, 4, 4);
+				
+				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
+				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
+				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
+				
+				this.minEmployees = 3;
+				this.maxEmployees = 10;
+				
+				this.buildingClass = Building.getSuitableZones(this.type);
+				break;
+			case STADIUM:
+				this.range = 100;
+				this.hitbox = new IntRect(position.x, position.y, 6, 6);
+				
+				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 23760, 0.9f));
+				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
+				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
+				
+				this.minClients = 1000;
+				this.maxClients = 60000;
+				this.minEmployees = 100;
+				this.maxEmployees = 500;
+				
+				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
 			default:
-		 
 				break;
+				
 		}
 	}
 	
@@ -338,6 +558,25 @@ public class Building {
 							rStack.add(ResourceType.NETWORK_4G, 100);
 							resourcesMap.setResources(new Vector2i(x, y), rStack);
 							break;
+						case FIRE_STATION:
+							rStack = resourcesMap.getResources(new Vector2i(x, y));
+							rStack.add(ResourceType.FIRE_PROTECTION, 100);
+							resourcesMap.setResources(new Vector2i(x, y), rStack);
+							break;
+						case HOSPITAL:
+							rStack = resourcesMap.getResources(new Vector2i(x, y));
+							rStack.add(ResourceType.MEDICAL_CARE, 100);
+							resourcesMap.setResources(new Vector2i(x, y), rStack);
+							break;
+						case POLICE_STATION:
+							rStack = resourcesMap.getResources(new Vector2i(x, y));
+							rStack.add(ResourceType.SECURITY, 100);
+							resourcesMap.setResources(new Vector2i(x, y), rStack);
+							break;
+						case SCHOOL:
+							rStack = resourcesMap.getResources(new Vector2i(x, y));
+							rStack.add(ResourceType.EDUCATION, 100);
+							resourcesMap.setResources(new Vector2i(x, y), rStack);
 						default:
 							break;
 					}
@@ -345,7 +584,7 @@ public class Building {
 			}
 		}
 		
-		// The grocery store generates food for each of its client.
+		// The building generates resource for each of its client.
 		for(Citizen client : this.clients) {
 			// Find the house related to the citizen.
 			Building house = null;
@@ -362,7 +601,33 @@ public class Building {
 			
 			// Depose food at their door (the top left tile).
 			ResourcesStack rStack = resourcesMap.getResources(new Vector2i(house.getHitbox().left, house.getHitbox().top));
+			
+			switch(this.type) {
+			case CASINOS:
+			case CINEMA:
+				rStack.add(ResourceType.HOBBIES, 10);
+				break;
+			case GROCERY_STORE:
+				rStack.add(ResourceType.FOOD, 10);
+				break;
+			case MALL:
+				rStack.add(ResourceType.FOOD, 50);
+				break;
+			case PUB:
+				rStack.add(ResourceType.ALCOHOL, 10);
+				break;
+			case RESTAURANT:
+				rStack.add(ResourceType.LUXURY_FOOD, 30);
+				break;
+			case STADIUM:
+				rStack.add(ResourceType.SPORT, 100);
+				break;
+			default:
+				break;
+			}
+			
 			rStack.add(ResourceType.FOOD, 10);
+			
 			resourcesMap.setResources(new Vector2i(house.getHitbox().left, house.getHitbox().top), rStack);
 		}
 	}
@@ -418,19 +683,67 @@ public class Building {
 		int clientsNeeded = this.maxClients - this.clients.size();
 		
 		for(Building house : houses) {
-			// Check if the house is in the range of the grocery store.
+			// Check if the house is in the range of the building.
 			double squaredDistanceToHouse = Distance.squaredEuclidean(new Vector2i(house.getHitbox().left,  house.getHitbox().top), new Vector2i(this.getHitbox().left,  this.getHitbox().top));
-			if(squaredDistanceToHouse > Math.pow(range, 2))
+			if(squaredDistanceToHouse > Math.pow(this.range, 2))
 				continue;
 			
 			// Check if it has any inhabitant without grocery store attached to it.
 			for(Citizen c : house.getInhabitants()) {
-				if(c.getSmallFurnitureBuildingId() == -1) {
-					// We found a new client !
-					c.setSmallFurnitureBuildingId(this.getId());
-					this.clients.add(c);
-					clientsNeeded--;
+				switch(this.type) {
+					case CASINOS:
+					case CINEMA:
+						if(c.getHobbiesBuildingId() == -1) {
+							// We found a new client !
+							c.setHobbiesBuildingId(this.getId());
+							this.clients.add(c);
+							clientsNeeded--;
+						}
+						break;
+					case GROCERY_STORE:
+						if(c.getSmallFurnitureBuildingId() == -1) {
+							// We found a new client !
+							c.setSmallFurnitureBuildingId(this.getId());
+							this.clients.add(c);
+							clientsNeeded--;
+						}
+						break;
+					case MALL:
+						if(c.getBigFurnitureBuildingId() == -1) {
+							// We found a new client !
+							c.setBigFurnitureBuildingId(this.getId());
+							this.clients.add(c);
+							clientsNeeded--;
+						}
+						break;
+					case PUB:
+						if(c.getPubId() == -1) {
+							// We found a new client !
+							c.setPubId(this.getId());
+							this.clients.add(c);
+							clientsNeeded--;
+						}
+						break;
+					case RESTAURANT:
+						if(c.getRestaurantBuildingId() == -1) {
+							// We found a new client !
+							c.setRestaurantBuildingId(this.getId());
+							this.clients.add(c);
+							clientsNeeded--;
+						}
+						break;
+					case STADIUM:
+						if(c.getSportBuildingId() == -1) {
+							// We found a new client !
+							c.setSportBuildingId(this.getId());
+							this.clients.add(c);
+							clientsNeeded--;
+						}
+						break;
+					default:
+						break;
 				}
+				
 				
 				// Did we got enough new clients ?
 				if(clientsNeeded <= 0)

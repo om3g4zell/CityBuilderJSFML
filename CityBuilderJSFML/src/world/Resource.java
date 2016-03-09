@@ -11,9 +11,15 @@ public class Resource {
 		FOOD,
 		ROAD_PROXIMITY,
 		NETWORK_4G,
-		
-		// Need to be the last Type to count how many type we have
-		//COUNT
+		SECURITY,
+		FIRE_PROTECTION,
+		MEDICAL_CARE,
+		EDUCATION,
+		HOBBIES,
+		SPORT,
+		BIG_FURNITURE,
+		ALCOHOL,
+		LUXURY_FOOD
 	}
 	
 	/**

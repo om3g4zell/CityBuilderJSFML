@@ -16,6 +16,7 @@ public class Zone {
 		CULTURAL,
 		INDUSTRY,
 		COMMERCIAL,
+		PUBLIC_SERVICE,
 		ROAD,
 		FREE
 	}

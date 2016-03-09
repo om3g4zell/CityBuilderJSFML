@@ -58,7 +58,7 @@ import world.ZoneMap;
  */
 public class Sim {
 	// Constants.
-	protected static final Vector2i TILEMAP_SIZE = new Vector2i(80, 45);
+	protected static final Vector2i TILEMAP_SIZE = new Vector2i(120, 75);
 	protected static final Vector2f TILE_SIZE = new Vector2f(16.f, 16.f);
 	
 	// Attributes.
@@ -177,6 +177,7 @@ public class Sim {
 		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.INDUSTRY, new Color(227, 168, 87, 170));
 		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.ROAD, new Color(220, 220, 220, 170));
 		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.RESIDENTIAL, new Color(70, 0, 0, 170));
+		this.zoneMapLayer.addTypeColor(Zone.ZoneClass.PUBLIC_SERVICE, new Color(255, 109, 201, 170));
 		
 		// Houses.
 		this.buildings.add(new Building(BuildingType.HOUSE, new Vector2i(31, 20)));
@@ -195,6 +196,15 @@ public class Sim {
 		this.tilemap.addTypeColor(TileType.BUILDING_SUPERMARKET, new Color(125, 193, 129));
 		this.tilemap.addTypeColor(TileType.BUILDING_ROAD, new Color(220, 220, 220));
 		this.tilemap.addTypeColor(TileType.BUILDING_ANTENNA_4G, new Color(63, 63, 63));
+		this.tilemap.addTypeColor(TileType.BUILDING_CASINOS, new Color(255, 122, 159));
+		this.tilemap.addTypeColor(TileType.BUILDING_CINEMAS, new Color(114, 210, 255));
+		this.tilemap.addTypeColor(TileType.BUILDING_FIRE_STATION, new Color(255, 116, 2));
+		this.tilemap.addTypeColor(TileType.BUILDING_MALL, new Color(255, 251, 33));
+		this.tilemap.addTypeColor(TileType.BUILDING_POLICE_STATION, new Color(45, 84, 255));
+		this.tilemap.addTypeColor(TileType.BUILDING_PUB, new Color(185, 255, 173));
+		this.tilemap.addTypeColor(TileType.BUILDING_RESTAURANT, new Color(255, 250, 0));
+		this.tilemap.addTypeColor(TileType.BUILDING_SCHOOL, new Color(255, 219, 137));
+		this.tilemap.addTypeColor(TileType.BUILDING_STADIUM, new Color(192, 192, 192));
 		this.tilemap.setTiles(this.tiles);
 		
 		// The stack of the maps which contains the required buildings of everyone.

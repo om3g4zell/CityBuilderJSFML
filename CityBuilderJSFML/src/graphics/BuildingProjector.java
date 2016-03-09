@@ -32,6 +32,26 @@ public class BuildingProjector {
 				return TileType.BUILDING_ROAD;
 			case ANTENNA_4G:
 				return TileType.BUILDING_ANTENNA_4G;
+			case CASINOS:
+				return TileType.BUILDING_CASINOS;
+			case CINEMA:
+				return TileType.BUILDING_CINEMAS;
+			case FIRE_STATION:
+				return TileType.BUILDING_FIRE_STATION;
+			case HOSPITAL:
+				return TileType.BUILDING_HOSPITAL;
+			case MALL:
+				return TileType.BUILDING_MALL;
+			case POLICE_STATION:
+				return TileType.BUILDING_POLICE_STATION;
+			case PUB:
+				return TileType.BUILDING_PUB;
+			case RESTAURANT:
+				return TileType.BUILDING_RESTAURANT;
+			case SCHOOL:
+				return TileType.BUILDING_SCHOOL;
+			case STADIUM:
+				return TileType.BUILDING_STADIUM;
 			default:
 				return TileType.TERRAIN_GRASS;
 		}
