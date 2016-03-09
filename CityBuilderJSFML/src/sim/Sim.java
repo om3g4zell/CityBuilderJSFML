@@ -199,6 +199,7 @@ public class Sim {
 		this.tilemap.addTypeColor(TileType.BUILDING_CASINOS, new Color(255, 122, 159));
 		this.tilemap.addTypeColor(TileType.BUILDING_CINEMAS, new Color(114, 210, 255));
 		this.tilemap.addTypeColor(TileType.BUILDING_FIRE_STATION, new Color(255, 116, 2));
+		this.tilemap.addTypeColor(TileType.BUILDING_HOSPITAL, new Color(255, 233, 229));
 		this.tilemap.addTypeColor(TileType.BUILDING_MALL, new Color(255, 251, 33));
 		this.tilemap.addTypeColor(TileType.BUILDING_POLICE_STATION, new Color(45, 84, 255));
 		this.tilemap.addTypeColor(TileType.BUILDING_PUB, new Color(185, 255, 173));
