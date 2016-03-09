@@ -532,7 +532,7 @@ public class Building {
 				// Check only in range.
 				if(Distance.squaredEuclidean(new Vector2i(this.hitbox.left + this.hitbox.width / 2, this.hitbox.top + this.hitbox.height / 2), new Vector2i(x, y)) <= squaredRange)
 				{
-					ResourcesStack rStack = new ResourcesStack();
+					ResourcesStack rStack;
 
 					// Generate resources depending on the building type.
 					switch(this.type) {
@@ -625,8 +625,6 @@ public class Building {
 			default:
 				break;
 			}
-			
-			rStack.add(ResourceType.FOOD, 10);
 			
 			resourcesMap.setResources(new Vector2i(house.getHitbox().left, house.getHitbox().top), rStack);
 		}
