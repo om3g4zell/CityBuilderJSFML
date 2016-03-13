@@ -66,7 +66,7 @@ public class Main {
 				ticks++;
 		    }
 		    
-		    simulation.render();
+		    simulation.render(elapsed);
 		    frames++;
 		    skippedFrames = 0;
 		    

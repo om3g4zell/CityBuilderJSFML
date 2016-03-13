@@ -942,13 +942,48 @@ public class Sim {
 		
 		if(this.dayhour == 0)
 			this.daycount++;
+	}
+	
+	/**
+	 * Updates the visual render of the day/night.
+	 * @throws TextureCreationException 
+	 */
+	public void updateDayNightVisual(float simulationTime, float dt) throws TextureCreationException {
+		int goal = 0;
 		
-		if(this.dayhour > 6 && this.dayhour <= 18) {
-			this.lightLayer.setAlpha(255);
+		if(this.dayhour < 9) {
+			goal = 255;
 		}
-		else {
-			this.lightLayer.setAlpha(0);
+		else if(this.dayhour <= 17) {
+			goal = 255;
 		}
+		else if(this.dayhour <= 23) {
+			goal = 0;
+		}
+		
+		float timeRemaining = 1.f - simulationTime;
+		
+		// Due to float computation errors, we have to check the time.
+		if(timeRemaining <= 0.f)
+			return;
+		
+		int actual = this.lightLayer.getAlpha();
+		int delta = goal - actual;
+		float timestep = timeRemaining / dt;
+		
+		if(delta != 0) {
+			int step = (int)(delta / timestep);
+			actual += step;
+			
+			if(delta > 0 && actual > goal)
+				actual = goal;
+			else if(delta < 0 && actual < goal)
+				actual = goal;
+
+			this.lightLayer.setAlpha(actual);
+			this.lightLayer.virtualDraw();
+		}
+
 	}
 	
 	/**
@@ -957,8 +992,9 @@ public class Sim {
 	 */
 	public void update(Time dt) {
 		// Update the simulation timer.
-		if(!this.gameSpeedGui.isInPause())
+		if(!this.gameSpeedGui.isInPause()) {
 				this.simulationSpeedTimer = Time.add(this.simulationSpeedTimer, Time.mul(dt, this.gameSpeedGui.getSpeedCoeff()));
+		}
 		
 		// Take real-time input.
 		handleInput(dt);
@@ -1038,15 +1074,19 @@ public class Sim {
 				Vector2f center = new Vector2f((b.getHitbox().left  + b.getHitbox().width / 2.f) * TILE_SIZE.x, (b.getHitbox().top + b.getHitbox().height / 2.f) * TILE_SIZE.y);
 				this.lightLayer.addLight(center, 1.25f * b.getHitbox().width * TILE_SIZE.x, new Color(255, 255, 255, 250), new Color(255, 255, 255, 50));
 			}
+			
+			// Update day/night.
+			updateDayNight();
+		}
+		
+		// Update visual of day/night.
+		if(!this.gameSpeedGui.isInPause()) {
 			try {
-				this.lightLayer.virtualDraw();
+				updateDayNightVisual(this.simulationSpeedTimer.asSeconds(), dt.asSeconds());
 			}
 			catch(TextureCreationException e) {
 				this.logGui.write("Error: could not create a texture in the light layer.\n", LogGui.ERROR);
 			}
-			
-			// Update day/night.
-			updateDayNight();
 		}
 		
 		// Do the time substraction here.
@@ -1074,7 +1114,7 @@ public class Sim {
 	/**
 	 * Renders all the simulation.
 	 */
-	public void render() {
+	public void render(Time elapsedSinceLastUpdate) {
 		this.window.clear(Color.BLACK);
 		/////////////
 		

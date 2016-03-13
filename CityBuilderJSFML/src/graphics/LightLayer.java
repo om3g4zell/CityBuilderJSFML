@@ -89,6 +89,17 @@ public class LightLayer implements Drawable {
 		
 		return id;
 	}
+
+	/**
+	 * Interpolates the alpha.
+	 * 
+	 * @throws TextureCreationException 
+	 */
+	public void interpolateAlpha(int last, int current, int end) throws TextureCreationException {
+		
+		
+		this.virtualDraw();
+	}
 	
 	/**
 	 * Removes a light.
@@ -98,20 +109,24 @@ public class LightLayer implements Drawable {
 	public void removeLight(int id) {
 		this.lightsVertexArrays.remove(id);
 	}
-	
+
 	/**
-	 * Do a internal drawing to prepare the "real" drawing.
+	 * Do an internal drawing to prepare the "real" drawing.
 	 * 
 	 * @throws TextureCreationException 
 	 */
 	public void virtualDraw() throws TextureCreationException {
 		this.internalTexture.create(this.layerSize.x, this.layerSize.y);
-		this.internalTexture.clear(new Color(32, 32, 32, this.alpha));
+		
+		if(this.alpha > 32)
+			this.internalTexture.clear(new Color(this.alpha, this.alpha, this.alpha));
+		else
+			this.internalTexture.clear(new Color(32, 32, 32));
 		
 		RenderStates states = new RenderStates(BlendMode.ADD);
 
 		for(Map.Entry<Integer, VertexArray> va : this.lightsVertexArrays.entrySet()) {
-			internalTexture.draw(va.getValue(), states);
+			this.internalTexture.draw(va.getValue(), states);
 		}
 	}
 
@@ -127,7 +142,7 @@ public class LightLayer implements Drawable {
 		newStates = new RenderStates(newStates, this.shader);
 		
 		Sprite sprite = new Sprite(this.internalTexture.getTexture());
-		//sprite.setColor(new Color(255, 255, 255, this.alpha));
+		sprite.setColor(new Color(255, 255, 255));
 		
 		target.draw(sprite, newStates);
 	}
@@ -139,5 +154,13 @@ public class LightLayer implements Drawable {
 	 */
 	public void setAlpha(int alpha) {
 		this.alpha = alpha;
+		//System.out.println("alpha: " + this.alpha);
+	}
+	
+	/**
+	 * Returns the rendering alpha.
+	 */
+	public int getAlpha() {
+		return this.alpha;
 	}
 }
