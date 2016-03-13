@@ -89,17 +89,6 @@ public class LightLayer implements Drawable {
 		
 		return id;
 	}
-
-	/**
-	 * Interpolates the alpha.
-	 * 
-	 * @throws TextureCreationException 
-	 */
-	public void interpolateAlpha(int last, int current, int end) throws TextureCreationException {
-		
-		
-		this.virtualDraw();
-	}
 	
 	/**
 	 * Removes a light.
@@ -116,8 +105,6 @@ public class LightLayer implements Drawable {
 	 * @throws TextureCreationException 
 	 */
 	public void virtualDraw() throws TextureCreationException {
-		this.internalTexture.create(this.layerSize.x, this.layerSize.y);
-		
 		if(this.alpha > 32)
 			this.internalTexture.clear(new Color(this.alpha, this.alpha, this.alpha));
 		else
@@ -142,8 +129,6 @@ public class LightLayer implements Drawable {
 		newStates = new RenderStates(newStates, this.shader);
 		
 		Sprite sprite = new Sprite(this.internalTexture.getTexture());
-		sprite.setColor(new Color(255, 255, 255));
-		
 		target.draw(sprite, newStates);
 	}
 	
@@ -154,7 +139,6 @@ public class LightLayer implements Drawable {
 	 */
 	public void setAlpha(int alpha) {
 		this.alpha = alpha;
-		//System.out.println("alpha: " + this.alpha);
 	}
 	
 	/**

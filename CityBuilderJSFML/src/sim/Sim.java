@@ -58,7 +58,7 @@ import world.ZoneMap;
  */
 public class Sim {
 	// Constants.
-	protected static final Vector2i TILEMAP_SIZE = new Vector2i(80, 45);
+	protected static final Vector2i TILEMAP_SIZE = new Vector2i(120, 75);
 	protected static final Vector2f TILE_SIZE = new Vector2f(16.f, 16.f);
 	
 	// Attributes.
@@ -981,7 +981,7 @@ public class Sim {
 				actual = goal;
 
 			this.lightLayer.setAlpha(actual);
-			this.lightLayer.virtualDraw();
+			//this.lightLayer.virtualDraw();
 		}
 
 	}
