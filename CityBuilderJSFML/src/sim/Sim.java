@@ -477,8 +477,6 @@ public class Sim {
 	 * @return true if the hitbox is in allowed zone classes, false otherwise
 	 */
 	public boolean checkZoneCompatibility(int x, int y, IntRect hitbox, List<Zone.ZoneClass> zoneClasses) {
-		boolean validZone = true;
-		
 		for(int rx = x ; rx < Math.min(x + hitbox.width, TILEMAP_SIZE.x) ; rx++) {
 			for(int ry = y ; ry < Math.min(y + hitbox.height, TILEMAP_SIZE.y) ; ry++) {
 				// Get the zone.
@@ -487,30 +485,14 @@ public class Sim {
 				// check if the zone is suitable
 				for(ZoneClass zoneBuilding : zoneClasses) {
 					if(!zone.getType().equals(zoneBuilding)) {
-						validZone = false;
-					}
-					else {
-						validZone = true;
-						break;
+						return false;
 					}
 				}
-				
-				// if the building contain the free zone it's ok
-				if(zoneClasses.contains(ZoneClass.FREE)) {
-					validZone = false;
-				}
-				
-				// if isn't a valid zone break
-				if(!validZone)
-					break;
 			}
-			
-			// if isn't a valid zone break
-			if(!validZone)
-				break;
+
 		}
 		
-		return validZone;
+		return true;
 	}
 	
 	/**
@@ -828,17 +810,21 @@ public class Sim {
 		this.zoneDrawingGui.setNewRoadAdded(false);
 	}
 	
-	/**
-	 * Spawns new houses depending on the attractivity.
+	/*
+	 * TODO
+	 * Nameless debug functions.
 	 */
-	public void spawnNewcomers() {
-		// Check attractivity.
+
+	public boolean _1_() {
 		if(this.cityStats.getAttractivity(Zone.ZoneClass.COMMERCIAL) < 1.f) {
 			this.logGui.write("Attractivity too small.", LogGui.ERROR);
-			return;
+			return true;
 		}
-
-		// Find a new valid zone, searching from the center of the city.
+		
+		return false;
+	}
+	
+	public Vector2i _2_() {
 		Vector2f citycenterf = new Vector2f(0.f, 0.f);
 
 		for(Building b : this.buildings) {
@@ -847,10 +833,11 @@ public class Sim {
 
 		citycenterf = Vector2f.mul(citycenterf, 1.f / this.buildings.size());
 		Vector2i citycenter = new Vector2i((int)citycenterf.x, (int)citycenterf.y);
-
-		// Create a fake building.
-		Building fakehouse = new Building(Building.BuildingType.HOUSE, new Vector2i(0, 0));
 		
+		return citycenter;
+	}
+	
+	public Map<Vector2i, Integer> _3_(Building fakehouse, Vector2i citycenter) {
 		Map<Vector2i, Integer> candidatesPositionsWithValidZone = new HashMap<Vector2i, Integer>();
 		
 		// Look for valid zones.
@@ -871,11 +858,15 @@ public class Sim {
 				}
 
 				// Computes the distance to the center of the city.
-				int distance = (int)(Distance.euclidean(citycenter, new Vector2i(x, y)));
+				int distance = (int)(Distance.euclidean(citycenter.x, citycenter.y, x, y));
 				candidatesPositionsWithValidZone.put(new Vector2i(x, y), distance);
 			}
 		}
 		
+		return candidatesPositionsWithValidZone;
+	}
+	
+	public Map<Vector2i, Integer> _4_(Building fakehouse, Map<Vector2i, Integer> candidatesPositionsWithValidZone) {
 		Map<Vector2i, Integer> candidatesPositions = new HashMap<Vector2i, Integer>();
 		
 		// Check for AT LEAST roads.
@@ -893,8 +884,11 @@ public class Sim {
 				candidatesPositions.put(new Vector2i(x, y), distance);
 			}
 		}
-		
-		// Find the closest position.
+
+		return candidatesPositions;
+	}
+	
+	public Map.Entry<Vector2i, Integer> _5_(Map<Vector2i, Integer> candidatesPositions) {
 		Map.Entry<Vector2i, Integer> closestPositionEntry = null;
 		for(Map.Entry<Vector2i, Integer> entry : candidatesPositions.entrySet()) {
 			if(closestPositionEntry == null || entry.getValue() < closestPositionEntry.getValue()) {
@@ -902,6 +896,10 @@ public class Sim {
 			}
 		}
 		
+		return closestPositionEntry;
+	}
+	
+	public void _6_(Map.Entry<Vector2i, Integer> closestPositionEntry) {
 		if(closestPositionEntry != null) {
 			Vector2i bestPosition = closestPositionEntry.getKey();
 			
@@ -911,6 +909,31 @@ public class Sim {
 			this.buildings.add(house);
 			this.logGui.write("A new house has come, implemented at position {" + bestPosition.x + ", " + bestPosition.y + "}.", LogGui.SUCCESS);
 		}
+	}
+	
+	/**
+	 * TODO
+	 * Spawns new houses depending on the attractivity.
+	 */
+	public void spawnNewcomers() {
+		// Check attractivity.
+		if(_1_())
+			return;
+
+		// Find a new valid zone, searching from the center of the city.
+		Vector2i citycenter = _2_();
+
+		// Create a fake building.
+		Building fakehouse = new Building(Building.BuildingType.HOUSE, new Vector2i(0, 0));
+		
+		Map<Vector2i, Integer> candidatesPositionsWithValidZone = _3_(fakehouse, citycenter);
+		
+		Map<Vector2i, Integer> candidatesPositions = _4_(fakehouse, candidatesPositionsWithValidZone);
+		
+		// Find the closest position.
+		Map.Entry<Vector2i, Integer> closestPositionEntry = _5_(candidatesPositions);
+		
+		_6_(closestPositionEntry);
 	}
 
 	/**
@@ -981,7 +1004,7 @@ public class Sim {
 				actual = goal;
 
 			this.lightLayer.setAlpha(actual);
-			//this.lightLayer.virtualDraw();
+			this.lightLayer.virtualDraw();
 		}
 
 	}
@@ -1081,12 +1104,13 @@ public class Sim {
 		
 		// Update visual of day/night.
 		if(!this.gameSpeedGui.isInPause()) {
-			try {
+			/* TODO */
+			/*try {
 				updateDayNightVisual(this.simulationSpeedTimer.asSeconds(), dt.asSeconds());
 			}
 			catch(TextureCreationException e) {
 				this.logGui.write("Error: could not create a texture in the light layer.\n", LogGui.ERROR);
-			}
+			}*/
 		}
 		
 		// Do the time substraction here.
@@ -1122,8 +1146,10 @@ public class Sim {
 		
 		if(isCheckBoxChecked(this.zoneDrawingCheckboxID))
 			this.window.draw(this.zoneMapLayer);
-		else
+		/* TODO */
+		/*else
 			this.window.draw(this.lightLayer);
+			*/
 
 		this.window.draw(this.tileSelector);
 

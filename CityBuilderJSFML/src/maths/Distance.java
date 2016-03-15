@@ -37,6 +37,10 @@ public class Distance {
 		return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 	}
 	
+	public static double euclidean(int xa, int ya, int xb, int yb) {
+		return Math.sqrt(Math.pow(xa - xb, 2) + Math.pow(ya - yb, 2));
+	}
+	
 	/**
 	 * Returns the euclidean distance between the two points.
 	 * @param a : the first point
