@@ -1242,6 +1242,7 @@ public class Sim {
 		else if(isOnlyChecked(this.zoneDrawingCheckboxID)) {
 			getCheckBox(this.zoneDrawingCheckboxID).handleEvent(event);
 			this.zoneDrawingGui.handleEvent(event);
+			this.gameSpeedGui.setPaused(true);
 		}
 		else if(isOnlyChecked(this.logGuiCheckboxID)) {
 			getCheckBox(this.logGuiCheckboxID).handleEvent(event);
