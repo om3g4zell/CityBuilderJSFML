@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.jsfml.graphics.Color;
+import org.jsfml.graphics.FloatRect;
 import org.jsfml.graphics.IntRect;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.ShaderSourceException;
@@ -25,7 +26,7 @@ import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
 
 import graphics.Tile.TileType;
-import graphics.BuildingProjector;
+import graphics.BuildingRenderer;
 import graphics.FontManager;
 import graphics.LightLayer;
 import graphics.TextureManager;
@@ -72,6 +73,7 @@ public class Sim {
 	protected TextureManager textureManager;
 	protected FontManager fontManager;
 	protected StatsGui statsGui;
+	protected BuildingRenderer buildingRenderer;
 	protected TileSelector tileSelector;
 	protected TileInfoGui tileInfoGui;
 	protected boolean displayTileInfo;
@@ -131,6 +133,9 @@ public class Sim {
 		this.statsGui = new StatsGui(textureManager, fontManager);
 		this.tileSelector = new TileSelector(this.window, this.textureManager, TILEMAP_SIZE, TILE_SIZE);
 		
+		// Instanciate the building renderer.
+		this.buildingRenderer = new BuildingRenderer(TILE_SIZE, this.textureManager);
+		
 		// Create the resources map.
 		this.resourcesMap = new ResourcesMap(TILEMAP_SIZE);
 		
@@ -189,24 +194,27 @@ public class Sim {
 		// Inits the tilemap.
 		this.tilemap = new TileMap(TILEMAP_SIZE, TILE_SIZE);
 		this.tilemap.addTypeColor(TileType.TERRAIN_GRASS, new Color(0, 70, 0));
-		this.tilemap.addTypeColor(TileType.BUILDING_HOUSE, new Color(70, 0, 0));
-		this.tilemap.addTypeColor(TileType.BUILDING_ROAD, new Color(190, 190, 190));
-		this.tilemap.addTypeColor(TileType.BUILDING_GENERATOR, new Color(227, 168, 87));
-		this.tilemap.addTypeColor(TileType.BUILDING_HYDROLIC_STATION, new Color(51, 153, 255));
-		this.tilemap.addTypeColor(TileType.BUILDING_SUPERMARKET, new Color(125, 193, 129));
-		this.tilemap.addTypeColor(TileType.BUILDING_ROAD, new Color(220, 220, 220));
-		this.tilemap.addTypeColor(TileType.BUILDING_ANTENNA_4G, new Color(63, 63, 63));
-		this.tilemap.addTypeColor(TileType.BUILDING_CASINOS, new Color(255, 122, 159));
-		this.tilemap.addTypeColor(TileType.BUILDING_CINEMAS, new Color(114, 210, 255));
-		this.tilemap.addTypeColor(TileType.BUILDING_FIRE_STATION, new Color(255, 116, 2));
-		this.tilemap.addTypeColor(TileType.BUILDING_HOSPITAL, new Color(255, 233, 229));
-		this.tilemap.addTypeColor(TileType.BUILDING_MALL, new Color(255, 251, 33));
-		this.tilemap.addTypeColor(TileType.BUILDING_POLICE_STATION, new Color(45, 84, 255));
-		this.tilemap.addTypeColor(TileType.BUILDING_PUB, new Color(185, 255, 173));
-		this.tilemap.addTypeColor(TileType.BUILDING_RESTAURANT, new Color(255, 250, 0));
-		this.tilemap.addTypeColor(TileType.BUILDING_SCHOOL, new Color(255, 219, 137));
-		this.tilemap.addTypeColor(TileType.BUILDING_STADIUM, new Color(192, 192, 192));
 		this.tilemap.setTiles(this.tiles);
+		
+		// Inits the building renderer.
+		this.buildingRenderer.setColorPlaceholder(BuildingType.HOUSE, new Color(70, 0, 0));
+		this.buildingRenderer.setColorPlaceholder(BuildingType.ROAD, new Color(190, 190, 190));
+		this.buildingRenderer.setColorPlaceholder(BuildingType.GENERATOR, new Color(227, 168, 87));
+		this.buildingRenderer.setColorPlaceholder(BuildingType.HYDROLIC_STATION, new Color(51, 153, 255));
+		this.buildingRenderer.setColorPlaceholder(BuildingType.GROCERY_STORE, new Color(125, 193, 129));
+		this.buildingRenderer.setColorPlaceholder(BuildingType.ANTENNA_4G, new Color(63, 63, 63));
+		this.buildingRenderer.setColorPlaceholder(BuildingType.CASINOS, new Color(255, 122, 159));
+		this.buildingRenderer.setColorPlaceholder(BuildingType.CINEMA, new Color(114, 210, 255));
+		this.buildingRenderer.setColorPlaceholder(BuildingType.FIRE_STATION, new Color(255, 116, 2));
+		this.buildingRenderer.setColorPlaceholder(BuildingType.HOSPITAL, new Color(255, 233, 229));
+		this.buildingRenderer.setColorPlaceholder(BuildingType.MALL, new Color(255, 251, 33));
+		this.buildingRenderer.setColorPlaceholder(BuildingType.POLICE_STATION, new Color(45, 84, 255));
+		this.buildingRenderer.setColorPlaceholder(BuildingType.PUB, new Color(185, 255, 173));
+		this.buildingRenderer.setColorPlaceholder(BuildingType.RESTAURANT, new Color(255, 250, 0));
+		this.buildingRenderer.setColorPlaceholder(BuildingType.SCHOOL, new Color(255, 219, 137));
+		this.buildingRenderer.setColorPlaceholder(BuildingType.STADIUM, new Color(192, 192, 192));
+		
+		this.buildingRenderer.setTextureRect(BuildingType.GROCERY_STORE, new FloatRect(0.f, 0.f, 64.f, 32.f));
 		
 		// The stack of the maps which contains the required buildings of everyone.
 		this.buildingStackRequired = new Stack<Map<Integer, Building.BuildingType>>();
@@ -226,9 +234,6 @@ public class Sim {
 		this.staticView.setCenter(getWindow().getView().getCenter());
 		
 		this.gameView = (View)getWindow().getView();
-		
-		// Project buildings on the tilemap at least one time.
-		BuildingProjector.project(this.buildings, this.tilemap);
 		
 		// Light layer.
 		try {
@@ -811,7 +816,6 @@ public class Sim {
 	}
 	
 	/**
-	 * TODO
 	 * Spawns new houses depending on the attractivity.
 	 */
 	public void spawnNewcomers() {
@@ -1016,7 +1020,7 @@ public class Sim {
 			
 			for(Building house : houses) {
 				if(house.checkLevelUp(this.resourcesMap)) {
-					this.logGui.write("The house " + house.getId() + " level up to level " + house.getLevel(), LogGui.SUCCESS);
+					this.logGui.write("The house " + house.getId() + " leveled up to level " + house.getLevel(), LogGui.SUCCESS);
 				}
 			}
 
@@ -1056,7 +1060,8 @@ public class Sim {
 			}
 			
 			// Project buildings on the tilemap.
-			BuildingProjector.project(this.buildings, this.tilemap);
+			// TODO
+//			BuildingProjector.project(this.buildings, this.tilemap);
 			
 			// Update the city stats.
 			this.cityStats.update(this.buildings);
@@ -1077,13 +1082,12 @@ public class Sim {
 		
 		// Update visual of day/night.
 		if(!this.gameSpeedGui.isInPause()) {
-			/* TODO */
-			/*try {
+			try {
 				updateDayNightVisual(this.simulationSpeedTimer.asSeconds(), dt.asSeconds());
 			}
 			catch(TextureCreationException e) {
 				this.logGui.write("Error: could not create a texture in the light layer.\n", LogGui.ERROR);
-			}*/
+			}
 		}
 		
 		// Do the time substraction here.
@@ -1116,13 +1120,13 @@ public class Sim {
 		/////////////
 		
 		this.window.draw(this.tilemap);
+		this.buildingRenderer.setBuildingList(this.buildings);
+		this.window.draw(this.buildingRenderer);
 		
 		if(isCheckBoxChecked(this.zoneDrawingCheckboxID))
 			this.window.draw(this.zoneMapLayer);
-		/* TODO */
-		/*else
+		else
 			this.window.draw(this.lightLayer);
-			*/
 
 		this.window.draw(this.tileSelector);
 
@@ -1221,8 +1225,6 @@ public class Sim {
 				}
 			}
 		}
-
-		BuildingProjector.project(this.buildings, this.tilemap);
 	}
 	
 	/**

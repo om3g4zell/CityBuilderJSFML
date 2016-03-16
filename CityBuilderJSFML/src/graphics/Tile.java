@@ -11,7 +11,7 @@ public class Tile {
 	 */
 	public static enum TileType {
 		TERRAIN_GRASS,
-		BUILDING_HOUSE,
+/*		BUILDING_HOUSE,
 		BUILDING_SUPERMARKET,
 		BUILDING_ROAD,
 		BUILDING_GENERATOR,
@@ -26,7 +26,7 @@ public class Tile {
 		BUILDING_CASINOS,
 		BUILDING_MALL,
 		BUILDING_RESTAURANT,
-		BUILDING_PUB,
+		BUILDING_PUB,*/
 	}
 
 	/** Track the last id. */
