@@ -82,6 +82,7 @@ public class TileInfoGui implements Drawable {
 
 		if(this.building != null) {
 			this.infoString += "BUILDING_NAME : " + this.building.getType().toString() + "[" + this.building.getId() + "] \n";
+			this.infoString += "Level : " + this.building.getLevel() + "\n";
 			
 			// Get the resources available for the building.
 			ResourcesStack availableResources = new ResourcesStack();

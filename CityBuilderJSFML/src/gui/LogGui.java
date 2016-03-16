@@ -106,8 +106,12 @@ public class LogGui implements Drawable{
 		text.setString(str);
 		this.logText.add(text);
 		while(text.getGlobalBounds().top + text.getGlobalBounds().height > Main.HEIGHT) {
-			this.logText.remove(this.logText.get(0));
-			up(this.logText.get(0).getPosition().y - 100, this.logText); 
+			if(this.logText.size()> 0)
+				this.logText.remove(this.logText.get(0));
+			if(this.logText.size()> 0)
+				up(this.logText.get(0).getPosition().y - 100, this.logText); 
+			else 
+				break;
 		}
 			
 	}

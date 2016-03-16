@@ -1013,6 +1013,12 @@ public class Sim {
 				
 				b.generateResources(this.resourcesMap, this.buildings);
 			}
+			
+			for(Building house : houses) {
+				if(house.checkLevelUp(this.resourcesMap)) {
+					this.logGui.write("The house " + house.getId() + " level up to level " + house.getLevel(), LogGui.SUCCESS);
+				}
+			}
 
 			// Clone the resource map.
 			this.cachedResourceMap = this.resourcesMap.cloneResourcesMap();
