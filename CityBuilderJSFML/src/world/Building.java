@@ -162,6 +162,7 @@ public class Building {
 	/** Non-static. **/
 	// Attributes
 	protected int id;
+	protected int level = 1;
 	protected List<Need> needs;
 	protected int range;
 	protected IntRect hitbox;
@@ -228,10 +229,6 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.FOOD, 40, 0.9f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
-				this.needs.add(new Need(Resource.ResourceType.SECURITY, 100, 1.f));
-				this.needs.add(new Need(Resource.ResourceType.MEDICAL_CARE, 1, 1.f));
-				this.needs.add(new Need(Resource.ResourceType.FIRE_PROTECTION, 1, 1.f));
-				this.needs.add(new Need(Resource.ResourceType.SPORT, 1, 1.f));
 				
 				for(int i = 0; i < 4; i++) {
 					this.inhabitants.add(new Citizen(this.id));
@@ -415,6 +412,46 @@ public class Building {
 		}
 	}
 	
+	/**
+	 * Level up a house and add needs
+	 */
+	public boolean levelUp() {
+		if(this.level >+4)
+			return false;
+		
+		this.level++;
+		
+		switch(this.level) {
+		case 2:
+			this.needs.add(new Need(Resource.ResourceType.SECURITY, 100, 1.f));
+			this.needs.add(new Need(Resource.ResourceType.MEDICAL_CARE, 100, 1.f));
+			this.needs.add(new Need(Resource.ResourceType.FIRE_PROTECTION, 100, 1.f));
+			break;
+		case 3:
+			this.needs.add(new Need(Resource.ResourceType.SPORT, 25, 1.f));
+			this.needs.add(new Need(ResourceType.HOBBIES, 2, 1.f));
+			break;
+		case 4:
+			this.needs.add(new Need(Resource.ResourceType.EDUCATION, 25, 1.f));
+			this.needs.add(new Need(Resource.ResourceType.NETWORK_4G, 25, 1.f));
+			break;
+		case 5:
+			this.needs.add(new Need(Resource.ResourceType.BIG_FURNITURE, 50, 1.f));
+			this.needs.add(new Need(Resource.ResourceType.ALCOHOL, 2, 1.f));
+			this.needs.add(new Need(Resource.ResourceType.LUXURY_FOOD, 10, 1.f));
+			break;
+		}
+		return true;
+		
+	}
+	
+	/**
+	 * Returns the level
+	 * @return the level
+	 */
+	public int getLevel() {
+		return this.level;
+	}
 	/**
 	 * Returns the id.
 	 * @return the id
@@ -782,6 +819,36 @@ public class Building {
 					return;
 			}
 		}
+	}
+	
+	/**
+	 * Check for level up a house;
+	 * @param resources : the resources map
+	 */
+	public boolean checkLevelUp(ResourcesMap resources) {
+		int rng = (int)(Math.random()*1000);
+		boolean maxSatisfaction = true;
+		
+		ResourcesStack rstack = new ResourcesStack();
+		
+		for(int x = this.hitbox.left ; x < this.hitbox.left + this.hitbox.width ; ++x) {
+			for(int y = this.hitbox.top ; y < this.hitbox.top + this.hitbox.height ; ++y) {
+				rstack.add(resources.getResources(new Vector2i(x, y)));
+			}
+		}
+		for(Need need : this.needs) {
+			if(need.amount*need.fillFactor > rstack.get(need.type)) {
+				maxSatisfaction = false;
+				break;
+			}
+		}
+		if(maxSatisfaction || rng == 666) {
+			if(this.levelUp())
+				return true;
+			else 
+				return false;
+		}
+		return false;
 	}
 	
 	/**
