@@ -810,21 +810,18 @@ public class Sim {
 		this.zoneDrawingGui.setNewRoadAdded(false);
 	}
 	
-	/*
+	/**
 	 * TODO
-	 * Nameless debug functions.
+	 * Spawns new houses depending on the attractivity.
 	 */
-
-	public boolean _1_() {
+	public void spawnNewcomers() {
+		// Check attractivity.
 		if(this.cityStats.getAttractivity(Zone.ZoneClass.COMMERCIAL) < 1.f) {
 			this.logGui.write("Attractivity too small.", LogGui.ERROR);
-			return true;
+			return;
 		}
-		
-		return false;
-	}
-	
-	public Vector2i _2_() {
+
+		// Find a new valid zone, searching from the center of the city.
 		Vector2f citycenterf = new Vector2f(0.f, 0.f);
 
 		for(Building b : this.buildings) {
@@ -833,107 +830,77 @@ public class Sim {
 
 		citycenterf = Vector2f.mul(citycenterf, 1.f / this.buildings.size());
 		Vector2i citycenter = new Vector2i((int)citycenterf.x, (int)citycenterf.y);
-		
-		return citycenter;
-	}
-	
-	public Map<Vector2i, Integer> _3_(Building fakehouse, Vector2i citycenter) {
-		Map<Vector2i, Integer> candidatesPositionsWithValidZone = new HashMap<Vector2i, Integer>();
-		
-		// Look for valid zones.
-		for(int x = 0 ; x < resourcesMap.getSize().x ; ++x) {
-			for(int y = 0 ; y < resourcesMap.getSize().y ; ++y) {
-				// Check collision with other buildings.
-				IntRect candidateHitbox = new IntRect(x, y, fakehouse.getHitbox().width, fakehouse.getHitbox().height);
-
-				if(collideWithOtherBuildings(candidateHitbox)) {
-					// This position is not suitable.
-					continue;
-				}
-
-				// Check zone compatibility.
-				if(!checkZoneCompatibility(x, y, fakehouse.getHitbox(), fakehouse.getZoneClasses())) {
-					// This zone is not suitable
-					continue;
-				}
-
-				// Computes the distance to the center of the city.
-				int distance = (int)(Distance.euclidean(citycenter.x, citycenter.y, x, y));
-				candidatesPositionsWithValidZone.put(new Vector2i(x, y), distance);
-			}
-		}
-		
-		return candidatesPositionsWithValidZone;
-	}
-	
-	public Map<Vector2i, Integer> _4_(Building fakehouse, Map<Vector2i, Integer> candidatesPositionsWithValidZone) {
-		Map<Vector2i, Integer> candidatesPositions = new HashMap<Vector2i, Integer>();
-		
-		// Check for AT LEAST roads.
-		for(Map.Entry<Vector2i, Integer> entry : candidatesPositionsWithValidZone.entrySet()) {
-			// Decompose the map's entry.
-			int x = entry.getKey().x;
-			int y = entry.getKey().y;
-			int distance = entry.getValue();
-			
-			// Get the resources available for the building.
-			ResourcesStack rstack = getResourcesUnderHitbox(x, y, fakehouse.getHitbox());
-
-			// Add to the candidates positions if roads are available.
-			if(rstack.get(Resource.ResourceType.ROAD_PROXIMITY) > 0.f) {
-				candidatesPositions.put(new Vector2i(x, y), distance);
-			}
-		}
-
-		return candidatesPositions;
-	}
-	
-	public Map.Entry<Vector2i, Integer> _5_(Map<Vector2i, Integer> candidatesPositions) {
-		Map.Entry<Vector2i, Integer> closestPositionEntry = null;
-		for(Map.Entry<Vector2i, Integer> entry : candidatesPositions.entrySet()) {
-			if(closestPositionEntry == null || entry.getValue() < closestPositionEntry.getValue()) {
-				closestPositionEntry = entry;
-			}
-		}
-		
-		return closestPositionEntry;
-	}
-	
-	public void _6_(Map.Entry<Vector2i, Integer> closestPositionEntry) {
-		if(closestPositionEntry != null) {
-			Vector2i bestPosition = closestPositionEntry.getKey();
-			
-			Building house = new Building(Building.BuildingType.HOUSE, bestPosition);
-	
-			// Spawn the building.
-			this.buildings.add(house);
-			this.logGui.write("A new house has come, implemented at position {" + bestPosition.x + ", " + bestPosition.y + "}.", LogGui.SUCCESS);
-		}
-	}
-	
-	/**
-	 * TODO
-	 * Spawns new houses depending on the attractivity.
-	 */
-	public void spawnNewcomers() {
-		// Check attractivity.
-		if(_1_())
-			return;
-
-		// Find a new valid zone, searching from the center of the city.
-		Vector2i citycenter = _2_();
 
 		// Create a fake building.
 		Building fakehouse = new Building(Building.BuildingType.HOUSE, new Vector2i(0, 0));
+
+		// List of positions already checked.
+		List<Vector2i> exploredPositions = new ArrayList<Vector2i>();
+
+		// Closest position found.
+		Vector2i closestPosition = null;
+		double closestPositionDistance = Double.MAX_VALUE;
 		
-		Map<Vector2i, Integer> candidatesPositionsWithValidZone = _3_(fakehouse, citycenter);
+		//Look for roads.
+		for(Building b : this.buildings) {
+			if(b.getType() != Building.BuildingType.ROAD)
+				continue;
+
+			// Look for valid zones around the road.
+			for(int x = Math.max(0, b.getHitbox().left - 4) ; x < Math.min(resourcesMap.getSize().x, b.getHitbox().left + 4) ; ++x) {
+				for(int y = Math.max(0, b.getHitbox().top - 4) ; y < Math.min(resourcesMap.getSize().y, b.getHitbox().top + 4) ; ++y) {
+					// Check if the position has already been tested.
+					boolean alreadyExplored = false;
+
+					for(Vector2i exploredPosition : exploredPositions) {
+						if(exploredPosition.x == x && exploredPosition.y == y)
+							alreadyExplored = true;
+					}
+
+					if(alreadyExplored)
+						continue;
+					
+					// Computes the distance to the center of the city.
+					double distance = Distance.euclidean(citycenter.x, citycenter.y, x, y);
+
+					// Check only positions that are closer to the one found.
+					if(distance >= closestPositionDistance) {
+						continue;
+					}
+					
+					// Check collision with other buildings.
+					IntRect candidateHitbox = new IntRect(x, y, fakehouse.getHitbox().width, fakehouse.getHitbox().height);
+
+					if(collideWithOtherBuildings(candidateHitbox)) {
+						// This position is not suitable.
+						continue;
+					}
+
+					// Check zone compatibility.
+					if(!checkZoneCompatibility(x, y, fakehouse.getHitbox(), fakehouse.getZoneClasses())) {
+						// This zone is not suitable
+						continue;
+					}
+					
+					// Get the resources available for the building.
+					ResourcesStack rstack = getResourcesUnderHitbox(x, y, fakehouse.getHitbox());
+
+					// Keep this position if roads are available.
+					if(rstack.get(Resource.ResourceType.ROAD_PROXIMITY) > 0.f) {
+						closestPositionDistance = distance;
+						closestPosition = new Vector2i(x, y);
+					}
+				}
+			}
+		}
 		
-		Map<Vector2i, Integer> candidatesPositions = _4_(fakehouse, candidatesPositionsWithValidZone);
-		
-		// Find the closest position.
-		Map.Entry<Vector2i, Integer> closestPositionEntry = _5_(candidatesPositions);
-		
-		_6_(closestPositionEntry);
+		if(closestPosition != null) {
+			Building house = new Building(Building.BuildingType.HOUSE, closestPosition);
+	
+			// Spawn the building.
+			this.buildings.add(house);
+			this.logGui.write("A new house has come, implemented at position {" + closestPosition.x + ", " + closestPosition.y + "}.", LogGui.SUCCESS);
+		}
 	}
 
 	/**
