@@ -646,7 +646,8 @@ public class Sim {
 		Building requiredBuilding = new Building(mostRequiredBuildingTypeEntry.getKey(), new Vector2i(0, 0));
 		
 		// We may need to expand the radius.
-		radius = Math.max(radius, requiredBuilding.getRange());
+		if(requiredBuilding.getRange() > radius)
+			radius = requiredBuilding.getRange();
 		
 		// We use squared radius and squared euclidean distance for performance.
 		double squaredRadius = Math.pow(radius, 2);
@@ -1058,10 +1059,6 @@ public class Sim {
 				this.logGui.write("" + this.buildingStackRequired.size() + " building(s) waiting to be built.", LogGui.NORMAL);
 				this.logGui.write("Stack dump : " + this.buildingStackRequired.toString(), LogGui.NORMAL);
 			}
-			
-			// Project buildings on the tilemap.
-			// TODO
-//			BuildingProjector.project(this.buildings, this.tilemap);
 			
 			// Update the city stats.
 			this.cityStats.update(this.buildings);
