@@ -138,7 +138,7 @@ public class Building {
 				suitableZones.add(Zone.ZoneClass.PUBLIC_SERVICE);
 				break;
 			case PUB:
-				suitableZones.add(Zone.ZoneClass.CULTURAL);
+				suitableZones.add(Zone.ZoneClass.COMMERCIAL);
 				break;
 			case RESTAURANT:
 				suitableZones.add(Zone.ZoneClass.COMMERCIAL);
@@ -826,7 +826,7 @@ public class Building {
 	 * @param resources : the resources map
 	 */
 	public boolean checkLevelUp(ResourcesMap resources) {
-		int rng = (int)(Math.random()*1000);
+		int random = (int)(Math.random()*1000);
 		boolean maxSatisfaction = true;
 		
 		ResourcesStack rstack = new ResourcesStack();
@@ -842,7 +842,7 @@ public class Building {
 				break;
 			}
 		}
-		if(maxSatisfaction || rng == 666) {
+		if(maxSatisfaction || random == 666) {
 			if(this.levelUp())
 				return true;
 			else 
