@@ -37,6 +37,8 @@ public class Main {
 		Time frameTime = Time.ZERO;
 		int skippedFrames = 0;
 		
+		boolean hasFocus = true;
+		
 		while(simulation.getWindow().isOpen()) {
 			frameTime = clock.restart();
 		    elapsed = Time.add(frameTime, elapsed);
@@ -48,16 +50,25 @@ public class Main {
 
 		    	// Handle events
 			    for(Event event : simulation.getWindow().pollEvents()) {
-			        if(event.type == Event.Type.CLOSED)
+			        if(event.type == Event.Type.CLOSED) {
 			        	simulation.getWindow().close();
+			        }
+			        else if(event.type == Event.Type.GAINED_FOCUS) {
+			        	hasFocus = true;
+			        }
+			        else if(event.type == Event.Type.LOST_FOCUS) {
+			        	hasFocus = false;
+			        }
 			        else if(event.type == Event.Type.KEY_PRESSED && event.asKeyEvent().key == Keyboard.Key.ESCAPE) {
 			        	simulation.getWindow().close();
-			        	simulation = new Sim(WIDTH, HEIGHT, TITLE);
-			        	simulation.init();
 			        }
-			        else
+			        else if(hasFocus) {
 			        	simulation.handleEvent(event);
+			        }
 			    }
+			    
+			    if(!hasFocus)
+			    	continue;
 			    
 			    // Update
 		    	simulation.update(TIME_PER_TICK);
@@ -81,8 +92,5 @@ public class Main {
 				frames = 0;
 			}
 		}
-		
-		//simulation.saveLog();
-		
 	}
 }

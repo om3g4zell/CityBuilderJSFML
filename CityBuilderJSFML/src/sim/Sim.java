@@ -1171,10 +1171,37 @@ public class Sim {
 	 * @param dt : elapsed time since last tick
 	 */
 	public void handleInput(Time dt) {
-		// View movement.
+		//final int borderSize = 20;
+		
 		View view = (View)getWindow().getView();
+
+		// View movement.
 		float viewMovementX = 0, viewMovementY = 0;
 		
+		// View mouvement via mouse.
+		/*
+		 * Vector2i mousePosition = Mouse.getPosition(getWindow());
+		
+		if(mousePosition.x <= borderSize) {
+			Mouse.setPosition(new Vector2i(borderSize, mousePosition.y), getWindow());
+			viewMovementX -= 400.f;
+		}
+		else if(mousePosition.x >= getWindow().getSize().x - borderSize) {
+			Mouse.setPosition(new Vector2i(getWindow().getSize().x - (borderSize), mousePosition.y), getWindow());
+			viewMovementX += 400.f;
+		}
+		
+		if(mousePosition.y <= borderSize) {
+			Mouse.setPosition(new Vector2i(mousePosition.x, borderSize), getWindow());
+			viewMovementY -= 400.f;
+		}
+		else if(mousePosition.y >= getWindow().getSize().y - borderSize) {
+			Mouse.setPosition(new Vector2i(mousePosition.x, getWindow().getSize().y - (borderSize)), getWindow());
+			viewMovementY += 400.f;
+		}
+		*/
+		
+		// View movement via keyboard.
 		if(Keyboard.isKeyPressed(Keyboard.Key.LEFT)) {
 			viewMovementX -= 400.f;
 		}
@@ -1189,6 +1216,7 @@ public class Sim {
 			viewMovementY += 400.f;
 		}
 		
+		// Move the view.
 		Vector2f viewMovement = new Vector2f(viewMovementX, viewMovementY);
 		viewMovement = Vector2f.mul(viewMovement, dt.asSeconds());
 		view.move(viewMovement);
