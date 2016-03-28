@@ -1265,9 +1265,10 @@ public class Sim {
 			getCheckBox(this.cityGraphStatsCheckboxID).handleEvent(event);
 		}
 		else if(isOnlyChecked(this.zoneDrawingCheckboxID)) {
-			getCheckBox(this.zoneDrawingCheckboxID).handleEvent(event);
+			CheckBox checkbox = getCheckBox(this.zoneDrawingCheckboxID);
+			checkbox.handleEvent(event);
 			this.zoneDrawingGui.handleEvent(event);
-			this.gameSpeedGui.setPaused(true);
+			this.gameSpeedGui.setPaused(checkbox.isChecked());
 		}
 		else if(isOnlyChecked(this.logGuiCheckboxID)) {
 			getCheckBox(this.logGuiCheckboxID).handleEvent(event);
