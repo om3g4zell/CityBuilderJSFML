@@ -1097,6 +1097,9 @@ public class Sim {
 		
 		// Update GUI.
 		if(isCheckBoxChecked(this.zoneDrawingCheckboxID)) {
+			// Force pause during zone drawing.
+			this.gameSpeedGui.setPaused(true);
+			
 			this.zoneDrawingGui.update(dt, this.window, this.zoneMap, this.tileSelector);
 			this.zoneMapLayer.update();
 		}
@@ -1267,6 +1270,7 @@ public class Sim {
 		else if(isOnlyChecked(this.zoneDrawingCheckboxID)) {
 			CheckBox checkbox = getCheckBox(this.zoneDrawingCheckboxID);
 			checkbox.handleEvent(event);
+			
 			this.zoneDrawingGui.handleEvent(event);
 			this.gameSpeedGui.setPaused(checkbox.isChecked());
 		}
@@ -1278,7 +1282,9 @@ public class Sim {
 				cb.handleEvent(event);
 			}
 		}
+
 		handleBuildingRemoval(event);
+
 		this.logGui.handleEvent(this.window.mapPixelToCoords(Mouse.getPosition(this.window)), event);
 		this.gameSpeedGui.handleEvent(event);
 	}
