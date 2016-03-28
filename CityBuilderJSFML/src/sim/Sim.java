@@ -1288,4 +1288,19 @@ public class Sim {
 		this.logGui.handleEvent(this.window.mapPixelToCoords(Mouse.getPosition(this.window)), event);
 		this.gameSpeedGui.handleEvent(event);
 	}
+	
+	/**
+	 * Sets the game on play when the game gains focus.
+	 */
+	public void onGainFocus() {
+		this.gameSpeedGui.setPaused(false);
+	}
+	
+	/**
+	 * Sets the game on pause when the game loose focus.
+	 */
+	public void onLostFocus() {
+		this.gameSpeedGui.setPaused(true);
+	}
 }
+

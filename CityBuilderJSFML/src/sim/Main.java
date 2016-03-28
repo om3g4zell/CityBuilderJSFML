@@ -54,10 +54,10 @@ public class Main {
 			        	simulation.getWindow().close();
 			        }
 			        else if(event.type == Event.Type.GAINED_FOCUS) {
-			        	hasFocus = true;
+			        	simulation.onGainFocus();
 			        }
 			        else if(event.type == Event.Type.LOST_FOCUS) {
-			        	hasFocus = false;
+			        	simulation.onLostFocus();
 			        }
 			        else if(event.type == Event.Type.KEY_PRESSED && event.asKeyEvent().key == Keyboard.Key.ESCAPE) {
 			        	simulation.getWindow().close();
@@ -66,9 +66,6 @@ public class Main {
 			        	simulation.handleEvent(event);
 			        }
 			    }
-			    
-			    if(!hasFocus)
-			    	continue;
 			    
 			    // Update
 		    	simulation.update(TIME_PER_TICK);
