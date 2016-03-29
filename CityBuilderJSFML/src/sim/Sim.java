@@ -605,6 +605,9 @@ public class Sim {
 		for(Map.Entry<Integer, Building.BuildingType> entry : buildingMap.entrySet()) {
 			Building b = getBuilding(entry.getKey(), buildingList);
 			
+			if(b == null)
+				continue;
+			
 			if(b.getType() == buildingType)
 				buildingsOfGivenType.add(b);
 		}
