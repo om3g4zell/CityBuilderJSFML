@@ -91,6 +91,7 @@ public class Sim {
 	protected int zoneDrawingCheckboxID;
 	protected int cityGraphStatsCheckboxID;
 	protected int logGuiCheckboxID;
+	protected int blueprintCheckboxID;
 	protected LightLayer lightLayer;
 	protected int dayhour;
 	protected int daycount;
@@ -158,6 +159,10 @@ public class Sim {
 		checkboxID++;
 		this.logGuiCheckboxID = checkboxID;
 		this.checkboxes.add(new CheckBox(10, 140, this.textureManager, this.fontManager, "Afficher les messages", logGuiCheckboxID));
+		
+		checkboxID++;
+		this.blueprintCheckboxID = checkboxID;
+		this.checkboxes.add(new CheckBox(10, 160, this.textureManager, this.fontManager, "Gestion les plans", blueprintCheckboxID));
 		
 		// Create the city stats.
 		this.cityStats = new CityStats();
@@ -1108,6 +1113,17 @@ public class Sim {
 			this.zoneDrawingGui.update(dt, this.window, this.zoneMap, this.tileSelector);
 			this.zoneMapLayer.update();
 		}
+		
+		if(isCheckBoxChecked(this.blueprintCheckboxID)) {
+			// Force pause during blueprints management.
+			this.gameSpeedGui.setPaused(true);
+			
+			/**
+			 * TODO:
+			 * 		Update the BlueprintGui.
+			 */
+			// this.blueprintGui.update(this.window, this.zoneMap);
+		}
 
 		//Update stats
 		this.gameSpeedGui.update(dt);
@@ -1143,15 +1159,23 @@ public class Sim {
 		
 		if(isOnlyChecked(this.cityGraphStatsCheckboxID)) {
 			this.window.draw(this.graphStatsGui);
-			this.window.draw(getCheckBox(cityGraphStatsCheckboxID));
+			this.window.draw(getCheckBox(this.cityGraphStatsCheckboxID));
 		}
 		else if(isOnlyChecked(this.zoneDrawingCheckboxID)) {
 			this.window.draw(this.zoneDrawingGui);
-			this.window.draw(getCheckBox(zoneDrawingCheckboxID));
+			this.window.draw(getCheckBox(this.zoneDrawingCheckboxID));
 		}
 		else if(isOnlyChecked(this.logGuiCheckboxID)) {
 			this.window.draw(this.logGui);
-			this.window.draw(getCheckBox(logGuiCheckboxID));
+			this.window.draw(getCheckBox(this.logGuiCheckboxID));
+		}
+		else if(isOnlyChecked(this.blueprintCheckboxID)) {
+			/**
+			 * TODO:
+			 * 		Draw the BlueprintGui.
+			 */
+			// this.window.draw(this.blueprintGui);
+			this.window.draw(getCheckBox(this.blueprintCheckboxID));
 		}
 		else {
 			for(CheckBox cb : this.checkboxes) {
