@@ -1127,6 +1127,7 @@ public class Sim {
 		if(isCheckBoxChecked(this.blueprintCheckboxID)) {
 			// Force pause during blueprints management.
 			this.gameSpeedGui.setPaused(true);
+			this.zoneMapLayer.update();
 		}
 
 		//Update stats
