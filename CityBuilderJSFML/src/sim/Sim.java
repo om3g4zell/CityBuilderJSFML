@@ -33,6 +33,7 @@ import graphics.TextureManager;
 import graphics.Tile;
 import graphics.TileMap;
 import graphics.ZoneMapLayer;
+import gui.BlueprintGui;
 import gui.CheckBox;
 import gui.GameSpeedGui;
 import gui.GraphStatsGui;
@@ -95,6 +96,7 @@ public class Sim {
 	protected LightLayer lightLayer;
 	protected int dayhour;
 	protected int daycount;
+	protected BlueprintGui blueprintGui;
 	
 	/**
 	 * Constructor
@@ -174,10 +176,13 @@ public class Sim {
 		this.zoneMap = new ZoneMap(TILEMAP_SIZE.x, TILEMAP_SIZE.y);
 		
 		// Create the game speed GUI
-		this.gameSpeedGui = new GameSpeedGui(textureManager, fontManager, this.window.getSize().x - 80, 20);
+		this.gameSpeedGui = new GameSpeedGui(this.textureManager, this.fontManager, this.window.getSize().x - 80, 20);
 		
 		// Create the logGui
 		this.logGui = new LogGui(this.fontManager);
+		
+		// Create the blueprint gui.
+		this.blueprintGui = new BlueprintGui(this.textureManager, this.fontManager);
 		
 		// Create the zoneMapLayer
 		this.zoneMapLayer = new ZoneMapLayer(this.zoneMap);
