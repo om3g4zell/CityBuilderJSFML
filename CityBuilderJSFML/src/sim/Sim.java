@@ -1022,9 +1022,11 @@ public class Sim {
 				b.generateResources(this.resourcesMap, this.buildings);
 			}
 			
-			for(Building house : houses) {
-				if(house.checkLevelUp(this.resourcesMap)) {
-					this.logGui.write("The house " + house.getId() + " leveled up to level " + house.getLevel(), LogGui.SUCCESS);
+			for(Building b : this.buildings) {
+				if(b.isEvolvable()) {
+					if(b.checkLevelUp(this.resourcesMap)) {
+						this.logGui.write("The building " + b.getId() + " leveled up to level " + b.getLevel(), LogGui.SUCCESS);
+					}
 				}
 			}
 
