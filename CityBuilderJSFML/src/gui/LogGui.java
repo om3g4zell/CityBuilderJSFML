@@ -71,7 +71,7 @@ public class LogGui implements Drawable{
 	
 	public void handleEvent(Vector2f mousePosition, Event event) {
 		this.saveLogButton.update(mousePosition, event);
-		if(this.saveLogButton.isCLicked()) {
+		if(this.saveLogButton.isClicked()) {
 			saveToFile();
 		}
 	}

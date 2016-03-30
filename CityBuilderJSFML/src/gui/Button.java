@@ -71,7 +71,7 @@ public class Button extends BasicTransformable implements Drawable{
 	 * the clicked flag
 	 * @return clickedFlag
 	 */
-	public boolean isCLicked() {
+	public boolean isClicked() {
 		return this.clickedFlag;
 	}
 	@Override
