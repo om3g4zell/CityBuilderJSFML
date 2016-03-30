@@ -177,6 +177,7 @@ public class Building {
 	protected int maxClients;
 	protected int minEmployees;
 	protected int maxEmployees;
+	protected boolean canEvolve = false;
 	
 	/**
 	 * Constructor
@@ -220,6 +221,7 @@ public class Building {
 				this.maxEmployees = 1;
 				
 				this.buildingClass = Building.getSuitableZones(this.type);
+				this.canEvolve = true;
 				break;
 			case HOUSE:
 				this.range = 99;
@@ -235,6 +237,7 @@ public class Building {
 				}
 				
 				this.buildingClass = Building.getSuitableZones(this.type);
+				this.canEvolve = true;
 
 				break;
 			case HYDROLIC_STATION:
@@ -332,6 +335,7 @@ public class Building {
 				this.maxEmployees = 30;
 				
 				this.buildingClass = Building.getSuitableZones(this.type);
+				this.canEvolve = true;
 				break;
 			case POLICE_STATION:
 				this.range = 30;
@@ -390,6 +394,7 @@ public class Building {
 				this.maxEmployees = 10;
 				
 				this.buildingClass = Building.getSuitableZones(this.type);
+				this.canEvolve = true;
 				break;
 			case STADIUM:
 				this.range = 100;
@@ -416,33 +421,89 @@ public class Building {
 	 * Level up a house and add needs
 	 */
 	public boolean levelUp() {
-		if(this.level >+4)
-			return false;
-		
-		this.level++;
-		
-		switch(this.level) {
-		case 2:
-			this.needs.add(new Need(Resource.ResourceType.SECURITY, 100, 1.f));
-			this.needs.add(new Need(Resource.ResourceType.MEDICAL_CARE, 100, 1.f));
-			this.needs.add(new Need(Resource.ResourceType.FIRE_PROTECTION, 100, 1.f));
-			break;
-		case 3:
-			this.needs.add(new Need(Resource.ResourceType.SPORT, 25, 1.f));
-			this.needs.add(new Need(ResourceType.HOBBIES, 2, 1.f));
-			break;
-		case 4:
-			this.needs.add(new Need(Resource.ResourceType.EDUCATION, 25, 1.f));
-			this.needs.add(new Need(Resource.ResourceType.NETWORK_4G, 25, 1.f));
-			break;
-		case 5:
-			this.needs.add(new Need(Resource.ResourceType.BIG_FURNITURE, 50, 1.f));
-			this.needs.add(new Need(Resource.ResourceType.ALCOHOL, 2, 1.f));
-			this.needs.add(new Need(Resource.ResourceType.LUXURY_FOOD, 10, 1.f));
-			break;
+		if(this.type == BuildingType.HOUSE) {
+			if(this.level >+4)
+				return false;
+			
+			this.level++;
+			
+			switch(this.level) {
+			case 2:
+				this.needs.add(new Need(Resource.ResourceType.SECURITY, 100, 1.f));
+				this.needs.add(new Need(Resource.ResourceType.MEDICAL_CARE, 100, 1.f));
+				this.needs.add(new Need(Resource.ResourceType.FIRE_PROTECTION, 100, 1.f));
+				break;
+			case 3:
+				this.needs.add(new Need(Resource.ResourceType.SPORT, 25, 1.f));
+				this.needs.add(new Need(ResourceType.HOBBIES, 2, 1.f));
+				break;
+			case 4:
+				this.needs.add(new Need(Resource.ResourceType.EDUCATION, 25, 1.f));
+				this.needs.add(new Need(Resource.ResourceType.NETWORK_4G, 25, 1.f));
+				break;
+			case 5:
+				this.needs.add(new Need(Resource.ResourceType.BIG_FURNITURE, 50, 1.f));
+				this.needs.add(new Need(Resource.ResourceType.ALCOHOL, 2, 1.f));
+				this.needs.add(new Need(Resource.ResourceType.LUXURY_FOOD, 10, 1.f));
+				break;
+			}
+			return true;
+		}else if(this.type == BuildingType.GROCERY_STORE) {
+			if(this.level > 3) {
+				return false;
+			}
+			for(Need need  : this.needs) {
+				if(need.equals(ResourceType.ELECTRICITY)) {
+					need.amount = (int)(need.amount + need.amount * 0.5);
+				}else if(need.equals(ResourceType.WATER)) {
+					need.amount = (int)(need.amount + need.amount * 0.5);
+				}
+				
+			}
+			
+			this.maxClients *= 2;
+			this.maxEmployees *= 2;
+			return true;
+		}else if(this.type == BuildingType.MALL) {
+			if(this.level > 3) {
+				return false;
+			}
+			for(Need need  : this.needs) {
+				if(need.equals(ResourceType.ELECTRICITY)) {
+					need.amount = (int)(need.amount + need.amount * 0.5);
+				}else if(need.equals(ResourceType.WATER)) {
+					need.amount = (int)(need.amount + need.amount * 0.5);
+				}
+				
+			}
+			
+			this.maxClients *= 2;
+			this.maxEmployees *= 2;
+			return true;
+		}else if(this.type == BuildingType.SCHOOL) {
+			if(this.level > 2) {
+				return false;
+			}
+			for(Need need  : this.needs) {
+				if(need.equals(ResourceType.ELECTRICITY)) {
+					need.amount = (int)(need.amount + need.amount * 0.5);
+				}else if(need.equals(ResourceType.WATER)) {
+					need.amount = (int)(need.amount + need.amount * 0.5);
+				}
+				
+			}
+			
+			this.maxClients *= 2;
+			this.maxEmployees *= 2;
+			return true;
 		}
-		return true;
+		return false;
 		
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+		if(this.id >= lastId) lastId = this.id;
 	}
 	
 	/**
@@ -533,6 +594,13 @@ public class Building {
 	}
 	
 	/**
+	 * Returns the boolean of canEvolve flag.
+	 * @return the canEvolve flag
+	 */
+	public boolean isEvolvable() {
+		return this.canEvolve;
+	}
+	/**
 	 * Returns the number of unemployed inhabitants of this building.
 	 * 
 	 * @return the number of unemployed inhabitants
@@ -612,7 +680,11 @@ public class Building {
 							break;
 						case SCHOOL:
 							rStack = resourcesMap.getResources(new Vector2i(x, y));
-							rStack.add(ResourceType.EDUCATION, 100);
+							if(this.level < 2) {
+								rStack.add(ResourceType.EDUCATION, 100);
+							}else {
+								rStack.add(ResourceType.EDUCATION, 150);
+							}
 							resourcesMap.setResources(new Vector2i(x, y), rStack);
 						default:
 							break;
