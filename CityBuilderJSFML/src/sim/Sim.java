@@ -182,7 +182,12 @@ public class Sim {
 		this.logGui = new LogGui(this.fontManager);
 		
 		// Create the blueprint gui.
-		this.blueprintGui = new BlueprintGui(this.textureManager, this.fontManager);
+		try {
+			this.blueprintGui = new BlueprintGui(this.fontManager);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		// Create the zoneMapLayer
 		this.zoneMapLayer = new ZoneMapLayer(this.zoneMap);
@@ -1122,12 +1127,6 @@ public class Sim {
 		if(isCheckBoxChecked(this.blueprintCheckboxID)) {
 			// Force pause during blueprints management.
 			this.gameSpeedGui.setPaused(true);
-			
-			/**
-			 * TODO:
-			 * 		Update the BlueprintGui.
-			 */
-			// this.blueprintGui.update(this.window, this.zoneMap);
 		}
 
 		//Update stats
@@ -1149,7 +1148,7 @@ public class Sim {
 		this.buildingRenderer.setBuildingList(this.buildings);
 		this.window.draw(this.buildingRenderer);
 		
-		if(isCheckBoxChecked(this.zoneDrawingCheckboxID))
+		if(isCheckBoxChecked(this.zoneDrawingCheckboxID) || isCheckBoxChecked(this.blueprintCheckboxID))
 			this.window.draw(this.zoneMapLayer);
 		else
 			this.window.draw(this.lightLayer);
@@ -1175,11 +1174,7 @@ public class Sim {
 			this.window.draw(getCheckBox(this.logGuiCheckboxID));
 		}
 		else if(isOnlyChecked(this.blueprintCheckboxID)) {
-			/**
-			 * TODO:
-			 * 		Draw the BlueprintGui.
-			 */
-			// this.window.draw(this.blueprintGui);
+			this.window.draw(this.blueprintGui);
 			this.window.draw(getCheckBox(this.blueprintCheckboxID));
 		}
 		else {
@@ -1310,16 +1305,19 @@ public class Sim {
 		}
 		else if(isOnlyChecked(this.logGuiCheckboxID)) {
 			getCheckBox(this.logGuiCheckboxID).handleEvent(event);
+		}else if(isOnlyChecked(this.blueprintCheckboxID)) {
+			getCheckBox(blueprintCheckboxID).handleEvent(event);
+			this.blueprintGui.handleEvent(this.window, event, this.zoneMap, this.logGui);
+			
 		}
 		else {
 			for(CheckBox cb : this.checkboxes) {
 				cb.handleEvent(event);
 			}
 		}
-
 		handleBuildingRemoval(event);
 
-		this.logGui.handleEvent(this.window.mapPixelToCoords(Mouse.getPosition(this.window)), event);
+		this.logGui.handleEvent(new Vector2f(Mouse.getPosition(this.window).x, Mouse.getPosition(this.window).y), event);
 		this.gameSpeedGui.handleEvent(event);
 	}
 	

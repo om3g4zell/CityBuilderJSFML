@@ -36,6 +36,14 @@ public class ZoneMap {
 	}
 	
 	/**
+	 * The new zone map
+	 * @param List<List<Zone>> : the new zone map
+	 */
+	public void setZoneMap(List<List<Zone>> zm) {
+		this.zoneMap = zm;
+	}
+	
+	/**
 	 * return the size of the zone map
 	 * @return Vector2i : the size of the zone map
 	 */
