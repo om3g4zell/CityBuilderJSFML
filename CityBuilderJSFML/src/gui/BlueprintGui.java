@@ -39,7 +39,7 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 	public BlueprintGui(FontManager fonts) throws IOException {
 		this.buttons = new HashMap<Button, String>();
 		
-		this.saveButton = new Button("Save", new Color(128,128,128), new Color(48, 48, 48), Color.WHITE, Color.WHITE, fonts.get(FontID.BEBAS), 12);
+		this.saveButton = new Button("Save", new Color(128, 128, 128), new Color(48, 48, 48), Color.WHITE, Color.WHITE, fonts.get(FontID.BEBAS), 12);
 		this.saveButton.setPosition(10, 100);
 		
 		File file = new File("res/blueprint");
@@ -49,10 +49,14 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 			int dotPlace = files[i].getName().lastIndexOf('.');
 			String name = files[i].getName().substring(0, dotPlace);
 			String extension = files[i].getName().substring(dotPlace+1,files[i].getName().length());
+			
 			if(extension.equals(this.extension)) {
-				Button button = new Button(name, new Color(128,128,128), new Color(48, 48, 48), Color.WHITE, Color.WHITE, fonts.get(FontID.BEBAS), 12);
-				this.buttons.put(button, name);
+				// Create and configure the button.
+				Button button = new Button(name, new Color(128, 128, 128), new Color(48, 48, 48), Color.WHITE, Color.WHITE, fonts.get(FontID.BEBAS), 12);
 				button.setPosition(200,  50 + i * 50);
+				
+				// Add it to the list.
+				this.buttons.put(button, name);
 			}
 		}
 	}
@@ -62,28 +66,33 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 	 * 
 	 * @param window : window to get mouse position.
 	 */
-	public void handleEvent(RenderWindow window, Event e, ZoneMap zoneMap, LogGui log) {
-		for(Entry<Button, String> button : this.buttons.entrySet()) {
-			button.getKey().update(new Vector2f(Mouse.getPosition(window).x, Mouse.getPosition(window).y), e);
-			if(button.getKey().isCLicked()) {
+	public void handleEvent(RenderWindow window, Event event, ZoneMap zoneMap, LogGui log) {
+		for(Entry<Button, String> buttonEntry : this.buttons.entrySet()) {
+			buttonEntry.getKey().update(new Vector2f(Mouse.getPosition(window).x, Mouse.getPosition(window).y), event);
+			
+			if(buttonEntry.getKey().isClicked()) {
 				try {
-					Blueprint bp = new Blueprint(this.folder + button.getValue()+ "." + extension);
+					Blueprint bp = new Blueprint(this.folder + buttonEntry.getValue()+ "." + extension);
 					zoneMap.setZoneMap(bp.getZoneMap());
-					log.write("Succesfully load " + button.getValue(), LogGui.SUCCESS);
-				} catch (IOException exception) {
-					// TODO Auto-generated catch block
+					
+					log.write("Succesfully load " + buttonEntry.getValue(), LogGui.SUCCESS);
+				}
+				catch(IOException exception) {
 					exception.printStackTrace();
 				}
 			}
 		}
-		this.saveButton.update(new Vector2f(Mouse.getPosition(window).x, Mouse.getPosition(window).y), e);
-		if(this.saveButton.isCLicked()) {
+		
+		this.saveButton.update(new Vector2f(Mouse.getPosition(window).x, Mouse.getPosition(window).y), event);
+		
+		if(this.saveButton.isClicked()) {
 			try {
 				Blueprint.saveToBlueprint(this.folder + "test" + "." + extension, zoneMap.getZoneMap());
+
 				log.write("Succesfully saved at ...", LogGui.SUCCESS);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			}
+			catch(IOException exception) {
+				exception.printStackTrace();
 			}
 		}
 	}
