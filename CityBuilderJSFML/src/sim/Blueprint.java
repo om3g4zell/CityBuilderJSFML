@@ -76,14 +76,13 @@ public class Blueprint {
 		
 		for(int y = 0 ; y < lines.size() ; y++) {
 			String line = lines.get(y);
+			List<Zone> row = new ArrayList<Zone>();
 
 			for(int x = 0 ; x < line.length() ; x++) {
 				char c = line.charAt(x);
 				
 				if(c == '\n' || c == '\r')
 					continue;
-				
-				List<Zone> row = new ArrayList<Zone>();
 				
 				switch(c) {
 					case 'a':
@@ -110,9 +109,9 @@ public class Blueprint {
 					default:
 						break;
 				}
-				
-				this.zonemap.add(row);
 			}
+			
+			this.zonemap.add(row);
 		}
 	}
 	
