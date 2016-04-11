@@ -57,6 +57,7 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 	 * Reload all button
 	 */
 	public void reload() {
+		this.buttons.clear();
 		this.textInputPool.clearText(this.TextInputName);
 		File file = new File("res/blueprint");
 		File[] files = file.listFiles();
@@ -82,7 +83,7 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 	 * 
 	 * @param window : window to get mouse position.
 	 */
-	public void handleEvent(RenderWindow window, Event event, ZoneMap zoneMap, LogGui log) {
+	public void handleEvent(RenderWindow window, Event event, ZoneMap zoneMap, LogGui log, ZoneDrawingGui zoneDrawingGui) {
 		for(Entry<Button, String> buttonEntry : this.buttons.entrySet()) {
 			buttonEntry.getKey().update(new Vector2f(Mouse.getPosition(window).x, Mouse.getPosition(window).y), event);
 			
@@ -90,7 +91,7 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 				try {
 					Blueprint bp = new Blueprint(this.folder + buttonEntry.getValue()+ "." + extension);
 					zoneMap.setZoneMap(bp.getZoneMap());
-					
+					zoneDrawingGui.newRoadAdded = true;
 					log.write("Succesfully load " + buttonEntry.getValue(), LogGui.SUCCESS);
 				}
 				catch(IOException exception) {

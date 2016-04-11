@@ -1312,7 +1312,7 @@ public class Sim {
 		}
 		else if(isOnlyChecked(this.blueprintCheckboxID)) {
 			getCheckBox(blueprintCheckboxID).handleEvent(event);
-			this.blueprintGui.handleEvent(this.window, event, this.zoneMap, this.logGui);
+			this.blueprintGui.handleEvent(this.window, event, this.zoneMap, this.logGui, this.zoneDrawingGui);
 			this.textInputPool.handleEvent(event);
 			
 		}

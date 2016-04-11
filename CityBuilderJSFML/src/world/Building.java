@@ -322,7 +322,7 @@ public class Building {
 				break;
 			case MALL:
 				this.range = 40;
-				this.hitbox = new IntRect(position.x, position.y, 5, 5);
+				this.hitbox = new IntRect(position.x, position.y, 6, 4);
 				
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
