@@ -148,6 +148,7 @@ public class TextInputPool  extends BasicTransformable implements Drawable {
 			
 			Vector2i rawMousePosition = Mouse.getPosition(this.window);
 			Vector2f mousePosition = this.window.mapPixelToCoords(rawMousePosition);
+			mousePosition = new Vector2f(rawMousePosition.x, rawMousePosition.y);
 			
 			if(this.useCustomView)
 				mousePosition = this.window.mapPixelToCoords(rawMousePosition, this.customView);
@@ -177,6 +178,7 @@ public class TextInputPool  extends BasicTransformable implements Drawable {
 				// Execute callback if the TextInput is clicked.
 				Vector2i rawMousePosition = Mouse.getPosition(this.window);
 				Vector2f mousePosition = this.window.mapPixelToCoords(rawMousePosition);
+				mousePosition = new Vector2f(rawMousePosition.x, rawMousePosition.y);
 				
 				if(this.useCustomView)
 					mousePosition = this.window.mapPixelToCoords(rawMousePosition, this.customView);
