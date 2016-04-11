@@ -104,8 +104,8 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 		if(this.saveButton.isClicked() && this.textInputPool.getText(this.TextInputName) != "") {
 			try {
 				Blueprint.saveToBlueprint(this.folder + this.textInputPool.getText(this.TextInputName) + "." + extension, zoneMap.getZoneMap());
-				reload();
 				log.write("Succesfully saved at : " + this.folder + this.textInputPool.getText(this.TextInputName) + "." + extension, LogGui.SUCCESS);
+				reload();
 			}
 			catch(IOException exception) {
 				exception.printStackTrace();
