@@ -46,9 +46,9 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 		this.fonts = fonts;
 		
 		this.saveButton = new Button("Save", new Color(128, 128, 128), new Color(48, 48, 48), Color.WHITE, Color.WHITE, fonts.get(FontID.BEBAS), 12);
-		this.saveButton.setPosition(200, 50);
+		this.saveButton.setPosition(400, 80);
 		
-		this.textInputPool.addTextInput(this.TextInputName, new Vector2f(100, 50), new Vector2f(60,30), "Rentrer le nom du bluePrint", FontID.BEBAS, 12, Color.WHITE, Color.BLACK, Color.BLACK, Color.RED);
+		this.textInputPool.addTextInput(this.TextInputName, new Vector2f(300.f, 60.f), new Vector2f(0.f,0.f), "Rentrer le nom du bluePrint", FontID.BEBAS, 12, new Color(255, 255, 255, 200), Color.BLACK, Color.BLACK, Color.RED);
 		
 		reload();
 	}
@@ -104,13 +104,13 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 		if(this.saveButton.isClicked() && this.textInputPool.getText(this.TextInputName) != "") {
 			try {
 				Blueprint.saveToBlueprint(this.folder + this.textInputPool.getText(this.TextInputName) + "." + extension, zoneMap.getZoneMap());
-
+				reload();
 				log.write("Succesfully saved at : " + this.folder + this.textInputPool.getText(this.TextInputName) + "." + extension, LogGui.SUCCESS);
 			}
 			catch(IOException exception) {
 				exception.printStackTrace();
 			}
-		}else if(this.textInputPool.getText(this.TextInputName) == "") {
+		}else if(this.textInputPool.getText(this.TextInputName) == "" && this.saveButton.isClicked()) {
 			log.write("Veuillez entrez un nom", LogGui.WARNING);
 		}
 	}

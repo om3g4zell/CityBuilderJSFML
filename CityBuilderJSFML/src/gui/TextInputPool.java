@@ -70,6 +70,7 @@ public class TextInputPool  extends BasicTransformable implements Drawable {
 	public void addTextInput(String name, Vector2f centerPosition, Vector2f size, String placeholderTextString, FontID fontId, int charSize, Color backgroundColor, Color textColor, Color borderLineColor, Color focusedBorderLineColor) {
 		Text text = new Text();
 		Text placeholderText = new Text();
+		
 		text.setFont(this.fonts.get(fontId));
 		placeholderText.setFont(this.fonts.get(fontId));
 		
@@ -77,28 +78,28 @@ public class TextInputPool  extends BasicTransformable implements Drawable {
 		placeholderText.setCharacterSize(charSize);
 		
 		text.setString("");
-		placeholderText.setCharacterSize(charSize);
+		placeholderText.setString(placeholderTextString);
 		
 		text.setColor(textColor);
 		
 		Color placeholderColor = new Color(textColor.r, textColor.g, textColor.b, textColor.a - 80);
 		placeholderText.setColor(placeholderColor);
 		
-		text.setOrigin(text.getGlobalBounds().left + text.getGlobalBounds().width / 2, text.getGlobalBounds().top + text.getGlobalBounds().height / 2);
-		placeholderText.setOrigin(placeholderText.getGlobalBounds().left + placeholderText.getGlobalBounds().width / 2, placeholderText.getGlobalBounds().top + placeholderText.getGlobalBounds().height / 2);
+		text.setOrigin(text.getLocalBounds().left + text.getLocalBounds().width / 2, text.getLocalBounds().top + text.getLocalBounds().height / 2);
+		placeholderText.setOrigin(placeholderText.getLocalBounds().left + placeholderText.getLocalBounds().width / 2, placeholderText.getLocalBounds().top + placeholderText.getLocalBounds().height / 2);
 		
 		text.setPosition(centerPosition);
 		placeholderText.setPosition(centerPosition);
 		
 		RectangleShape shape = new RectangleShape();
 		
-		if(size != new Vector2f(0.f, 0.f))
+		if(size.x != 0.f && size.y != 0.f)
 			shape.setSize(size);
 		else
 			shape.setSize(new Vector2f(placeholderText.getGlobalBounds().width + 20.f, placeholderText.getGlobalBounds().height + 15.f));
 		
 		shape.setFillColor(backgroundColor);
-		shape.setOrigin(shape.getGlobalBounds().left + shape.getGlobalBounds().width / 2, shape.getGlobalBounds().top + shape.getGlobalBounds().height / 2);
+		shape.setOrigin(shape.getLocalBounds().left + shape.getLocalBounds().width / 2, shape.getLocalBounds().top + shape.getLocalBounds().height / 2);
 		shape.setPosition(centerPosition);
 		shape.setOutlineThickness(2.f);
 		shape.setOutlineColor(borderLineColor);
@@ -205,20 +206,20 @@ public class TextInputPool  extends BasicTransformable implements Drawable {
 			}
 			
 			// String change, origin has to be updated.
-			this.texts.get(this.focusedTextName).text.setOrigin(this.texts.get(this.focusedTextName).text.getGlobalBounds().left + this.texts.get(this.focusedTextName).text.getGlobalBounds().width / 2, this.texts.get(this.focusedTextName).text.getGlobalBounds().top + this.texts.get(this.focusedTextName).text.getGlobalBounds().height / 2);
+			this.texts.get(this.focusedTextName).text.setOrigin(this.texts.get(this.focusedTextName).text.getLocalBounds().left + this.texts.get(this.focusedTextName).text.getLocalBounds().width / 2, this.texts.get(this.focusedTextName).text.getLocalBounds().top + this.texts.get(this.focusedTextName).text.getLocalBounds().height / 2);
 			
 			// Enlarge the text input if necessary.
-			if(this.texts.get(this.focusedTextName).text.getGlobalBounds().width >= this.texts.get(this.focusedTextName).shape.getLocalBounds().width) {
-				this.texts.get(this.focusedTextName).shape.setSize(new Vector2f(this.texts.get(this.focusedTextName).text.getGlobalBounds().width + 2.f, this.texts.get(this.focusedTextName).shape.getSize().y));
-				this.texts.get(this.focusedTextName).shape.setOrigin(this.texts.get(this.focusedTextName).shape.getGlobalBounds().left + this.texts.get(this.focusedTextName).shape.getGlobalBounds().width / 2, this.texts.get(this.focusedTextName).shape.getGlobalBounds().top + this.texts.get(this.focusedTextName).shape.getGlobalBounds().height / 2);
+			if(this.texts.get(this.focusedTextName).text.getLocalBounds().width >= this.texts.get(this.focusedTextName).shape.getLocalBounds().width) {
+				this.texts.get(this.focusedTextName).shape.setSize(new Vector2f(this.texts.get(this.focusedTextName).shape.getLocalBounds().width + 2.f, this.texts.get(this.focusedTextName).shape.getSize().y));
+				this.texts.get(this.focusedTextName).shape.setOrigin(this.texts.get(this.focusedTextName).shape.getLocalBounds().left + this.texts.get(this.focusedTextName).shape.getLocalBounds().width / 2, this.texts.get(this.focusedTextName).shape.getLocalBounds().top + this.texts.get(this.focusedTextName).shape.getLocalBounds().height / 2);
 			}
-			else if(this.texts.get(this.focusedTextName).text.getGlobalBounds().width >= this.texts.get(this.focusedTextName).shapeMinSize.x) {
-				this.texts.get(this.focusedTextName).shape.setSize(new Vector2f(this.texts.get(this.focusedTextName).text.getGlobalBounds().width + 2.f, this.texts.get(this.focusedTextName).shape.getSize().y));
-				this.texts.get(this.focusedTextName).shape.setOrigin(this.texts.get(this.focusedTextName).shape.getGlobalBounds().left + this.texts.get(this.focusedTextName).shape.getGlobalBounds().width / 2, this.texts.get(this.focusedTextName).shape.getGlobalBounds().top + this.texts.get(this.focusedTextName).shape.getGlobalBounds().height / 2);
+			else if(this.texts.get(this.focusedTextName).text.getLocalBounds().width > this.texts.get(this.focusedTextName).shapeMinSize.x) {
+				this.texts.get(this.focusedTextName).shape.setSize(new Vector2f(this.texts.get(this.focusedTextName).text.getLocalBounds().width + 2.f, this.texts.get(this.focusedTextName).shape.getSize().y));
+				this.texts.get(this.focusedTextName).shape.setOrigin(this.texts.get(this.focusedTextName).shape.getLocalBounds().left + this.texts.get(this.focusedTextName).shape.getLocalBounds().width / 2, this.texts.get(this.focusedTextName).shape.getLocalBounds().top + this.texts.get(this.focusedTextName).shape.getLocalBounds().height / 2);
 			}
 			else {
 				this.texts.get(this.focusedTextName).shape.setSize(this.texts.get(this.focusedTextName).shapeMinSize);
-				this.texts.get(this.focusedTextName).shape.setOrigin(this.texts.get(this.focusedTextName).shape.getGlobalBounds().left + this.texts.get(this.focusedTextName).shape.getGlobalBounds().width / 2, this.texts.get(this.focusedTextName).shape.getGlobalBounds().top + this.texts.get(this.focusedTextName).shape.getGlobalBounds().height / 2);
+				this.texts.get(this.focusedTextName).shape.setOrigin(this.texts.get(this.focusedTextName).shape.getLocalBounds().left + this.texts.get(this.focusedTextName).shape.getLocalBounds().width / 2, this.texts.get(this.focusedTextName).shape.getLocalBounds().top + this.texts.get(this.focusedTextName).shape.getLocalBounds().height / 2);
 			}
 		}
 	}

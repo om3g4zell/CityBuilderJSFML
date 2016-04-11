@@ -37,7 +37,7 @@ public class ZoneDrawingGui implements Drawable {
 		
 		int i = 0;
 		for(ZoneClass z : ZoneClass.values()) {
-			this.checkboxes.add(new CheckBox(27, 117 + i * 17, textures, fonts, z.toString(), z.hashCode()));
+			this.checkboxes.add(new CheckBox(27, 137 + i * 17, textures, fonts, z.toString(), z.hashCode()));
 			i++;
 		}
 	}

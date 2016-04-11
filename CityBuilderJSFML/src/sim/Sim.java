@@ -92,13 +92,13 @@ public class Sim {
 	protected List<CheckBox> checkboxes;
 	protected int zoneDrawingCheckboxID;
 	protected int cityGraphStatsCheckboxID;
-	protected int logGuiCheckboxID;
 	protected int blueprintCheckboxID;
 	protected LightLayer lightLayer;
 	protected int dayhour;
 	protected int daycount;
 	protected BlueprintGui blueprintGui;
 	protected TextInputPool textInputPool;
+	protected CheckBox logCheckBox;
 	
 	/**
 	 * Constructor
@@ -150,19 +150,18 @@ public class Sim {
 		// Create the buildings list.
 		this.buildings = new ArrayList<Building>();
 		
+		// Create the checkbox for the log
+		this.logCheckBox = new CheckBox(10, 100, this.textureManager, this.fontManager, "Afficher les messages", 0);
+		
 		// Create the checkboxes.
 		int checkboxID = 0;
 		this.checkboxes = new ArrayList<CheckBox>();
 		this.zoneDrawingCheckboxID = checkboxID;
-		this.checkboxes.add(new CheckBox(10, 100, this.textureManager, this.fontManager, "Afficher les zones", zoneDrawingCheckboxID));
+		this.checkboxes.add(new CheckBox(10, 120, this.textureManager, this.fontManager, "Afficher les zones", zoneDrawingCheckboxID));
 		
 		checkboxID++;
 		this.cityGraphStatsCheckboxID = checkboxID;
-		this.checkboxes.add(new CheckBox(10, 120, this.textureManager, this.fontManager, "Afficher les statistiques", cityGraphStatsCheckboxID));
-		
-		checkboxID++;
-		this.logGuiCheckboxID = checkboxID;
-		this.checkboxes.add(new CheckBox(10, 140, this.textureManager, this.fontManager, "Afficher les messages", logGuiCheckboxID));
+		this.checkboxes.add(new CheckBox(10, 140, this.textureManager, this.fontManager, "Afficher les statistiques", cityGraphStatsCheckboxID));
 		
 		checkboxID++;
 		this.blueprintCheckboxID = checkboxID;
@@ -1177,10 +1176,6 @@ public class Sim {
 			this.window.draw(this.zoneDrawingGui);
 			this.window.draw(getCheckBox(this.zoneDrawingCheckboxID));
 		}
-		else if(isOnlyChecked(this.logGuiCheckboxID)) {
-			this.window.draw(this.logGui);
-			this.window.draw(getCheckBox(this.logGuiCheckboxID));
-		}
 		else if(isOnlyChecked(this.blueprintCheckboxID)) {
 			this.window.draw(this.blueprintGui);
 			this.window.draw(getCheckBox(this.blueprintCheckboxID));
@@ -1191,7 +1186,10 @@ public class Sim {
 				this.window.draw(cb);
 			}
 		}
-
+		if(this.logCheckBox.isChecked()) {
+			this.window.draw(this.logGui);
+		}
+		this.window.draw(this.logCheckBox);
 		setGameView();
 		// End of static elements.
 		
@@ -1312,9 +1310,7 @@ public class Sim {
 			this.zoneDrawingGui.handleEvent(event);
 			this.gameSpeedGui.setPaused(checkbox.isChecked());
 		}
-		else if(isOnlyChecked(this.logGuiCheckboxID)) {
-			getCheckBox(this.logGuiCheckboxID).handleEvent(event);
-		}else if(isOnlyChecked(this.blueprintCheckboxID)) {
+		else if(isOnlyChecked(this.blueprintCheckboxID)) {
 			getCheckBox(blueprintCheckboxID).handleEvent(event);
 			this.blueprintGui.handleEvent(this.window, event, this.zoneMap, this.logGui);
 			this.textInputPool.handleEvent(event);
@@ -1325,6 +1321,7 @@ public class Sim {
 				cb.handleEvent(event);
 			}
 		}
+		this.logCheckBox.handleEvent(event);
 		handleBuildingRemoval(event);
 
 		this.logGui.handleEvent(new Vector2f(Mouse.getPosition(this.window).x, Mouse.getPosition(this.window).y), event);
