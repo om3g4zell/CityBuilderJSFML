@@ -422,7 +422,7 @@ public class Building {
 	 */
 	public boolean levelUp() {
 		if(this.type == BuildingType.HOUSE) {
-			if(this.level >+4)
+			if(this.level >4)
 				return false;
 			
 			this.level++;
@@ -452,6 +452,7 @@ public class Building {
 			if(this.level > 3) {
 				return false;
 			}
+			this.level++;
 			for(Need need  : this.needs) {
 				if(need.equals(ResourceType.ELECTRICITY)) {
 					need.amount = (int)(need.amount + need.amount * 0.5);
@@ -468,6 +469,9 @@ public class Building {
 			if(this.level > 3) {
 				return false;
 			}
+			
+			this.level++;
+			
 			for(Need need  : this.needs) {
 				if(need.equals(ResourceType.ELECTRICITY)) {
 					need.amount = (int)(need.amount + need.amount * 0.5);
@@ -484,6 +488,9 @@ public class Building {
 			if(this.level > 2) {
 				return false;
 			}
+			
+			this.level++;
+			
 			for(Need need  : this.needs) {
 				if(need.equals(ResourceType.ELECTRICITY)) {
 					need.amount = (int)(need.amount + need.amount * 0.5);
