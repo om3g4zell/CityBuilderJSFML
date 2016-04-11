@@ -6,14 +6,21 @@ import java.util.Map;
 import org.jsfml.graphics.BasicTransformable;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Drawable;
+import org.jsfml.graphics.FloatRect;
+import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
+import org.jsfml.graphics.RenderWindow;
+import org.jsfml.graphics.Text;
 import org.jsfml.graphics.Transform;
 import org.jsfml.graphics.View;
 import org.jsfml.system.Vector2f;
+import org.jsfml.system.Vector2i;
+import org.jsfml.window.Mouse;
 import org.jsfml.window.event.Event;
 
 import graphics.FontManager;
+import graphics.FontManager.FontID;
 
 public class TextInputPool  extends BasicTransformable implements Drawable {
 	// Fonts holder.
@@ -31,10 +38,14 @@ public class TextInputPool  extends BasicTransformable implements Drawable {
 	// Custom view flag.
 	protected boolean useCustomView;
 	
+	// Window
+	protected RenderWindow window;
+	
 	/**
 	 * Constructor.
 	 */
-	public TextInputPool() {
+	public TextInputPool(RenderWindow window) {
+		this.window = window;
 		this.fonts = new FontManager();
 		this.texts = new HashMap<String, TextInput>();
 		this.focusedTextName = "";
@@ -56,7 +67,52 @@ public class TextInputPool  extends BasicTransformable implements Drawable {
 	 * @param borderLineColor : the color of the border.
 	 * @param focusedBorderLineColor : the color of the border when focused.
 	 */
-	public void addTextInput(String name, Vector2f centerPosition, Vector2f size, String placeholderTextString, int fontId, int charSize, Color backgroundColor, Color textColor, Color borderLineColor, Color focusedBorderLineColor) {
+	public void addTextInput(String name, Vector2f centerPosition, Vector2f size, String placeholderTextString, FontID fontId, int charSize, Color backgroundColor, Color textColor, Color borderLineColor, Color focusedBorderLineColor) {
+		Text text = new Text();
+		Text placeholderText = new Text();
+		text.setFont(this.fonts.get(fontId));
+		placeholderText.setFont(this.fonts.get(fontId));
+		
+		text.setCharacterSize(charSize);
+		placeholderText.setCharacterSize(charSize);
+		
+		text.setString("");
+		placeholderText.setCharacterSize(charSize);
+		
+		text.setColor(textColor);
+		
+		Color placeholderColor = new Color(textColor.r, textColor.g, textColor.b, textColor.a - 80);
+		placeholderText.setColor(placeholderColor);
+		
+		text.setOrigin(text.getGlobalBounds().left + text.getGlobalBounds().width / 2, text.getGlobalBounds().top + text.getGlobalBounds().height / 2);
+		placeholderText.setOrigin(placeholderText.getGlobalBounds().left + placeholderText.getGlobalBounds().width / 2, placeholderText.getGlobalBounds().top + placeholderText.getGlobalBounds().height / 2);
+		
+		text.setPosition(centerPosition);
+		placeholderText.setPosition(centerPosition);
+		
+		RectangleShape shape = new RectangleShape();
+		
+		if(size != new Vector2f(0.f, 0.f))
+			shape.setSize(size);
+		else
+			shape.setSize(new Vector2f(placeholderText.getGlobalBounds().width + 20.f, placeholderText.getGlobalBounds().height + 15.f));
+		
+		shape.setFillColor(backgroundColor);
+		shape.setOrigin(shape.getGlobalBounds().left + shape.getGlobalBounds().width / 2, shape.getGlobalBounds().top + shape.getGlobalBounds().height / 2);
+		shape.setPosition(centerPosition);
+		shape.setOutlineThickness(2.f);
+		shape.setOutlineColor(borderLineColor);
+		
+		TextInput textInput = new TextInput();
+		textInput.shape = shape;
+		textInput.text = text;
+		textInput.placeholderText = placeholderText;
+		textInput.textColor = textColor;
+		textInput.borderLineColor = borderLineColor;
+		textInput.focusedBorderLineColor = focusedBorderLineColor;
+		textInput.shapeMinSize = shape.getSize();
+		
+		this.texts.put(name, textInput);
 		
 	}
 
@@ -67,7 +123,7 @@ public class TextInputPool  extends BasicTransformable implements Drawable {
 	 * @param textInput : the text input to add.
 	 */
 	public void addTextInput(String name, TextInput textInput) {
-		
+		this.texts.put(name, textInput);
 	}
 
 	/**
@@ -76,7 +132,7 @@ public class TextInputPool  extends BasicTransformable implements Drawable {
 	 * @param name : the name of the text input.
 	 */
 	public void removeTextInput(String name) {
-		
+		this.texts.remove(this.texts.get(name));
 	}
 
 	/**
@@ -84,6 +140,22 @@ public class TextInputPool  extends BasicTransformable implements Drawable {
 	 */
 	public void update() {
 		
+		// Update hover color.
+		for(Map.Entry<String, TextInput> entry : this.texts.entrySet()) {
+			FloatRect hitbox = entry.getValue().shape.getGlobalBounds();
+			hitbox = new FloatRect(hitbox.left + getPosition().x, hitbox.top + getPosition().y, hitbox.width, hitbox.height);
+			
+			Vector2i rawMousePosition = Mouse.getPosition(this.window);
+			Vector2f mousePosition = this.window.mapPixelToCoords(rawMousePosition);
+			
+			if(this.useCustomView)
+				mousePosition = this.window.mapPixelToCoords(rawMousePosition, this.customView);
+			
+			if(hitbox.contains(mousePosition) || entry.getKey() == this.focusedTextName)
+				entry.getValue().shape.setOutlineColor(entry.getValue().focusedBorderLineColor);
+			else if(entry.getKey() != this.focusedTextName)
+				entry.getValue().shape.setOutlineColor(entry.getValue().borderLineColor);
+		}
 	}
 
 	/**
@@ -92,7 +164,63 @@ public class TextInputPool  extends BasicTransformable implements Drawable {
 	 * @param event : the event to handle.
 	 */
 	public void handleEvent(Event event) {
-		
+		if(event.type == Event.Type.MOUSE_BUTTON_PRESSED) {
+			
+			// Reset the focused text input
+			this.focusedTextName = "";
+			
+			for(Map.Entry<String, TextInput> entry : this.texts.entrySet()) {
+				FloatRect hitbox = entry.getValue().shape.getGlobalBounds();
+				hitbox = new FloatRect(hitbox.left + getPosition().x, hitbox.top + getPosition().y, hitbox.width, hitbox.height);
+				
+				// Execute callback if the TextInput is clicked.
+				Vector2i rawMousePosition = Mouse.getPosition(this.window);
+				Vector2f mousePosition = this.window.mapPixelToCoords(rawMousePosition);
+				
+				if(this.useCustomView)
+					mousePosition = this.window.mapPixelToCoords(rawMousePosition, this.customView);
+				
+				if(hitbox.contains(mousePosition)) {
+					this.focusedTextName = entry.getKey();
+				}
+				
+				
+			}
+		}
+		else if(event.type == Event.Type.TEXT_ENTERED && this.focusedTextName != "") {
+			// Backspace and delete unicode
+			if(event.asTextEvent().unicode == 8 || event.asTextEvent().unicode == 127) {
+				String str = this.texts.get(this.focusedTextName).text.getString();
+				
+				// If the string is not empty, we erase one char.
+				if(str.length() > 0) {
+					str = str.substring(0, str.length() -1);
+					this.texts.get(this.focusedTextName).text.setString(str);
+				}
+			}
+			else {
+				String str = this.texts.get(this.focusedTextName).text.getString();
+				str += event.asTextEvent().character;
+				this.texts.get(this.focusedTextName).text.setString(str);
+			}
+			
+			// String change, origin has to be updated.
+			this.texts.get(this.focusedTextName).text.setOrigin(this.texts.get(this.focusedTextName).text.getGlobalBounds().left + this.texts.get(this.focusedTextName).text.getGlobalBounds().width / 2, this.texts.get(this.focusedTextName).text.getGlobalBounds().top + this.texts.get(this.focusedTextName).text.getGlobalBounds().height / 2);
+			
+			// Enlarge the text input if necessary.
+			if(this.texts.get(this.focusedTextName).text.getGlobalBounds().width >= this.texts.get(this.focusedTextName).shape.getLocalBounds().width) {
+				this.texts.get(this.focusedTextName).shape.setSize(new Vector2f(this.texts.get(this.focusedTextName).text.getGlobalBounds().width + 2.f, this.texts.get(this.focusedTextName).shape.getSize().y));
+				this.texts.get(this.focusedTextName).shape.setOrigin(this.texts.get(this.focusedTextName).shape.getGlobalBounds().left + this.texts.get(this.focusedTextName).shape.getGlobalBounds().width / 2, this.texts.get(this.focusedTextName).shape.getGlobalBounds().top + this.texts.get(this.focusedTextName).shape.getGlobalBounds().height / 2);
+			}
+			else if(this.texts.get(this.focusedTextName).text.getGlobalBounds().width >= this.texts.get(this.focusedTextName).shapeMinSize.x) {
+				this.texts.get(this.focusedTextName).shape.setSize(new Vector2f(this.texts.get(this.focusedTextName).text.getGlobalBounds().width + 2.f, this.texts.get(this.focusedTextName).shape.getSize().y));
+				this.texts.get(this.focusedTextName).shape.setOrigin(this.texts.get(this.focusedTextName).shape.getGlobalBounds().left + this.texts.get(this.focusedTextName).shape.getGlobalBounds().width / 2, this.texts.get(this.focusedTextName).shape.getGlobalBounds().top + this.texts.get(this.focusedTextName).shape.getGlobalBounds().height / 2);
+			}
+			else {
+				this.texts.get(this.focusedTextName).shape.setSize(this.texts.get(this.focusedTextName).shapeMinSize);
+				this.texts.get(this.focusedTextName).shape.setOrigin(this.texts.get(this.focusedTextName).shape.getGlobalBounds().left + this.texts.get(this.focusedTextName).shape.getGlobalBounds().width / 2, this.texts.get(this.focusedTextName).shape.getGlobalBounds().top + this.texts.get(this.focusedTextName).shape.getGlobalBounds().height / 2);
+			}
+		}
 	}
 
 	/**
@@ -102,7 +230,7 @@ public class TextInputPool  extends BasicTransformable implements Drawable {
 	 * @return the content of the text input.
 	 */
 	public String getText(String name) {
-		return "";
+		return this.texts.get(name).text.getString();
 	}
 
 	/**
@@ -111,7 +239,16 @@ public class TextInputPool  extends BasicTransformable implements Drawable {
 	 * @param v : the view to use while rendering.
 	 */
 	public void setCustomView(View v) {
-		
+		this.useCustomView = true;
+		this.customView = v;
+	}
+	
+	/**
+	 * Clear the text in the TextInput.
+	 * @param name : Name of the TextInput
+	 */
+	public void clearText(String name) {
+		this.texts.get(name).text.setString("");
 	}
 
 	/**
@@ -123,6 +260,18 @@ public class TextInputPool  extends BasicTransformable implements Drawable {
 	public void draw(RenderTarget target, RenderStates states) {
 		// Combine local and global transformations.
 		RenderStates newStates = new RenderStates(Transform.combine(states.transform, this.getTransform()));
+		
+		for(Map.Entry<String, TextInput> entry : this.texts.entrySet()) {
+			target.draw(entry.getValue().shape, newStates);
+			
+			// We display the text only if we are focused or we have something already written.
+			if(entry.getKey() == this.focusedTextName || entry.getValue().text.getString() != "") {
+				target.draw(entry.getValue().text, newStates);
+			}
+			else {
+				target.draw(entry.getValue().placeholderText, newStates);
+			}
+		}
 		
 		
 	}

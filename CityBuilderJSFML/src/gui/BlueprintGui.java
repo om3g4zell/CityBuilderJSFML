@@ -28,6 +28,9 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 	protected Button saveButton;
 	protected String extension = "blueprint";
 	protected String folder = "res/blueprint/";
+	protected TextInputPool textInputPool;
+	protected FontManager fonts;
+	protected String TextInputName;
 	
 	/**
 	 * Constructor.
@@ -36,12 +39,25 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 	 * @param fonts : the font manager.
 	 * @throws IOException 
 	 */
-	public BlueprintGui(FontManager fonts) throws IOException {
+	public BlueprintGui(FontManager fonts, TextInputPool textInputPool) throws IOException {
 		this.buttons = new HashMap<Button, String>();
+		this.textInputPool = textInputPool;
+		this.TextInputName = "BluePrintInput";
+		this.fonts = fonts;
 		
 		this.saveButton = new Button("Save", new Color(128, 128, 128), new Color(48, 48, 48), Color.WHITE, Color.WHITE, fonts.get(FontID.BEBAS), 12);
-		this.saveButton.setPosition(10, 100);
+		this.saveButton.setPosition(200, 50);
 		
+		this.textInputPool.addTextInput(this.TextInputName, new Vector2f(100, 50), new Vector2f(60,30), "Rentrer le nom du bluePrint", FontID.BEBAS, 12, Color.WHITE, Color.BLACK, Color.BLACK, Color.RED);
+		
+		reload();
+	}
+	
+	/**
+	 * Reload all button
+	 */
+	public void reload() {
+		this.textInputPool.clearText(this.TextInputName);
 		File file = new File("res/blueprint");
 		File[] files = file.listFiles();
 		
@@ -52,8 +68,8 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 			
 			if(extension.equals(this.extension)) {
 				// Create and configure the button.
-				Button button = new Button(name, new Color(128, 128, 128), new Color(48, 48, 48), Color.WHITE, Color.WHITE, fonts.get(FontID.BEBAS), 12);
-				button.setPosition(200,  50 + i * 50);
+				Button button = new Button(name, new Color(128, 128, 128), new Color(48, 48, 48), Color.WHITE, Color.WHITE, this.fonts.get(FontID.BEBAS), 12);
+				button.setPosition(200,  200 + i * 50);
 				
 				// Add it to the list.
 				this.buttons.put(button, name);
@@ -85,15 +101,17 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 		
 		this.saveButton.update(new Vector2f(Mouse.getPosition(window).x, Mouse.getPosition(window).y), event);
 		
-		if(this.saveButton.isClicked()) {
+		if(this.saveButton.isClicked() && this.textInputPool.getText(this.TextInputName) != "") {
 			try {
-				Blueprint.saveToBlueprint(this.folder + "test" + "." + extension, zoneMap.getZoneMap());
+				Blueprint.saveToBlueprint(this.folder + this.textInputPool.getText(this.TextInputName) + "." + extension, zoneMap.getZoneMap());
 
-				log.write("Succesfully saved at ...", LogGui.SUCCESS);
+				log.write("Succesfully saved at : " + this.folder + this.textInputPool.getText(this.TextInputName) + "." + extension, LogGui.SUCCESS);
 			}
 			catch(IOException exception) {
 				exception.printStackTrace();
 			}
+		}else if(this.textInputPool.getText(this.TextInputName) == "") {
+			log.write("Veuillez entrez un nom", LogGui.WARNING);
 		}
 	}
 	

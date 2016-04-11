@@ -39,6 +39,7 @@ import gui.GameSpeedGui;
 import gui.GraphStatsGui;
 import gui.LogGui;
 import gui.StatsGui;
+import gui.TextInputPool;
 import gui.TileInfoGui;
 import gui.TileSelector;
 import gui.ZoneDrawingGui;
@@ -97,6 +98,7 @@ public class Sim {
 	protected int dayhour;
 	protected int daycount;
 	protected BlueprintGui blueprintGui;
+	protected TextInputPool textInputPool;
 	
 	/**
 	 * Constructor
@@ -181,9 +183,12 @@ public class Sim {
 		// Create the logGui
 		this.logGui = new LogGui(this.fontManager);
 		
+		// Instanciate the TextInputPool
+		this.textInputPool = new TextInputPool(this.window);
+				
 		// Create the blueprint gui.
 		try {
-			this.blueprintGui = new BlueprintGui(this.fontManager);
+			this.blueprintGui = new BlueprintGui(this.fontManager, this.textInputPool);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -1128,6 +1133,7 @@ public class Sim {
 			// Force pause during blueprints management.
 			this.gameSpeedGui.setPaused(true);
 			this.zoneMapLayer.update();
+			this.textInputPool.update();
 		}
 
 		//Update stats
@@ -1177,6 +1183,7 @@ public class Sim {
 		else if(isOnlyChecked(this.blueprintCheckboxID)) {
 			this.window.draw(this.blueprintGui);
 			this.window.draw(getCheckBox(this.blueprintCheckboxID));
+			this.window.draw(this.textInputPool);
 		}
 		else {
 			for(CheckBox cb : this.checkboxes) {
@@ -1309,6 +1316,7 @@ public class Sim {
 		}else if(isOnlyChecked(this.blueprintCheckboxID)) {
 			getCheckBox(blueprintCheckboxID).handleEvent(event);
 			this.blueprintGui.handleEvent(this.window, event, this.zoneMap, this.logGui);
+			this.textInputPool.handleEvent(event);
 			
 		}
 		else {
@@ -1320,6 +1328,7 @@ public class Sim {
 
 		this.logGui.handleEvent(new Vector2f(Mouse.getPosition(this.window).x, Mouse.getPosition(this.window).y), event);
 		this.gameSpeedGui.handleEvent(event);
+		
 	}
 	
 	/**
