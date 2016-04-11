@@ -235,6 +235,7 @@ public class Sim {
 		this.buildingRenderer.setColorPlaceholder(BuildingType.STADIUM, new Color(192, 192, 192));
 		
 		this.buildingRenderer.setTextureRect(BuildingType.GROCERY_STORE, new FloatRect(0.f, 0.f, 64.f, 32.f));
+		this.buildingRenderer.setTextureRect(BuildingType.HOUSE, new FloatRect(64.f, 0.f, 32.f, 32.f));
 		
 		// The stack of the maps which contains the required buildings of everyone.
 		this.buildingStackRequired = new Stack<Map<Integer, Building.BuildingType>>();

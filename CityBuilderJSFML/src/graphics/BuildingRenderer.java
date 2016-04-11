@@ -30,6 +30,8 @@ public class BuildingRenderer implements Drawable {
 		switch(btype) {
 			case GROCERY_STORE:
 				return true;
+			case HOUSE:
+				return true;
 			default:
 				return false;
 		}
@@ -102,7 +104,7 @@ public class BuildingRenderer implements Drawable {
 		
 		target.draw(coloredVA, states);
 		
-		states = new RenderStates(states, (ConstTexture)(this.textures.get(TextureID.GROSSERY_STORE_TEXTURE)));
+		states = new RenderStates(states, (ConstTexture)(this.textures.get(TextureID.BUILDINGS_TEXTURE)));
 		target.draw(texturedVA, states);
 	}
 }
