@@ -35,8 +35,7 @@ public class CityStats {
 			attractivity.put(z, 0.f);
 		}
 		
-		int unemployment = 0;
-		int citizenNumber = 0;
+		float unemployment = 0;
 		
 		for(Building b :  buildings) {
 			if(b.getType().equals(Building.BuildingType.HOUSE)) {
@@ -56,7 +55,6 @@ public class CityStats {
 			}
 
 			for(Citizen c : b.getInhabitants()) {
-				citizenNumber++;
 
 				if(c.getWorkBuildingId() == -1) {
 					unemployment++;
@@ -64,9 +62,9 @@ public class CityStats {
 			}
 			
 		}
-		if(citizenNumber > 0)
-			this.unemploymentRate = unemployment / citizenNumber;
-		this.unemployment = unemployment;
+		if(this.population > 0)
+			this.unemploymentRate = (unemployment / this.population)*100;
+		this.unemployment = (int)unemployment;
 		
 	}
 	
