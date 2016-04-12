@@ -727,7 +727,7 @@ public class Building {
 				rStack.add(ResourceType.FOOD, 10);
 				break;
 			case MALL:
-				rStack.add(ResourceType.FOOD, 50);
+				rStack.add(ResourceType.BIG_FURNITURE, 50);
 				break;
 			case PUB:
 				rStack.add(ResourceType.ALCOHOL, 10);
