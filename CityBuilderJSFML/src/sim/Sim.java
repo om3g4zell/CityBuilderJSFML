@@ -1140,6 +1140,7 @@ public class Sim {
 		this.gameSpeedGui.update(dt);
 		this.statsGui.setMoney(this.cityStats.getMoney());
 		this.statsGui.setPopulation(this.cityStats.getPopulation());
+		this.statsGui.setUnemployedRate(this.cityStats.getUnemploymentRate());
 		this.tileSelector.update();
 		this.logGui.update(dt);
 	}

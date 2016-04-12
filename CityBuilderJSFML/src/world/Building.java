@@ -329,7 +329,7 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				
 				
-				this.minClients = 100;
+				this.minClients = 50;
 				this.maxClients = 300;
 				this.minEmployees = 15;
 				this.maxEmployees = 30;
@@ -463,7 +463,7 @@ public class Building {
 			}
 			
 			this.maxClients *= 2;
-			this.maxEmployees *= 2;
+			this.maxEmployees *= 1.2f;
 			return true;
 		}else if(this.type == BuildingType.MALL) {
 			if(this.level > 3) {
@@ -482,7 +482,7 @@ public class Building {
 			}
 			
 			this.maxClients *= 2;
-			this.maxEmployees *= 2;
+			this.maxEmployees *= 1.2f;
 			return true;
 		}else if(this.type == BuildingType.SCHOOL) {
 			if(this.level > 2) {
@@ -501,7 +501,7 @@ public class Building {
 			}
 			
 			this.maxClients *= 2;
-			this.maxEmployees *= 2;
+			this.maxEmployees *= 1.2f;
 			return true;
 		}
 		return false;

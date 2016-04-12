@@ -19,6 +19,7 @@ public class StatsGui extends BasicTransformable implements Drawable{
 	
 	protected Text moneyText;
 	protected Text peopleText;
+	protected Text unemployedText;
 	
 	/**
 	 * Initiate sprite and text for the GUI
@@ -46,6 +47,12 @@ public class StatsGui extends BasicTransformable implements Drawable{
 		this.peopleText.setCharacterSize(24);
 		this.peopleText.setColor(Color.WHITE);
 		this.peopleText.setPosition(50, 50);
+		
+		this.unemployedText = new Text();
+		this.unemployedText.setFont(font.get(FontManager.FontID.VCR_MONO));
+		this.unemployedText.setCharacterSize(24);
+		this.unemployedText.setColor(Color.WHITE);
+		this.unemployedText.setPosition(80, 10);
 				
 	}
 	
@@ -63,6 +70,14 @@ public class StatsGui extends BasicTransformable implements Drawable{
 		this.moneyText.setString(""+money);
 	}
 	
+	/**
+	 * 
+	 * @param rate : percentage of unemployed people
+	 */
+	public void setUnemployedRate(float rate) {
+		this.unemployedText.setString("Chomage : " + rate + " %");
+	}
+	
 	@Override
 	public void draw(RenderTarget target, RenderStates states) {
 		RenderStates newStates = new RenderStates(Transform.combine(states.transform, this.getTransform()));
@@ -72,7 +87,7 @@ public class StatsGui extends BasicTransformable implements Drawable{
 		
 		target.draw(this.moneyText, newStates);
 		target.draw(this.peopleText, newStates);
-		
+		target.draw(this.unemployedText, newStates);
 	}
 	
 	

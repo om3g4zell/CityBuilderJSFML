@@ -10,6 +10,7 @@ public class CityStats {
 	protected int population;
 	protected int money;
 	protected float unemploymentRate;
+	protected int unemployment;
 	protected Map<ZoneClass, Float> attractivity;
 	
 	public CityStats() {
