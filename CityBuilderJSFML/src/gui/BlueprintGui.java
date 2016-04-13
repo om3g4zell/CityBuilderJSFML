@@ -45,10 +45,11 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 		this.TextInputName = "BluePrintInput";
 		this.fonts = fonts;
 		
-		this.saveButton = new Button("Save", new Color(128, 128, 128), new Color(48, 48, 48), Color.WHITE, Color.WHITE, fonts.get(FontID.BEBAS), 12);
-		this.saveButton.setPosition(400, 80);
 		
 		this.textInputPool.addTextInput(this.TextInputName, new Vector2f(300.f, 60.f), new Vector2f(0.f,0.f), "Rentrer le nom du bluePrint", FontID.BEBAS, 12, new Color(255, 255, 255, 200), Color.BLACK, Color.BLACK, Color.RED);
+		
+		this.saveButton = new Button("Save", new Color(128, 128, 128), new Color(48, 48, 48), Color.WHITE, Color.WHITE, fonts.get(FontID.BEBAS), 12);
+		this.saveButton.setPosition(this.textInputPool.getTextInput(TextInputName).shape.getGlobalBounds().left + this.textInputPool.getTextInput(TextInputName).shape.getGlobalBounds().width + 10.f, 45.f);
 		
 		reload();
 	}
@@ -78,6 +79,9 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 		}
 	}
 	
+	public void update() {
+		this.saveButton.setPosition(this.textInputPool.getTextInput(TextInputName).shape.getGlobalBounds().left + this.textInputPool.getTextInput(TextInputName).shape.getGlobalBounds().width + 10.f, this.saveButton.getPosition().y);
+	}
 	/**
 	 * Updates the gui.
 	 * 
@@ -102,16 +106,16 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 		
 		this.saveButton.update(new Vector2f(Mouse.getPosition(window).x, Mouse.getPosition(window).y), event);
 		
-		if(this.saveButton.isClicked() && this.textInputPool.getText(this.TextInputName) != "") {
+		if(this.saveButton.isClicked() && this.textInputPool.getString(this.TextInputName) != "") {
 			try {
-				Blueprint.saveToBlueprint(this.folder + this.textInputPool.getText(this.TextInputName) + "." + extension, zoneMap.getZoneMap());
-				log.write("Succesfully saved at : " + this.folder + this.textInputPool.getText(this.TextInputName) + "." + extension, LogGui.SUCCESS);
+				Blueprint.saveToBlueprint(this.folder + this.textInputPool.getString(this.TextInputName) + "." + extension, zoneMap.getZoneMap());
+				log.write("Succesfully saved at : " + this.folder + this.textInputPool.getString(this.TextInputName) + "." + extension, LogGui.SUCCESS);
 				reload();
 			}
 			catch(IOException exception) {
 				exception.printStackTrace();
 			}
-		}else if(this.textInputPool.getText(this.TextInputName) == "" && this.saveButton.isClicked()) {
+		}else if(this.textInputPool.getString(this.TextInputName) == "" && this.saveButton.isClicked()) {
 			log.write("Veuillez entrez un nom", LogGui.WARNING);
 		}
 	}

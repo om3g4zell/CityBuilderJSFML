@@ -1138,6 +1138,7 @@ public class Sim {
 			this.gameSpeedGui.setPaused(true);
 			this.zoneMapLayer.update();
 			this.textInputPool.update();
+			this.blueprintGui.update();
 		}
 
 		//Update stats

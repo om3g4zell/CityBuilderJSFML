@@ -232,7 +232,7 @@ public class TextInputPool  extends BasicTransformable implements Drawable {
 	 * @param name : the name of the text input.
 	 * @return the content of the text input.
 	 */
-	public String getText(String name) {
+	public String getString(String name) {
 		return this.texts.get(name).text.getString();
 	}
 
@@ -246,6 +246,14 @@ public class TextInputPool  extends BasicTransformable implements Drawable {
 		this.customView = v;
 	}
 	
+	/**
+	 * Return the Text
+	 * @param name : the Key of the text input
+	 * @return Text : the Text
+	 */
+	public TextInput getTextInput(String name) {
+		return this.texts.get(name);
+	}
 	/**
 	 * Clear the text in the TextInput.
 	 * @param name : Name of the TextInput
