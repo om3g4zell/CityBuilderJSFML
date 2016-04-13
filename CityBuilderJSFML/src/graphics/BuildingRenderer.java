@@ -29,8 +29,11 @@ public class BuildingRenderer implements Drawable {
 	protected boolean hasTexture(Building.BuildingType btype) {
 		switch(btype) {
 			case GROCERY_STORE:
-				return true;
 			case HOUSE:
+			case GENERATOR:
+			case HYDROLIC_STATION:
+			case ANTENNA_4G:
+			case CASINOS:
 				return true;
 			default:
 				return false;
