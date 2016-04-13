@@ -258,18 +258,19 @@ public class Sim {
 		
 		this.gameView = (View)getWindow().getView();
 		
+		// Day/night cycle.
+		this.dayhour = 12;
+		this.daycount = 0;
+		
 		// Light layer.
 		try {
 			this.lightLayer = new LightLayer(new Vector2i((int)(TILEMAP_SIZE.x * TILE_SIZE.x), (int)(TILEMAP_SIZE.y * TILE_SIZE.y)));
+			this.lightLayer.setAlpha(255);
 			this.lightLayer.virtualDraw();
 		}
 		catch (TextureCreationException | IOException | ShaderSourceException e) {
 			this.logGui.write("Error: could not create the light layer.\n", LogGui.ERROR);
 		}
-		
-		// Day/night cycle.
-		this.dayhour = 0;
-		this.daycount = 0;
 	}
 	
 	/**
