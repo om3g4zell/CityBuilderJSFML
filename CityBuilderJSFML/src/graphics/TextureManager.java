@@ -26,7 +26,7 @@ public class TextureManager {
 		this.textures.put(TextureID.PEOPLE_TEXTURE, load("res/people.png"));
 		this.textures.put(TextureID.MONEY_TEXTURE, load("res/billets.32.png"));
 		this.textures.put(TextureID.TILE_CURSOR_TEXTURE, load("res/hoverframe.png"));
-		this.textures.put(TextureID.GROSSERY_STORE_TEXTURE, load("res/grocery_store.64x32.png"));
+		//this.textures.put(TextureID.GROSSERY_STORE_TEXTURE, load("res/grocery_store.64x32.png"));
 		this.textures.put(TextureID.BUILDINGS_TEXTURE, load("res/buildings.png"));
 		this.textures.put(TextureID.CHECKBOX_TEXTURE, load("res/checkbox.png"));
 		this.textures.put(TextureID.PAUSE, load("res/pause.png"));
