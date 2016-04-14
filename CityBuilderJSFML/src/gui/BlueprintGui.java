@@ -9,9 +9,11 @@ import java.util.Map.Entry;
 import org.jsfml.graphics.BasicTransformable;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Drawable;
+import org.jsfml.graphics.FloatRect;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
 import org.jsfml.graphics.RenderWindow;
+import org.jsfml.graphics.Text;
 import org.jsfml.graphics.Transform;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Mouse;
@@ -31,6 +33,7 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 	protected TextInputPool textInputPool;
 	protected FontManager fonts;
 	protected String TextInputName;
+	protected Text title;
 	
 	/**
 	 * Constructor.
@@ -45,8 +48,15 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 		this.TextInputName = "BluePrintInput";
 		this.fonts = fonts;
 		
+		this.title = new Text();
+		this.title.setFont(this.fonts.get(FontID.POINTFREE));
+		this.title.setCharacterSize(24);
+		this.title.setPosition(400, 150);
+		this.title.setColor(Color.WHITE);
+		this.title.setString("Plans : ");
 		
-		this.textInputPool.addTextInput(this.TextInputName, new Vector2f(300.f, 60.f), new Vector2f(0.f,0.f), "Rentrer le nom du bluePrint", FontID.BEBAS, 12, new Color(255, 255, 255, 200), Color.BLACK, Color.BLACK, Color.RED);
+		
+		this.textInputPool.addTextInput(this.TextInputName, new Vector2f(560.f, 60.f), new Vector2f(0.f,0.f), "Rentrer le nom du bluePrint", FontID.BEBAS, 12, new Color(255, 255, 255, 200), Color.BLACK, Color.BLACK, Color.RED);
 		
 		this.saveButton = new Button("Save", new Color(128, 128, 128), new Color(48, 48, 48), Color.WHITE, Color.WHITE, fonts.get(FontID.BEBAS), 12);
 		this.saveButton.setPosition(this.textInputPool.getTextInput(TextInputName).shape.getGlobalBounds().left + this.textInputPool.getTextInput(TextInputName).shape.getGlobalBounds().width + 10.f, 45.f);
@@ -62,6 +72,9 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 		this.textInputPool.clearText(this.TextInputName);
 		File file = new File("res/blueprint");
 		File[] files = file.listFiles();
+		int j = 0;
+		Button previousButton = null;
+		int margin = 400;
 		
 		for(int i = 0 ; i < files.length; i++) {
 			int dotPlace = files[i].getName().lastIndexOf('.');
@@ -71,7 +84,26 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 			if(extension.equals(this.extension)) {
 				// Create and configure the button.
 				Button button = new Button(name, new Color(128, 128, 128), new Color(48, 48, 48), Color.WHITE, Color.WHITE, this.fonts.get(FontID.BEBAS), 12);
-				button.setPosition(200,  200 + i * 50);
+				
+				if(previousButton != null) {
+					FloatRect localHitbox = previousButton.getRectgangleShape().getGlobalBounds();
+					FloatRect hitbox = getTransform().transformRect(localHitbox);
+					
+					margin = (int)previousButton.getPosition().x + (int)hitbox.width + 20;
+				}
+				
+				previousButton = button;
+				button.setPosition(margin,  200 + j * 50);
+				
+				FloatRect localHitbox = button.getRectgangleShape().getGlobalBounds();
+				FloatRect hitbox = getTransform().transformRect(localHitbox);
+				
+				if(button.getPosition().x + hitbox.width >= 900) {
+					j++;
+					margin = 400;
+					System.out.println(j);
+					button.setPosition(margin,  200 + j * 50);
+				}
 				
 				// Add it to the list.
 				this.buttons.put(button, name);
@@ -134,6 +166,7 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 			target.draw(button.getKey(), newStates);
 		}
 		target.draw(saveButton, newStates);
+		target.draw(this.title);
 	}
 
 }

@@ -74,6 +74,14 @@ public class Button extends BasicTransformable implements Drawable{
 	public boolean isClicked() {
 		return this.clickedFlag;
 	}
+	
+	/**
+	 * Return The rectangle shape.
+	 * @return RectangleShape : the rectangleShape 
+	 */
+	public RectangleShape getRectgangleShape() {
+		return this.background;
+	}
 	@Override
 	public void draw(RenderTarget target, RenderStates states) {
 		 RenderStates newStates = new RenderStates(Transform.combine(states.transform, this.getTransform()));
