@@ -265,32 +265,32 @@ public class Building {
 				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
 			case CASINOS:
-				this.range = 50;
+				this.range = 70;
 				this.hitbox = new IntRect(position.x, position.y, 4, 4);
 				
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				
-				this.minClients = 50;
-				this.maxClients = 300;
+				this.minClients = 100;
+				this.maxClients = 1000;
 				this.minEmployees = 15;
-				this.maxEmployees = 30;
+				this.maxEmployees = 60;
 				
 				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
 			case CINEMA:
-				this.range = 50;
+				this.range = 70;
 				this.hitbox = new IntRect(position.x, position.y, 4, 4);
 				
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				
-				this.minClients = 50;
-				this.maxClients = 300;
-				this.minEmployees = 3;
-				this.maxEmployees = 5;
+				this.minClients = 100;
+				this.maxClients = 1000;
+				this.minEmployees = 15;
+				this.maxEmployees = 60;
 				
 				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
@@ -302,8 +302,8 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				
-				this.minEmployees = 4;
-				this.maxEmployees = 15;
+				this.minEmployees = 15;
+				this.maxEmployees = 30;
 				
 				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
@@ -315,8 +315,8 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				
-				this.minEmployees = 4;
-				this.maxEmployees = 15;
+				this.minEmployees = 15;
+				this.maxEmployees = 30;
 				
 				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
@@ -346,8 +346,8 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				
 				
-				this.minEmployees = 7;
-				this.maxEmployees = 15;
+				this.minEmployees = 15;
+				this.maxEmployees = 30;
 				
 				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
@@ -359,10 +359,10 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				
-				this.minClients = 10;
-				this.maxClients = 120;
-				this.minEmployees = 1;
-				this.maxEmployees = 4;
+				this.minClients = 20;
+				this.maxClients = 200;
+				this.minEmployees = 3;
+				this.maxEmployees = 15;
 				
 				this.buildingClass = Building.getSuitableZones(this.type);
 				
@@ -375,10 +375,10 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				
-				this.minClients = 15;
-				this.maxClients = 120;
-				this.minEmployees = 3;
-				this.maxEmployees = 10;
+				this.minClients = 20;
+				this.maxClients = 200;
+				this.minEmployees = 7;
+				this.maxEmployees = 20;
 				
 				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
@@ -390,9 +390,9 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				
-				this.minEmployees = 3;
-				this.maxEmployees = 10;
-				
+				this.minEmployees = 7;
+				this.maxEmployees = 15;
+			
 				this.buildingClass = Building.getSuitableZones(this.type);
 				this.canEvolve = true;
 				break;
@@ -1041,6 +1041,11 @@ public class Building {
 			if(this.haltWarning >= this.needs.size() + 2)
 				if(this.level > 1) {
 					level--;
+					if(this.inhabitants.size() > 0) {
+						Citizen removed = this.inhabitants.get(this.inhabitants.size()-1);
+						this.inhabitants.remove(removed);
+						notifyCitizenRemoved(removed);
+					}
 					this.haltWarning = 0;
 				}
 				else
