@@ -3,6 +3,7 @@ package gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jsfml.graphics.CircleShape;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.RectangleShape;
@@ -31,11 +32,15 @@ public class TileInfoGui implements Drawable {
 	protected Tile actualTile;
 	protected Building building;
 	protected RectangleShape rectangleShape;
+	protected CircleShape range;
 	
 	public TileInfoGui(List<ArrayList<Tile>> tiles, FontManager fontmanager) {
 		
 		this.tileMap = tiles;
 		this.infoString = new String();
+		this.range = new CircleShape();
+		this.range.setFillColor(new Color(255, 255, 0, 40));
+		this.range.setOrigin((this.range.getLocalBounds().left + this.range.getLocalBounds().width) / 2.f, (this.range.getLocalBounds().top + this.range.getLocalBounds().height) / 2.f);
 		
 		// we instanciate the Text
 		this.infoText = new Text();
@@ -59,6 +64,7 @@ public class TileInfoGui implements Drawable {
 		this.tileSelector = tileselector;
 		this.resourceMap = resourcemap;
 		this.infoString = "";
+		this.range.setRadius(0);
 		
 		this.position = new Vector2i(this.tileSelector.selectedTile.x,this.tileSelector.selectedTile.y);
 		this.actualTile = this.tileMap.get(position.y).get(position.x);
@@ -123,6 +129,13 @@ public class TileInfoGui implements Drawable {
 		this.rectangleShape.setPosition(this.position.x *16, this.position.y*16);
 		this.rectangleShape.setSize(new Vector2f(this.infoText.getGlobalBounds().width + 30,this.infoText.getGlobalBounds().height + 30));
 		
+		// we set the range
+		if(this.building != null) {
+			this.range.setPosition(this.building.getHitbox().left * 16 + this.building.getHitbox().width * 8, this.building.getHitbox().top * 16 + this.building.getHitbox().height * 8);
+			this.range.setRadius(this.building.getHitbox().width * 8 + this.building.getRange() * 16);
+			this.range.setOrigin((this.range.getLocalBounds().left + this.range.getLocalBounds().width) / 2.f, (this.range.getLocalBounds().top + this.range.getLocalBounds().height) / 2.f);
+		}
+		
 		// we reset the building
 		this.building = null;
 		
@@ -133,6 +146,8 @@ public class TileInfoGui implements Drawable {
 		
 		target.draw(this.rectangleShape, states);
 		target.draw(this.infoText, states);
+		if(range.getRadius() != 0)
+			target.draw(range, states);
 		
 	}
 }
