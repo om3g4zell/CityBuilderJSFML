@@ -422,7 +422,7 @@ public class Building {
 	 */
 	public boolean levelUp() {
 		if(this.type == BuildingType.HOUSE) {
-			if(this.level >4)
+			if(this.level >5)
 				return false;
 			
 			this.level++;
@@ -434,7 +434,6 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.FIRE_PROTECTION, 100, 1.f));
 				break;
 			case 3:
-				this.needs.add(new Need(Resource.ResourceType.SPORT, 25, 1.f));
 				this.needs.add(new Need(ResourceType.HOBBIES, 2, 1.f));
 				break;
 			case 4:
@@ -445,6 +444,9 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.BIG_FURNITURE, 50, 1.f));
 				this.needs.add(new Need(Resource.ResourceType.ALCOHOL, 2, 1.f));
 				this.needs.add(new Need(Resource.ResourceType.LUXURY_FOOD, 10, 1.f));
+				break;
+			case 6:
+				this.needs.add(new Need(Resource.ResourceType.SPORT, 25, 1.f));
 				break;
 			}
 			return true;
