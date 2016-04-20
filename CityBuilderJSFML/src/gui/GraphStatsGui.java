@@ -52,7 +52,9 @@ public class GraphStatsGui implements Drawable {
 		this.unemploymentGraph.drawAxes(true);
 		this.numberOfBuildingsGraph.drawAxes(true);
 		
+		this.populationGraph.scaleYAxis(true);
 		this.unemploymentGraph.scaleYAxis(false);
+		this.numberOfBuildingsGraph.scaleYAxis(true);
 		
 		this.populationGraph.update();
 		this.unemploymentGraph.update();
