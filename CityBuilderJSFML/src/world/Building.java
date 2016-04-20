@@ -295,7 +295,7 @@ public class Building {
 				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
 			case FIRE_STATION:
-				this.range = 30;
+				this.range = 50;
 				this.hitbox = new IntRect(position.x, position.y, 3, 4);
 				
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
@@ -308,7 +308,7 @@ public class Building {
 				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
 			case HOSPITAL:
-				this.range = 30;
+				this.range = 50;
 				this.hitbox = new IntRect(position.x, position.y, 3, 4);
 				
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
@@ -338,7 +338,7 @@ public class Building {
 				this.canEvolve = true;
 				break;
 			case POLICE_STATION:
-				this.range = 30;
+				this.range = 50;
 				this.hitbox = new IntRect(position.x, position.y, 4, 4);
 				
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
@@ -352,7 +352,7 @@ public class Building {
 				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
 			case PUB:
-				this.range = 25;
+				this.range = 40;
 				this.hitbox = new IntRect(position.x, position.y, 2, 3);
 				
 				this.needs.add(new Need(Resource.ResourceType.ELECTRICITY, 220, 0.8f));
@@ -828,8 +828,9 @@ public class Building {
 	 */
 	public void checkClients(List<Building> houses) {
 		// Do we need any client ?
-		if(this.clients.size() >= this.maxClients)
+		if(this.clients.size() >= this.maxClients){
 			return;
+		}
 		
 		// How many clients do we need ?
 		int clientsNeeded = this.maxClients - this.clients.size();
