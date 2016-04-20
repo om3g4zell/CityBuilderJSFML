@@ -169,7 +169,7 @@ public class Building {
 	protected BuildingType type;
 	protected List<Zone.ZoneClass> buildingClass;
 	protected boolean halted;
-	protected boolean haltWarning;
+	protected int haltWarning;
 	protected List<Citizen> inhabitants;
 	protected List<Citizen> clients;
 	protected List<Citizen> employees;
@@ -199,7 +199,7 @@ public class Building {
 		this.needs = new ArrayList<Need>();
 		this.buildingClass = new ArrayList<Zone.ZoneClass>();
 		this.halted = false;
-		this.haltWarning = false;
+		this.haltWarning = 0;
 		
 		switch(this.type) {
 			case GENERATOR:
@@ -290,7 +290,7 @@ public class Building {
 				this.minClients = 50;
 				this.maxClients = 300;
 				this.minEmployees = 3;
-				this.maxEmployees = 10;
+				this.maxEmployees = 5;
 				
 				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
@@ -302,8 +302,8 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				
-				this.minEmployees = 15;
-				this.maxEmployees = 30;
+				this.minEmployees = 4;
+				this.maxEmployees = 15;
 				
 				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
@@ -315,8 +315,8 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.WATER, 100, 0.7f));
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				
-				this.minEmployees = 15;
-				this.maxEmployees = 30;
+				this.minEmployees = 4;
+				this.maxEmployees = 15;
 				
 				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
@@ -346,8 +346,8 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				
 				
-				this.minEmployees = 15;
-				this.maxEmployees = 30;
+				this.minEmployees = 7;
+				this.maxEmployees = 15;
 				
 				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
@@ -406,8 +406,8 @@ public class Building {
 				
 				this.minClients = 1000;
 				this.maxClients = 60000;
-				this.minEmployees = 100;
-				this.maxEmployees = 500;
+				this.minEmployees = 50;
+				this.maxEmployees = 150;
 				
 				this.buildingClass = Building.getSuitableZones(this.type);
 				break;
@@ -450,7 +450,8 @@ public class Building {
 				break;
 			}
 			return true;
-		}else if(this.type == BuildingType.GROCERY_STORE) {
+		}
+		else if(this.type == BuildingType.GROCERY_STORE) {
 			if(this.level > 3) {
 				return false;
 			}
@@ -467,7 +468,8 @@ public class Building {
 			this.maxClients *= 2;
 			this.maxEmployees *= 1.2f;
 			return true;
-		}else if(this.type == BuildingType.MALL) {
+		}
+		else if(this.type == BuildingType.MALL) {
 			if(this.level > 3) {
 				return false;
 			}
@@ -486,7 +488,8 @@ public class Building {
 			this.maxClients *= 2;
 			this.maxEmployees *= 1.2f;
 			return true;
-		}else if(this.type == BuildingType.SCHOOL) {
+		}
+		else if(this.type == BuildingType.SCHOOL) {
 			if(this.level > 2) {
 				return false;
 			}
@@ -641,6 +644,23 @@ public class Building {
 		return this.inhabitants.size() - inhabitantsWorking;
 	}
 	
+	public void notifyCitizenRemoved(Citizen removed) {
+		
+		for(Citizen c : this.clients) {
+			if(c.id == removed.id) {
+				this.clients.remove(c);
+				break;
+			}
+		}
+		
+		for(Citizen c : this.employees) {
+			if(c.id == removed.id) {
+				this.employees.remove(c);
+				break;
+			}
+		}
+	}
+	
 	/**
 	 * Generates resources.
 	 * @param resourcesMap : the resources map to place resources on
@@ -648,7 +668,7 @@ public class Building {
 	 */
 	public void generateResources(ResourcesMap resourcesMap, List<Building> buildings) {
 		// Do not generate if halted.
-		if(this.halted)
+		if(this.haltWarning > 0)
 			return;
 		
 		// We use squared range and squared euclidean distance for performance.
@@ -923,7 +943,7 @@ public class Building {
 	 * @param resources : the resources map
 	 */
 	public boolean checkLevelUp(ResourcesMap resources) {
-		int random = (int)(Math.random()*1000);
+		int random = (int)(Math.random()*10);
 		boolean maxSatisfaction = true;
 		
 		ResourcesStack rstack = new ResourcesStack();
@@ -939,7 +959,7 @@ public class Building {
 				break;
 			}
 		}
-		if(maxSatisfaction || random == 666) {
+		if(maxSatisfaction && random == 6) {
 			if(this.levelUp())
 				return true;
 			else 
@@ -978,6 +998,7 @@ public class Building {
 		if(enoughForMinimal) {
 			// If there is enough resources for minimal, we resume the building production.
 			this.halted = false;
+			this.haltWarning = 0;
 			
 			// Check if enough resources for 100%.
 			boolean enoughForFull = true;
@@ -1016,10 +1037,10 @@ public class Building {
 		// If no :
 		else {
 			// Halt the building and don't consume anything.
-			if(this.haltWarning)
-				this.halted = false;
+			if(this.haltWarning >= this.needs.size() + 2)
+				this.halted = true;
 			else
-				this.haltWarning = true;
+				this.haltWarning++;
 			
 			// Require new building(s) to satisfy needs.
 			for(Need need : this.needs) {

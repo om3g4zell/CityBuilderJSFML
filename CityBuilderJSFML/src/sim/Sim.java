@@ -46,6 +46,7 @@ import gui.ZoneDrawingGui;
 import maths.Distance;
 import world.Building;
 import world.Building.BuildingType;
+import world.Citizen;
 import world.Resource.ResourceType;
 import world.CityStats;
 import world.Need;
@@ -1101,11 +1102,20 @@ public class Sim {
 			// Update the stats graphs (even if not displayed).
 			this.graphStatsGui.update(this.cityStats.getPopulation(), this.cityStats.getMoney(), this.buildings.size());
 			
+			List<Building> buildingToDelete = new ArrayList<Building>();
+			
 			// Update the lights positions.
 			this.lightLayer.clearLights();
 			for(Building b : this.buildings) {
 				Vector2f center = new Vector2f((b.getHitbox().left  + b.getHitbox().width / 2.f) * TILE_SIZE.x, (b.getHitbox().top + b.getHitbox().height / 2.f) * TILE_SIZE.y);
 				this.lightLayer.addLight(center, 1.25f * b.getHitbox().width * TILE_SIZE.x, new Color(255, 255, 255, 250), new Color(255, 255, 255, 50));
+				
+				if(b.isHalted())
+					buildingToDelete.add(b);
+			}
+			
+			for(Building b : buildingToDelete) {
+				removeBuilding(b);
 			}
 			
 			// Update day/night.
@@ -1283,6 +1293,17 @@ public class Sim {
 		return this.window;
 	}
 	
+	public void removeBuilding(Building toDelete) {
+		List<Citizen> inhabitant = toDelete.getInhabitants();
+		this.buildings.remove(toDelete);
+		
+		for(Building b : this.buildings) {
+			for(Citizen c : inhabitant) {
+				b.notifyCitizenRemoved(c);
+			}
+		}
+	}
+	
 	/**
 	 * Remove building if we left click and pressed d
 	 * @param e : Event
@@ -1293,7 +1314,8 @@ public class Sim {
 				for(int i = 0; i < this.buildings.size();){
 					if(this.buildings.get(i).getHitbox().contains(this.tileSelector.getSelectedTile())) {
 						this.logGui.write("Removed building : Id : " + this.buildings.get(i).getId(), LogGui.SUCCESS);
-						this.buildings.remove(this.buildings.get(i));
+						removeBuilding(this.buildings.get(i));
+						
 					}
 					else {
 						i++;
