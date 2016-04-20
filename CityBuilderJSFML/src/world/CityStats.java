@@ -8,7 +8,6 @@ import world.Zone.ZoneClass;
 
 public class CityStats {
 	protected int population;
-	protected int money;
 	protected float unemploymentRate;
 	protected int unemployment;
 	protected Map<ZoneClass, Float> attractivity;
@@ -29,7 +28,6 @@ public class CityStats {
 	 */
 	public void update(List<Building> buildings) {
 		this.population = 0;
-		this.money = 0;
 		
 		for(ZoneClass z : ZoneClass.values()) {
 			attractivity.put(z, 0.f);
@@ -88,14 +86,6 @@ public class CityStats {
 	/**
 	 * Get the money of the city.
 	 * @return int : the money of the city
-	 */
-	public int getMoney() {
-		return this.money;
-	}
-	
-	/**
-	 * Get the unemployment rate.
-	 * @return float : the unemployment rate
 	 */
 	public float getUnemploymentRate() {
 		return this.unemploymentRate;

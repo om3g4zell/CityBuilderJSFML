@@ -1101,7 +1101,7 @@ public class Sim {
 			this.cityStats.update(this.buildings);
 			
 			// Update the stats graphs (even if not displayed).
-			this.graphStatsGui.update(this.cityStats.getPopulation(), this.cityStats.getMoney(), this.buildings.size());
+			this.graphStatsGui.update(this.cityStats.getPopulation(), this.cityStats.getUnemploymentRate(), this.buildings.size());
 			
 			List<Building> buildingToDelete = new ArrayList<Building>();
 			
@@ -1160,7 +1160,6 @@ public class Sim {
 
 		//Update stats
 		this.gameSpeedGui.update(dt);
-		this.statsGui.setMoney(this.cityStats.getMoney());
 		this.statsGui.setPopulation(this.cityStats.getPopulation());
 		this.statsGui.setUnemployedRate(this.cityStats.getUnemploymentRate());
 		this.tileSelector.update();
