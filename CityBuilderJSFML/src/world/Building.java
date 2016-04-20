@@ -620,7 +620,7 @@ public class Building {
 	 * Return the min employees number
 	 * @return int : the min employees number
 	 */
-	public int getMinEmployess() {
+	public int getMinEmployees() {
 		return this.minEmployees;
 	}
 	/**
