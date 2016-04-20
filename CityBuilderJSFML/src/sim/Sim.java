@@ -239,6 +239,7 @@ public class Sim {
 		this.buildingRenderer.setTextureRect(BuildingType.HYDROLIC_STATION, new FloatRect(96.f, 16.f, 16.f, 16.f));
 		this.buildingRenderer.setTextureRect(BuildingType.ANTENNA_4G, new FloatRect(112.f, 0.f, 16.f, 16.f));
 		this.buildingRenderer.setTextureRect(BuildingType.CASINOS, new FloatRect(128.f, 0.f, 64.f, 64.f));
+		this.buildingRenderer.setTextureRect(BuildingType.HOSPITAL, new FloatRect(192.f, 0.f, 48.f, 64.f));
 		
 		// The stack of the maps which contains the required buildings of everyone.
 		this.buildingStackRequired = new Stack<Map<Integer, Building.BuildingType>>();

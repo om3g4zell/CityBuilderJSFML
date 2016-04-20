@@ -34,6 +34,7 @@ public class BuildingRenderer implements Drawable {
 			case HYDROLIC_STATION:
 			case ANTENNA_4G:
 			case CASINOS:
+			case HOSPITAL:
 				return true;
 			default:
 				return false;
