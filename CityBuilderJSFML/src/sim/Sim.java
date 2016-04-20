@@ -1231,36 +1231,11 @@ public class Sim {
 	 * Handles the real-time input from the player.
 	 * @param dt : elapsed time since last tick
 	 */
-	public void handleInput(Time dt) {
-		//final int borderSize = 20;
-		
+	public void handleInput(Time dt) {		
 		View view = (View)getWindow().getView();
 
 		// View movement.
 		float viewMovementX = 0, viewMovementY = 0;
-		
-		// View mouvement via mouse.
-		/*
-		 * Vector2i mousePosition = Mouse.getPosition(getWindow());
-		
-		if(mousePosition.x <= borderSize) {
-			Mouse.setPosition(new Vector2i(borderSize, mousePosition.y), getWindow());
-			viewMovementX -= 400.f;
-		}
-		else if(mousePosition.x >= getWindow().getSize().x - borderSize) {
-			Mouse.setPosition(new Vector2i(getWindow().getSize().x - (borderSize), mousePosition.y), getWindow());
-			viewMovementX += 400.f;
-		}
-		
-		if(mousePosition.y <= borderSize) {
-			Mouse.setPosition(new Vector2i(mousePosition.x, borderSize), getWindow());
-			viewMovementY -= 400.f;
-		}
-		else if(mousePosition.y >= getWindow().getSize().y - borderSize) {
-			Mouse.setPosition(new Vector2i(mousePosition.x, getWindow().getSize().y - (borderSize)), getWindow());
-			viewMovementY += 400.f;
-		}
-		*/
 		
 		// View movement via keyboard.
 		if(Keyboard.isKeyPressed(Keyboard.Key.LEFT)) {
