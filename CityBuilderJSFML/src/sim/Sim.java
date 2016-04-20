@@ -662,15 +662,21 @@ public class Sim {
 		// If no building type has been requested, we leave.
 		if(mostRequiredBuildingTypeEntry == null)
 			return;
+		
+		// Create a fake building.
+		Building requiredBuilding = new Building(mostRequiredBuildingTypeEntry.getKey(), new Vector2i(0, 0));
+		
+		// Check if there is enough unemployed people.
+		if(this.cityStats.getUnemployment() < requiredBuilding.getMinEmployees()) {
+			this.logGui.write("Not enough people to employ : " + this.cityStats.getUnemployment() + " / " + requiredBuilding.getMinEmployees(), LogGui.WARNING);
+			return;
+		}
 
 		// Compute the average position, aka the center of the search area.
 		Vector2i centerOfSearchArea = getBuildingsAveragePosition(buildingsRequired, mostRequiredBuildingTypeEntry.getKey(), mostRequiredBuildingTypeEntry.getValue());
 		
 		// Get the furthest building from the average position, to compute the radius of the search area.
 		float radius = getFurthestBuildingTo(buildingsRequired, mostRequiredBuildingTypeEntry.getKey(), centerOfSearchArea);
-		
-		// Create a fake building.
-		Building requiredBuilding = new Building(mostRequiredBuildingTypeEntry.getKey(), new Vector2i(0, 0));
 		
 		// We may need to expand the radius.
 		if(requiredBuilding.getRange() > radius)
