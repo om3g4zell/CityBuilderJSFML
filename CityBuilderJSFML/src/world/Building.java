@@ -426,7 +426,7 @@ public class Building {
 				return false;
 			
 			this.level++;
-			
+			this.inhabitants.add(new Citizen(this.id));
 			switch(this.level) {
 			case 2:
 				this.needs.add(new Need(Resource.ResourceType.SECURITY, 100, 1.f));

@@ -39,7 +39,7 @@ public class CityStats {
 		
 		for(Building b :  buildings) {
 			if(b.getType().equals(Building.BuildingType.HOUSE)) {
-				this.population += 4;
+				this.population += b.getInhabitants().size();
 			}
 			
 			for(ZoneClass zc : ZoneClass.values()) {

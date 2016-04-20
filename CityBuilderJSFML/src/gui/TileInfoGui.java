@@ -39,7 +39,7 @@ public class TileInfoGui implements Drawable {
 		this.tileMap = tiles;
 		this.infoString = new String();
 		this.range = new CircleShape();
-		this.range.setFillColor(new Color(255, 255, 0, 20));
+		this.range.setFillColor(new Color(255, 255, 0, 10));
 		this.range.setOutlineThickness(2.f);
 		this.range.setOutlineColor(Color.BLACK);
 		this.range.setOrigin((this.range.getLocalBounds().left + this.range.getLocalBounds().width) / 2.f, (this.range.getLocalBounds().top + this.range.getLocalBounds().height) / 2.f);
