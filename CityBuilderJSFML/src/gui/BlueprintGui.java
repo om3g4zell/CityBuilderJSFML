@@ -56,7 +56,7 @@ public class BlueprintGui extends BasicTransformable implements Drawable {
 		this.title.setString("Plans : ");
 		
 		
-		this.textInputPool.addTextInput(this.textInputName, new Vector2f(560.f, 60.f), new Vector2f(0.f,0.f), "Rentrez le nom du plan", FontID.BEBAS, 12, new Color(255, 255, 255, 200), Color.BLACK, Color.BLACK, Color.RED);
+		this.textInputPool.addTextInput(this.textInputName, new Vector2f(560.f, 60.f), new Vector2f(0.f,0.f), "Rentrez le nom du plan", FontID.CAVIAR_DREAM, 12, new Color(255, 255, 255, 200), Color.BLACK, Color.BLACK, Color.RED);
 		
 		this.saveButton = new Button("Save", new Color(128, 128, 128), new Color(48, 48, 48), Color.WHITE, Color.WHITE, fonts.get(FontID.BEBAS), 12);
 		this.saveButton.setPosition(this.textInputPool.getTextInput(textInputName).shape.getGlobalBounds().left + this.textInputPool.getTextInput(textInputName).shape.getGlobalBounds().width + 10.f, 45.f);
