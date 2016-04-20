@@ -607,6 +607,22 @@ public class Building {
 	public boolean isEvolvable() {
 		return this.canEvolve;
 	}
+	
+	/**
+	 * Return the min clients number
+	 * @return int : min client number
+	 */
+	public int getMinClient() {
+		return this.minClients;
+	}
+	
+	/**
+	 * Return the min employees number
+	 * @return int : the min employees number
+	 */
+	public int getMinEmployess() {
+		return this.minEmployees;
+	}
 	/**
 	 * Returns the number of unemployed inhabitants of this building.
 	 * 
