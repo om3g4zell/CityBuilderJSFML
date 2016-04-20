@@ -85,7 +85,7 @@ public class GraphStatsGui implements Drawable {
 	 */
 	public void update(int population, float unemploymentrate, int numberOfBuildings) {
 		this.populationGraph.addValue(this.lastx, population);
-		this.unemploymentGraph.addValue(this.lastx, unemploymentrate * 4);
+		this.unemploymentGraph.addValue(this.lastx, unemploymentrate * 4.f);
 		this.numberOfBuildingsGraph.addValue(this.lastx, numberOfBuildings);
 		
 		this.lastx++;
