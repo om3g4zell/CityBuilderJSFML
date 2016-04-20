@@ -216,7 +216,7 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				
 				this.minClients = 4;
-				this.maxClients = 40;
+				this.maxClients = 80;
 				this.minEmployees = 1;
 				this.maxEmployees = 1;
 				
@@ -273,7 +273,7 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				
 				this.minClients = 50;
-				this.maxClients = 200;
+				this.maxClients = 300;
 				this.minEmployees = 15;
 				this.maxEmployees = 30;
 				
@@ -330,7 +330,7 @@ public class Building {
 				
 				
 				this.minClients = 50;
-				this.maxClients = 300;
+				this.maxClients = 400;
 				this.minEmployees = 15;
 				this.maxEmployees = 30;
 				
@@ -360,7 +360,7 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				
 				this.minClients = 10;
-				this.maxClients = 60;
+				this.maxClients = 120;
 				this.minEmployees = 1;
 				this.maxEmployees = 4;
 				
@@ -376,7 +376,7 @@ public class Building {
 				this.needs.add(new Need(Resource.ResourceType.ROAD_PROXIMITY, 1, 1.f));
 				
 				this.minClients = 15;
-				this.maxClients = 60;
+				this.maxClients = 120;
 				this.minEmployees = 3;
 				this.maxEmployees = 10;
 				
@@ -1038,7 +1038,12 @@ public class Building {
 		else {
 			// Halt the building and don't consume anything.
 			if(this.haltWarning >= this.needs.size() + 2)
-				this.halted = true;
+				if(this.level > 1) {
+					level--;
+					this.haltWarning = 0;
+				}
+				else
+					this.halted = true;
 			else
 				this.haltWarning++;
 			
