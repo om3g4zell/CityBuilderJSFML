@@ -95,7 +95,7 @@ public class Graph extends BasicTransformable implements Drawable {
 	    {
 	    	// Adapt the vertices position.
 	    	Vector2f position = new Vector2f(this.size.x * (this.values.get(i).x - this.values.get(start).x) / maxx,
-											 this.size.y - this.size.y * (this.values.get(i).y) / maxy);
+											 this.size.y - Math.min(this.values.get(i).y, this.size.y));
 	    	
 	    	if(yscaled) {
 	    		position = new Vector2f(this.size.x * (this.values.get(i).x - this.values.get(start).x) / maxx,
