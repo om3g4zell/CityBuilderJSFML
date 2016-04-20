@@ -1116,6 +1116,7 @@ public class Sim {
 			}
 			
 			for(Building b : buildingToDelete) {
+				this.logGui.write("Building : " + b.getId() + " has been deleted", LogGui.WARNING);
 				removeBuilding(b);
 			}
 			
