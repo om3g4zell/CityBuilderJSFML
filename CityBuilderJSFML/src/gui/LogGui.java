@@ -57,7 +57,7 @@ public class LogGui implements Drawable{
 		this.title.setPosition(900, 75);
 		this.title.setString("Messages :");
 		
-		this.saveLogButton = new Button("Save Log", new Color(128, 128, 128), new Color(48, 48, 48), Color.WHITE, Color.WHITE, fonts.get(FontID.BEBAS), 12);
+		this.saveLogButton = new Button("Sauvegarder les messages", new Color(128, 128, 128), new Color(48, 48, 48), Color.WHITE, Color.WHITE, fonts.get(FontID.BEBAS), 12);
 		this.saveLogButton.setPosition(900, 35);
 	}
 	
