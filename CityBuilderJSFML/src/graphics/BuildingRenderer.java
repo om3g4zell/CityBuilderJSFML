@@ -39,6 +39,7 @@ public class BuildingRenderer implements Drawable {
 			case CINEMA:
 			case FIRE_STATION:
 			case POLICE_STATION:
+			case STADIUM:
 				return true;
 			default:
 				return false;
